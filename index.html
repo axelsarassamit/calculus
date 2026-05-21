@@ -1485,14 +1485,97 @@ function renderVA(){
   return`<div>
   <div class="ph"><h2>💧 ${T('Vatten och Avlopp','Water & Sewer')}</h2>
   <div class="sub">${T('Vatten- och avloppsledningar med fullständig volyms- och kostnadskalkyl.','Water and sewer pipes with full volume and cost calculation.')}</div></div>
-  <div class="infobox" style="margin-bottom:14px">
-    <h4>🔵 ${T('Rör & konfiguration','Pipes & configuration')}</h4>
-    <p style="font-size:12px">${T('Rörval och schaktkonfiguration hanteras under','Pipe selection and excavation configuration is managed under')} <span class="badge-pill" onclick="go('budget')" style="cursor:pointer;background:var(--p);color:#fff;border-radius:20px;padding:2px 10px;font-weight:600">💰 ${T('Budget »','Budget »')}</span></p>
+  <!-- ══ RÖR & KONFIGURATION ══ -->
+  <div class="cd">
+  <div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Rör & konfiguration','Pipes & configuration')}</div>
+
+  ${(()=>{
+    const VA2=D('VA');if(!VA2||!VA2.cfg)return'';
+    const pipes=VA2.cfg.pipes;
+    const totalA=pipes.reduce((s,d)=>s+Math.PI*(d/2)**2,0);
+    const sorted=[...pipes].map(d=>Math.round(d*1000)).sort((a,b)=>a-b);
+    return`<div class="va-pipe-strip">
+      <div class="ps-stat"><span class="ps-val">${pipes.length}</span><span class="ps-lbl">${T('Rör','Pipes')}</span></div>
+      <div class="ps-stat"><span class="ps-val">${(totalA*10000).toFixed(1)} cm²</span><span class="ps-lbl">${T('Total rörarea','Total pipe area')}</span></div>
+      <div class="ps-stat"><span class="ps-val">${pipes.length?sorted[0]+' – '+sorted[sorted.length-1]+' mm':'—'}</span><span class="ps-lbl">${T('Dimensionsspann','Diameter range')}</span></div>
+      <div style="flex:1;font-size:10px;color:var(--tm)">${sorted.length?sorted.map(mm=>'DN '+mm).join(' · '):T('Inga rör konfigurerade','No pipes configured')}</div>
+    </div>`;
+  })()}
+
+  ${(()=>{
+    const VA2=D('VA');if(!VA2||!VA2.cfg)return'';
+    const pipes=VA2.cfg.pipes;
+    return`<div class="va-pipe-builder">
+    <div class="va-pb-label">🔵 ${T('Aktiva rörledningar i schaktet','Active pipes in trench')}</div>
+    <div class="va-pipe-list">
+      ${pipes.length===0
+        ?`<span class="va-pipe-empty">${T('Inga rör tillagda — välj en standarddimension nedan','No pipes added — select a standard dimension below')}</span>`
+        :pipes.map((d,i)=>{const mm=Math.round(d*1000);const col=mm<=110?'#10b981':mm<=250?'#06b6d4':mm<=400?'#4f46e5':'#8b5cf6';return`<span class="va-pipe-tag" style="border-color:${col};color:${col}"><span class="ptdot" style="background:${col}"></span>DN ${mm}<button onclick="event.stopPropagation();D('VA').cfg.pipes.splice(${i},1);touchProj();save();go('va')" title="${T('Ta bort','Remove')}" style="color:${col}">×</button></span>`;}).join('')}
+    </div>
+
+    <div class="va-pb-label" style="margin-top:12px">⚡ ${T('Snabbval — klicka för att lägga till','Quick-add — click to add')}</div>
+    <div class="va-pipe-quick">
+      ${[50,63,75,90,110,125,160,200,250,315,400,500,600,800].map(mm=>`<button class="va-pipe-btn" onclick="D('VA').cfg.pipes.push(${(mm/1000).toFixed(3)});touchProj();save();go('va')">DN ${mm}</button>`).join('')}
+    </div>
+
+    <div class="va-custom-row">
+      <input id="va-cust-mm" type="number" placeholder="${T('Eget mått (mm)','Custom size (mm)')}" min="20" max="2000" step="1" onkeydown="if(event.key==='Enter'){const v=+(document.getElementById('va-cust-mm').value);if(v>0){D('VA').cfg.pipes.push(+(v/1000).toFixed(3));touchProj();save();go('va');}}">
+      <button class="btn bp" onclick="const v=+(document.getElementById('va-cust-mm').value);if(v>0){D('VA').cfg.pipes.push(+(v/1000).toFixed(3));touchProj();save();go('va')}">+ ${T('Eget mått','Custom')}</button>
+      <button class="btn bs" onclick="D('VA').cfg.pipes=[];touchProj();save();go('va')" style="color:var(--d)">${T('Rensa alla','Clear all')}</button>
+    </div>
   </div>
-  <div class="infobox" style="margin-bottom:14px">
-    <h4>💰 ${T('Prissättning (kr/enhet)','Pricing (SEK/unit)')}</h4>
-    <p style="font-size:12px">${T('Enhetspriser för schaktposter hanteras under','Unit prices for excavation items are managed under')} <span class="badge-pill" onclick="go('budget')" style="cursor:pointer;background:var(--s);color:#fff;border-radius:20px;padding:2px 10px;font-weight:600">💰 ${T('Budget »','Budget »')}</span></p>
+
+  <div class="va-cfg-groups">
+
+    <div class="va-cfg-group">
+      <div class="va-cfg-group-title">📐 ${T('Schaktgeometri','Excavation geometry')}</div>
+      <div class="fi"><label title="${T('Schaktslant i jord. H:1V = horisontell per vertikal meter. Typvärde 0.2–0.5','Slope in soil. H:1V = horizontal per vertical metre. Typical 0.2–0.5')}">${T('Släntsättning jord H:1V','Soil slope H:1V')} <span style="opacity:.5">ℹ</span></label>
+        <input type="number" value="${VA2.cfg.slopeV}" step=".05" min="0" max="2" oninput="D('VA').cfg.slopeV=+this.value;touchProj();save();go('va')"></div>
+      <div class="fi"><label title="${T('Schaktslant i berg/hård mark. Typvärde 0.1–0.2','Slope in rock/hard ground. Typical 0.1–0.2')}">${T('Släntsättning berg H:1V','Rock slope H:1V')} <span style="opacity:.5">ℹ</span></label>
+        <input type="number" value="${VA2.cfg.slopeH}" step=".05" min="0" max="2" oninput="D('VA').cfg.slopeH=+this.value;touchProj();save();go('va')"></div>
+      <div class="fi"><label>${T('Vägbredd (m)','Road width (m)')}</label>
+        <input type="number" value="${VA2.cfg.roadW}" step=".5" min="0" oninput="D('VA').cfg.roadW=+this.value;touchProj();save();go('va')"></div>
+    </div>
+
+    <div class="va-cfg-group">
+      <div class="va-cfg-group-title">🏗️ ${T('Överbyggnad','Road surface')}</div>
+      <div class="fi"><label title="${T('Asfalt- och beläggningsdjup. Typvärde 0.08–0.14 m','Asphalt/pavement depth. Typical 0.08–0.14 m')}">${T('Asfaltdjup (m)','Asphalt depth (m)')} <span style="opacity:.5">ℹ</span></label>
+        <input type="number" value="${VA2.cfg.asphalt}" step=".01" min="0" oninput="D('VA').cfg.asphalt=+this.value;touchProj();save();go('va')"></div>
+      <div class="fi"><label>${T('Vegetationsskikt (m)','Vegetation layer (m)')}</label>
+        <input type="number" value="${VA2.cfg.veg}" step=".05" min="0" oninput="D('VA').cfg.veg=+this.value;touchProj();save();go('va')"></div>
+      <div class="fi"><label title="${T('Höjd på kringfyllning ovan rörtoppyta. AMA typvärde 0.3–0.6 m','Height of surround fill above pipe crown. AMA typical 0.3–0.6 m')}">${T('Kringfyllningshöjd (m)','Surround fill height (m)')} <span style="opacity:.5">ℹ</span></label>
+        <input type="number" value="${VA2.cfg.sfh}" step=".05" min="0" oninput="D('VA').cfg.sfh=+this.value;touchProj();save();go('va')"></div>
+    </div>
+
+    <div class="va-cfg-group">
+      <div class="va-cfg-group-title">🪨 ${T('Markförhållanden','Ground conditions')}</div>
+      <div class="fi"><label>${T('Geotextiltyp','Geotextile type')}</label>
+        <select oninput="D('VA').cfg.geoType=+this.value;touchProj();save();go('va')">
+          <option value="0" ${VA2.cfg.geoType===0?'selected':''}>Typ 0 — ${T('Ingen','None')}</option>
+          <option value="1" ${VA2.cfg.geoType===1?'selected':''}>Typ 1 — ${T('Enkel','Single layer')}</option>
+          <option value="2" ${VA2.cfg.geoType===2?'selected':''}>Typ 2 — ${T('Dubbel (standard)','Double (standard)')}</option>
+          <option value="3" ${VA2.cfg.geoType===3?'selected':''}>Typ 3 — ${T('Tung/special','Heavy/special')}</option>
+        </select></div>
+      <div class="fi"><label>${T('Spontning','Sheet piling')}</label>
+        <select oninput="D('VA').cfg.spont=+this.value;touchProj();save();go('va')">
+          <option value="0" ${VA2.cfg.spont===0?'selected':''}>Typ 0 — ${T('Ingen spontning','No sheet piling')}</option>
+          <option value="1" ${VA2.cfg.spont===1?'selected':''}>Typ 1 — ${T('Enkel spontning','Single sheet piling')}</option>
+          <option value="2" ${VA2.cfg.spont===2?'selected':''}>Typ 2 — ${T('Dubbel spontning','Double sheet piling')}</option>
+        </select></div>
+      <div class="fi"><label>${T('Rustbädd','Foundation bedding')}</label>
+        <select oninput="D('VA').cfg.rb=+this.value;touchProj();save();go('va')">
+          <option value="0" ${VA2.cfg.rb===0?'selected':''}>0 — ${T('Ingen rustbädd','No foundation bed')}</option>
+          <option value="1" ${VA2.cfg.rb===1?'selected':''}>1 — ${T('Rustbädd ingår','Foundation bed included')}</option>
+        </select></div>
+    </div>
+
+  </div>`;
+  })()}
   </div>
+
+
+
+
   <div class="mg">
     ${mc(tot.l,T('Längd','Length'),'m','',100)}${mc(tot.exc,T('Schakt tot','Exc. total'),'m³','',100)}
     ${mc(tot.jord,T('Jordschakt','Soil exc.'),'m³','c2',pct(tot.jord,mx))}${mc(tot.berg,T('Bergschakt','Rock exc.'),'m³','c2',pct(tot.berg,mx))}
@@ -1832,93 +1915,6 @@ function renderBudget(){
   </div>
 
 
-  <!-- ══ RÖR & KONFIGURATION (VA) ══ -->
-  <div class="cd bud-section">
-  <div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Rör & konfiguration (Vatten & Avlopp)','Pipes & configuration (Water & Sewer)')}</div>
-
-  ${(()=>{
-    const VA2=D('VA');if(!VA2||!VA2.cfg)return'';
-    const pipes=VA2.cfg.pipes;
-    const totalA=pipes.reduce((s,d)=>s+Math.PI*(d/2)**2,0);
-    const sorted=[...pipes].map(d=>Math.round(d*1000)).sort((a,b)=>a-b);
-    return`<div class="va-pipe-strip">
-      <div class="ps-stat"><span class="ps-val">${pipes.length}</span><span class="ps-lbl">${T('Rör','Pipes')}</span></div>
-      <div class="ps-stat"><span class="ps-val">${(totalA*10000).toFixed(1)} cm²</span><span class="ps-lbl">${T('Total rörarea','Total pipe area')}</span></div>
-      <div class="ps-stat"><span class="ps-val">${pipes.length?sorted[0]+' – '+sorted[sorted.length-1]+' mm':'—'}</span><span class="ps-lbl">${T('Dimensionsspann','Diameter range')}</span></div>
-      <div style="flex:1;font-size:10px;color:var(--tm)">${sorted.length?sorted.map(mm=>'DN '+mm).join(' · '):T('Inga rör konfigurerade','No pipes configured')}</div>
-    </div>`;
-  })()}
-
-  ${(()=>{
-    const VA2=D('VA');if(!VA2||!VA2.cfg)return'';
-    const pipes=VA2.cfg.pipes;
-    return`<div class="va-pipe-builder">
-    <div class="va-pb-label">🔵 ${T('Aktiva rörledningar i schaktet','Active pipes in trench')}</div>
-    <div class="va-pipe-list">
-      ${pipes.length===0
-        ?`<span class="va-pipe-empty">${T('Inga rör tillagda — välj en standarddimension nedan','No pipes added — select a standard dimension below')}</span>`
-        :pipes.map((d,i)=>{const mm=Math.round(d*1000);const col=mm<=110?'#10b981':mm<=250?'#06b6d4':mm<=400?'#4f46e5':'#8b5cf6';return`<span class="va-pipe-tag" style="border-color:${col};color:${col}"><span class="ptdot" style="background:${col}"></span>DN ${mm}<button onclick="event.stopPropagation();D('VA').cfg.pipes.splice(${i},1);touchProj();save();go('budget')" title="${T('Ta bort','Remove')}" style="color:${col}">×</button></span>`;}).join('')}
-    </div>
-
-    <div class="va-pb-label" style="margin-top:12px">⚡ ${T('Snabbval — klicka för att lägga till','Quick-add — click to add')}</div>
-    <div class="va-pipe-quick">
-      ${[50,63,75,90,110,125,160,200,250,315,400,500,600,800].map(mm=>`<button class="va-pipe-btn" onclick="D('VA').cfg.pipes.push(${(mm/1000).toFixed(3)});touchProj();save();go('budget')">DN ${mm}</button>`).join('')}
-    </div>
-
-    <div class="va-custom-row">
-      <input id="bud-cust-mm" type="number" placeholder="${T('Eget mått (mm)','Custom size (mm)')}" min="20" max="2000" step="1" onkeydown="if(event.key==='Enter'){const v=+(document.getElementById('bud-cust-mm').value);if(v>0){D('VA').cfg.pipes.push(+(v/1000).toFixed(3));touchProj();save();go('budget');}}">
-      <button class="btn bp" onclick="const v=+(document.getElementById('bud-cust-mm').value);if(v>0){D('VA').cfg.pipes.push(+(v/1000).toFixed(3));touchProj();save();go('budget')}">+ ${T('Eget mått','Custom')}</button>
-      <button class="btn bs" onclick="D('VA').cfg.pipes=[];touchProj();save();go('budget')" style="color:var(--d)">${T('Rensa alla','Clear all')}</button>
-    </div>
-  </div>
-
-  <div class="va-cfg-groups">
-
-    <div class="va-cfg-group">
-      <div class="va-cfg-group-title">📐 ${T('Schaktgeometri','Excavation geometry')}</div>
-      <div class="fi"><label title="${T('Schaktslant i jord. H:1V = horisontell per vertikal meter. Typvärde 0.2–0.5','Slope in soil. H:1V = horizontal per vertical metre. Typical 0.2–0.5')}">${T('Släntsättning jord H:1V','Soil slope H:1V')} <span style="opacity:.5">ℹ</span></label>
-        <input type="number" value="${VA2.cfg.slopeV}" step=".05" min="0" max="2" oninput="D('VA').cfg.slopeV=+this.value;touchProj();save();go('budget')"></div>
-      <div class="fi"><label title="${T('Schaktslant i berg/hård mark. Typvärde 0.1–0.2','Slope in rock/hard ground. Typical 0.1–0.2')}">${T('Släntsättning berg H:1V','Rock slope H:1V')} <span style="opacity:.5">ℹ</span></label>
-        <input type="number" value="${VA2.cfg.slopeH}" step=".05" min="0" max="2" oninput="D('VA').cfg.slopeH=+this.value;touchProj();save();go('budget')"></div>
-      <div class="fi"><label>${T('Vägbredd (m)','Road width (m)')}</label>
-        <input type="number" value="${VA2.cfg.roadW}" step=".5" min="0" oninput="D('VA').cfg.roadW=+this.value;touchProj();save();go('budget')"></div>
-    </div>
-
-    <div class="va-cfg-group">
-      <div class="va-cfg-group-title">🏗️ ${T('Överbyggnad','Road surface')}</div>
-      <div class="fi"><label title="${T('Asfalt- och beläggningsdjup. Typvärde 0.08–0.14 m','Asphalt/pavement depth. Typical 0.08–0.14 m')}">${T('Asfaltdjup (m)','Asphalt depth (m)')} <span style="opacity:.5">ℹ</span></label>
-        <input type="number" value="${VA2.cfg.asphalt}" step=".01" min="0" oninput="D('VA').cfg.asphalt=+this.value;touchProj();save();go('budget')"></div>
-      <div class="fi"><label>${T('Vegetationsskikt (m)','Vegetation layer (m)')}</label>
-        <input type="number" value="${VA2.cfg.veg}" step=".05" min="0" oninput="D('VA').cfg.veg=+this.value;touchProj();save();go('budget')"></div>
-      <div class="fi"><label title="${T('Höjd på kringfyllning ovan rörtoppyta. AMA typvärde 0.3–0.6 m','Height of surround fill above pipe crown. AMA typical 0.3–0.6 m')}">${T('Kringfyllningshöjd (m)','Surround fill height (m)')} <span style="opacity:.5">ℹ</span></label>
-        <input type="number" value="${VA2.cfg.sfh}" step=".05" min="0" oninput="D('VA').cfg.sfh=+this.value;touchProj();save();go('budget')"></div>
-    </div>
-
-    <div class="va-cfg-group">
-      <div class="va-cfg-group-title">🪨 ${T('Markförhållanden','Ground conditions')}</div>
-      <div class="fi"><label>${T('Geotextiltyp','Geotextile type')}</label>
-        <select oninput="D('VA').cfg.geoType=+this.value;touchProj();save();go('budget')">
-          <option value="0" ${VA2.cfg.geoType===0?'selected':''}>Typ 0 — ${T('Ingen','None')}</option>
-          <option value="1" ${VA2.cfg.geoType===1?'selected':''}>Typ 1 — ${T('Enkel','Single layer')}</option>
-          <option value="2" ${VA2.cfg.geoType===2?'selected':''}>Typ 2 — ${T('Dubbel (standard)','Double (standard)')}</option>
-          <option value="3" ${VA2.cfg.geoType===3?'selected':''}>Typ 3 — ${T('Tung/special','Heavy/special')}</option>
-        </select></div>
-      <div class="fi"><label>${T('Spontning','Sheet piling')}</label>
-        <select oninput="D('VA').cfg.spont=+this.value;touchProj();save();go('budget')">
-          <option value="0" ${VA2.cfg.spont===0?'selected':''}>Typ 0 — ${T('Ingen spontning','No sheet piling')}</option>
-          <option value="1" ${VA2.cfg.spont===1?'selected':''}>Typ 1 — ${T('Enkel spontning','Single sheet piling')}</option>
-          <option value="2" ${VA2.cfg.spont===2?'selected':''}>Typ 2 — ${T('Dubbel spontning','Double sheet piling')}</option>
-        </select></div>
-      <div class="fi"><label>${T('Rustbädd','Foundation bedding')}</label>
-        <select oninput="D('VA').cfg.rb=+this.value;touchProj();save();go('budget')">
-          <option value="0" ${VA2.cfg.rb===0?'selected':''}>0 — ${T('Ingen rustbädd','No foundation bed')}</option>
-          <option value="1" ${VA2.cfg.rb===1?'selected':''}>1 — ${T('Rustbädd ingår','Foundation bed included')}</option>
-        </select></div>
-    </div>
-
-  </div>`;
-  })()}
-  </div>
 
   <!-- ══ MASKINKOSTNADER ══ -->
   <div class="cd bud-section">
