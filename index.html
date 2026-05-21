@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>AMA/MER Kalkyl Pro</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══ CSS VARIABLES ══════════════════════════════════════════ */
+:root {
+  --p:#4f46e5;--pd:#3730a3;--pl:#eef2ff;--ps:#c7d2fe;--pi:#818cf8;
+  --a:#f59e0b;--s:#10b981;--d:#ef4444;--i:#06b6d4;--o:#f97316;--v:#8b5cf6;
+  --bg:#f1f5f9;--sf:#fff;--sa:#f8fafc;--sb:#f1f5f9;
+  --tx:#0f172a;--ts:#475569;--tm:#94a3b8;
+  --bd:#e2e8f0;--bds:#cbd5e1;
+  --sh:0 1px 3px rgba(0,0,0,.07),0 4px 12px rgba(0,0,0,.04);
+  --sh2:0 8px 28px rgba(79,70,229,.18);
+  --r:16px;--rs:10px;--rss:8px;
+  --tr:all .2s cubic-bezier(.4,0,.2,1);
+  --sw:268px;
+  --ct:#475569;--cg:rgba(100,116,139,.08);
+}
+[data-theme=dark]{
+  --bg:#060d1a;--sf:#0f1929;--sa:#111e30;--sb:#0b1420;
+  --tx:#e2e8f0;--ts:#94a3b8;--tm:#475569;
+  --bd:#1e2d44;--bds:#2d3f57;--pl:#1a1e40;--ps:#252a5c;--pi:#6366f1;
+  --sh:0 1px 3px rgba(0,0,0,.4),0 4px 12px rgba(0,0,0,.25);
+  --sh2:0 8px 28px rgba(79,70,229,.3);
+  --ct:#94a3b8;--cg:rgba(148,163,184,.06);
+}
+/* ═══ RESET ════════════════════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;font-size:14px;overflow-x:hidden;transition:background .3s,color .3s}
+a{color:inherit;text-decoration:none}
+/* ═══ LAYOUT ═══════════════════════════════════════════════════ */
+.app{display:flex;min-height:100vh}
+/* ═══ SIDEBAR ════════════════════════════════════════════════════ */
+.side{
+  width:var(--sw);min-height:100vh;position:fixed;top:0;left:0;
+  background:linear-gradient(175deg,#1a1040 0%,#1e1b4b 30%,#1e2d5c 70%,#163050 100%);
+  color:#fff;z-index:200;display:flex;flex-direction:column;
+  transition:transform .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;overflow-x:hidden;
+}
+.side-logo{padding:18px 14px 12px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.side-logo .ico{font-size:22px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3))}
+.side-logo h1{font-size:13px;font-weight:800;line-height:1.2;letter-spacing:-.2px}
+.side-logo .sub{font-size:9px;opacity:.45;font-weight:400;margin-top:1px}
+.side-scroll{flex:1;overflow-y:auto;padding:8px 8px 12px}
+.nav-sec{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.3);padding:10px 8px 4px;margin-top:4px}
+.ni{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:var(--tr);margin-bottom:1px;font-size:12px;color:rgba(255,255,255,.6);font-weight:500;position:relative}
+.ni:hover{background:rgba(255,255,255,.09);color:#fff}
+.ni.a{background:rgba(255,255,255,.14);color:#fff;font-weight:700;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.ni .badge{margin-left:auto;background:rgba(255,255,255,.14);border-radius:20px;padding:1px 6px;font-size:9px;font-weight:600}
+.ni.a .badge{background:rgba(255,255,255,.25)}
+.proj-divider{height:1px;background:rgba(255,255,255,.07);margin:8px 8px}
+/* Project list in sidebar */
+.proj-chip{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:8px;cursor:pointer;transition:var(--tr);margin-bottom:2px;font-size:11px;color:rgba(255,255,255,.5);font-weight:500}
+.proj-chip:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
+.proj-chip.cur{background:rgba(255,255,255,.12);color:#fff;font-weight:700}
+.proj-chip .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.proj-add{display:flex;align-items:center;gap:7px;padding:6px 10px;border-radius:8px;cursor:pointer;border:1px dashed rgba(255,255,255,.2);color:rgba(255,255,255,.4);font-size:11px;transition:var(--tr);margin-top:4px;justify-content:center}
+.proj-add:hover{border-color:rgba(255,255,255,.4);color:rgba(255,255,255,.75);background:rgba(255,255,255,.05)}
+/* Sidebar footer */
+.side-foot{padding:10px 8px;border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.lang-row{display:flex;gap:4px;margin-bottom:6px}
+.lang-btn{flex:1;padding:5px;border-radius:6px;border:1px solid rgba(255,255,255,.12);background:0;color:rgba(255,255,255,.45);cursor:pointer;font-size:10px;font-family:inherit;transition:var(--tr);font-weight:600}
+.lang-btn.a{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.25)}
+.theme-btn{width:100%;padding:7px;border-radius:6px;border:1px solid rgba(255,255,255,.1);background:0;color:rgba(255,255,255,.5);cursor:pointer;font-size:11px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px;transition:var(--tr)}
+.theme-btn:hover{background:rgba(255,255,255,.07);color:#fff}
+/* ═══ MAIN ═══════════════════════════════════════════════════════ */
+.main{margin-left:var(--sw);flex:1;padding:24px 28px 60px;min-width:0;max-width:1200px}
+/* ═══ HAMBURGER ════════════════════════════════════════════════ */
+.hamburger{display:none;position:fixed;top:12px;left:12px;z-index:300;background:var(--p);color:#fff;border:none;border-radius:10px;width:42px;height:42px;cursor:pointer;font-size:18px;align-items:center;justify-content:center;box-shadow:var(--sh2)}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:150;backdrop-filter:blur(3px)}
+/* ═══ PAGE HEADER ═════════════════════════════════════════════ */
+.ph{margin-bottom:20px}
+.ph h2{font-size:22px;font-weight:800;margin-bottom:4px;background:linear-gradient(135deg,var(--p),var(--i));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ph .sub{color:var(--ts);font-size:13px}
+/* ═══ CARD ═════════════════════════════════════════════════════ */
+.cd{background:var(--sf);border-radius:var(--r);padding:18px;border:1px solid var(--bd);margin-bottom:14px;box-shadow:var(--sh);transition:border-color .2s,box-shadow .2s}
+.cd:hover{box-shadow:var(--sh2);border-color:var(--ps)}
+.ct{font-size:10px;font-weight:700;color:var(--tm);margin-bottom:12px;text-transform:uppercase;letter-spacing:.7px;display:flex;align-items:center;gap:6px}
+.ct .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+/* ═══ INFO BOX ════════════════════════════════════════════════ */
+.infobox{background:var(--pl);border:1px solid var(--ps);border-radius:var(--rs);padding:14px 16px;margin-bottom:14px;font-size:12.5px;color:var(--pd);line-height:1.7}
+[data-theme=dark] .infobox{background:#1a1e40;border-color:#252a5c;color:#a5b4fc}
+.infobox h4{font-size:13px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.infobox ul{padding-left:16px;margin-top:4px}.infobox ul li{margin-bottom:3px}
+/* ═══ METRIC GRID ════════════════════════════════════════════ */
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px;margin-bottom:14px}
+.mc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);padding:14px 12px;position:relative;overflow:hidden;box-shadow:var(--sh);transition:var(--tr)}
+.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--p),var(--i))}
+.mc.c2::before{background:linear-gradient(90deg,var(--a),var(--o))}
+.mc.c3::before{background:linear-gradient(90deg,var(--i),var(--s))}
+.mc.c4::before{background:linear-gradient(90deg,var(--s),var(--p))}
+.mc.c5::before{background:linear-gradient(90deg,var(--o),var(--a))}
+.mc.c6::before{background:linear-gradient(90deg,var(--v),var(--p))}
+.mc:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
+.mc .v{font-size:21px;font-weight:800;color:var(--p);line-height:1;margin-bottom:3px}
+.mc.c2 .v{color:var(--a)}.mc.c3 .v{color:var(--i)}.mc.c4 .v{color:var(--s)}.mc.c5 .v{color:var(--o)}.mc.c6 .v{color:var(--v)}
+.mc .lbl{font-size:10px;color:var(--tm);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.mc .un{font-size:10px;color:var(--ts);margin-top:1px}
+.mc .br{margin-top:8px;height:3px;background:var(--bd);border-radius:2px;overflow:hidden}
+.mc .bf{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--p),var(--i));transition:width .7s cubic-bezier(.4,0,.2,1)}
+.mc.c2 .bf{background:linear-gradient(90deg,var(--a),var(--o))}
+.mc.c3 .bf{background:linear-gradient(90deg,var(--i),var(--s))}
+.mc.c4 .bf{background:linear-gradient(90deg,var(--s),var(--p))}
+/* ═══ FORM ════════════════════════════════════════════════════ */
+.fg{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.fi{display:flex;flex-direction:column;gap:3px}
+.fi label{font-size:10px;font-weight:600;color:var(--tm);letter-spacing:.2px;display:flex;align-items:center;gap:4px}
+.fi input,.fi select{width:100%;padding:7px 10px;border:1.5px solid var(--bd);border-radius:var(--rss);font-size:12px;background:var(--sf);color:var(--tx);transition:var(--tr);font-family:inherit}
+.fi input:focus,.fi select:focus{outline:0;border-color:var(--p);box-shadow:0 0 0 3px rgba(79,70,229,.12)}
+.fi input:hover,.fi select:hover{border-color:var(--bds)}
+/* ═══ BUTTONS ═════════════════════════════════════════════════ */
+.btn{padding:8px 16px;border-radius:var(--rss);border:0;font-size:12px;font-weight:600;cursor:pointer;transition:var(--tr);display:inline-flex;align-items:center;gap:6px;font-family:inherit}
+.bp{background:var(--p);color:#fff}.bp:hover{background:var(--pd);transform:translateY(-1px);box-shadow:0 4px 12px rgba(79,70,229,.3)}
+.bs{background:var(--sa);color:var(--tx);border:1.5px solid var(--bd)}.bs:hover{border-color:var(--bds);background:var(--sb)}
+.bd-btn{background:rgba(239,68,68,.1);color:var(--d);padding:3px 8px;font-size:10px;border-radius:4px;border:0;cursor:pointer;transition:var(--tr)}.bd-btn:hover{background:rgba(239,68,68,.2)}
+.btn-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+/* ═══ TABLE ═══════════════════════════════════════════════════ */
+.tbl-wrap{overflow-x:auto;border-radius:var(--rs);border:1px solid var(--bd)}
+.dt{width:100%;border-collapse:collapse;font-size:11px}
+.dt th{background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;padding:8px 6px;text-align:center;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+.dt td{padding:4px 3px;text-align:center;border-bottom:1px solid var(--bd);vertical-align:middle}
+.dt input{width:100%;padding:5px 4px;border:1px solid var(--bd);border-radius:4px;text-align:center;font-size:11px;background:var(--sf);color:var(--tx);font-family:inherit}
+.dt input:focus{border-color:var(--p);outline:none;box-shadow:0 0 0 2px rgba(79,70,229,.1)}
+.dt tbody tr{cursor:pointer;transition:background .15s}
+.dt tbody tr:hover{background:var(--pl)}
+.dt tbody tr.done-row{background:rgba(16,185,129,.07)}
+[data-theme=dark] .dt tbody tr.done-row{background:rgba(16,185,129,.12)}
+.dt tbody tr.sel-row{background:var(--pl);outline:2px solid var(--p);outline-offset:-2px}
+[data-theme=dark] .dt tbody tr.sel-row{background:#1a1e40}
+.dt .num{font-weight:700;color:var(--p)}.dt .num.bad{color:var(--d)}.dt .num.warn{color:var(--a)}
+.dt tfoot td{background:var(--pl);font-weight:800;font-size:12px}
+[data-theme=dark] .dt tfoot td{background:#1a1e40}
+/* ═══ CHARTS ══════════════════════════════════════════════════ */
+.ch-wrap{position:relative;height:220px}
+.ch-wrap.sm{height:170px}.ch-wrap.lg{height:280px}
+.cg2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.cg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+/* ═══ PROGRESS ════════════════════════════════════════════════ */
+.prog-bar{height:8px;background:var(--bd);border-radius:4px;overflow:hidden;margin:6px 0}
+.prog-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--s),#34d399);transition:width .7s ease}
+.prog-row{display:flex;align-items:center;justify-content:space-between;font-size:11px;margin-bottom:4px}
+.prog-row .pct{font-weight:700;color:var(--s)}
+/* ═══ SVG BOX ═════════════════════════════════════════════════ */
+.svg-box{display:flex;justify-content:center;align-items:center;padding:8px 0;min-height:180px}
+/* ═══ TOAST ════════════════════════════════════════════════════ */
+.toast{position:fixed;bottom:80px;right:20px;background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:10px;font-size:12px;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:9999;display:none;font-weight:600}
+@keyframes slideUp{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+/* ═══ HERO ════════════════════════════════════════════════════ */
+.hero{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#1e40af 100%);border-radius:var(--r);padding:32px 28px;color:#fff;margin-bottom:20px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;right:-50px;top:-50px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.04)}
+.hero h1{font-size:26px;font-weight:800;margin-bottom:8px}
+.hero p{opacity:.8;font-size:13.5px;max-width:520px;line-height:1.7}
+.hero .tags{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+.hero .tag{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600}
+/* ═══ THEORY GRID ═════════════════════════════════════════════ */
+.theory-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.theory-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}
+.theory-card .icon{font-size:28px;margin-bottom:10px}
+.theory-card h3{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--p)}
+.theory-card p,.theory-card li{font-size:12.5px;color:var(--ts);line-height:1.7}
+.theory-card ul{padding-left:16px;margin-top:6px}
+/* ═══ STEP LIST ═══════════════════════════════════════════════ */
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{display:flex;gap:12px;align-items:flex-start}
+.step-num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--i));color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-body h4{font-size:13px;font-weight:700;margin-bottom:3px}
+.step-body p{font-size:12px;color:var(--ts);line-height:1.6}
+/* ═══ CALC BOX ════════════════════════════════════════════════ */
+.calc-box{background:var(--pl);border:1px solid var(--ps);border-radius:var(--r);padding:20px;margin-bottom:14px}
+[data-theme=dark] .calc-box{background:#1a1e40;border-color:#252a5c}
+.calc-box h3{font-size:14px;font-weight:700;margin-bottom:14px;color:var(--p)}
+.calc-result{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);padding:14px;margin-top:12px}
+.calc-result .big{font-size:28px;font-weight:800;color:var(--p)}
+.formula{background:var(--sb);border-radius:var(--rss);padding:10px 14px;font-family:monospace;font-size:12px;color:var(--ts);margin:8px 0;border-left:3px solid var(--p)}
+/* ═══ BUDGET BAR ════════════════════════════════════════════ */
+.budget-card{background:linear-gradient(135deg,#064e3b,#065f46);border-radius:var(--r);padding:18px;color:#fff;margin-bottom:14px}
+.budget-bar{height:10px;background:rgba(255,255,255,.2);border-radius:5px;overflow:hidden;margin:10px 0}
+.budget-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#34d399,#6ee7b7);transition:width .6s}
+.budget-fill.warn{background:linear-gradient(90deg,#fbbf24,#f59e0b)}
+.budget-fill.over{background:linear-gradient(90deg,#f87171,#ef4444)}
+/* ═══ EXPORT ═════════════════════════════════════════════════ */
+.exp-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.exp-btn{display:flex;align-items:center;gap:8px;padding:9px 15px;border-radius:10px;border:1.5px solid var(--bd);background:var(--sf);cursor:pointer;font-size:12px;font-weight:600;color:var(--ts);transition:var(--tr);font-family:inherit}
+.exp-btn:hover{border-color:var(--p);color:var(--p);background:var(--pl)}
+/* ═══ RÖRLÄNGDER ══════════════════════════════════════════════ */
+.rl-cat{margin-bottom:20px}
+.rl-cat-header{background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;padding:10px 14px;border-radius:var(--rs) var(--rs) 0 0;font-weight:700;font-size:12px;display:flex;justify-content:space-between;align-items:center}
+.rl-cat-body{border:1px solid var(--bd);border-top:0;border-radius:0 0 var(--rs) var(--rs);overflow:hidden}
+/* ═══ PROJECTS PAGE ══════════════════════════════════════════ */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:20px}
+.proj-card{background:var(--sf);border:1.5px solid var(--bd);border-radius:var(--r);padding:20px;box-shadow:var(--sh);transition:var(--tr);cursor:pointer;position:relative;overflow:hidden}
+.proj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--r) var(--r) 0 0}
+.proj-card.color-0::before{background:linear-gradient(90deg,#4f46e5,#06b6d4)}
+.proj-card.color-1::before{background:linear-gradient(90deg,#10b981,#4f46e5)}
+.proj-card.color-2::before{background:linear-gradient(90deg,#f59e0b,#ef4444)}
+.proj-card.color-3::before{background:linear-gradient(90deg,#8b5cf6,#ec4899)}
+.proj-card.color-4::before{background:linear-gradient(90deg,#06b6d4,#10b981)}
+.proj-card:hover{border-color:var(--pi);box-shadow:var(--sh2);transform:translateY(-3px)}
+.proj-card h3{font-size:15px;font-weight:800;margin-bottom:4px;margin-top:4px}
+.proj-card .proj-desc{font-size:12px;color:var(--ts);margin-bottom:12px;line-height:1.5}
+.proj-card .proj-meta{font-size:10px;color:var(--tm);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.proj-card .proj-types{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.proj-card .type-tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;background:var(--pl);color:var(--p)}
+[data-theme=dark] .proj-card .type-tag{background:#1a1e40;color:#a5b4fc}
+.proj-card .proj-actions{display:flex;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--bd)}
+.new-proj-card{background:transparent;border:2px dashed var(--bd);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:var(--tr);min-height:180px;color:var(--tm);font-weight:600;font-size:13px}
+.new-proj-card:hover{border-color:var(--p);color:var(--p);background:var(--pl)}
+.new-proj-card .plus{font-size:32px;font-weight:300;line-height:1}
+/* ═══ MODAL ═══════════════════════════════════════════════════ */
+.modal-wrap{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px}
+.modal-wrap.open{display:flex}
+.modal{background:var(--sf);border-radius:var(--r);padding:28px;width:100%;max-width:480px;box-shadow:0 24px 60px rgba(0,0,0,.3);border:1px solid var(--bd)}
+.modal h3{font-size:18px;font-weight:800;margin-bottom:4px}
+.modal .sub{font-size:13px;color:var(--ts);margin-bottom:20px}
+.modal .fi{margin-bottom:12px}
+.modal .fi label{font-size:11px;font-weight:700;color:var(--ts);margin-bottom:4px;display:block}
+.modal .fi input,.modal .fi textarea,.modal .fi select{width:100%;padding:9px 12px;border:1.5px solid var(--bd);border-radius:var(--rss);font-size:13px;background:var(--sa);color:var(--tx);font-family:inherit;transition:var(--tr)}
+.modal .fi input:focus,.modal .fi textarea:focus,.modal .fi select:focus{border-color:var(--p);outline:0;box-shadow:0 0 0 3px rgba(79,70,229,.12);background:var(--sf)}
+.modal .fi textarea{resize:vertical;min-height:70px}
+.modal .tmpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.tmpl-opt{border:2px solid var(--bd);border-radius:var(--rs);padding:12px;cursor:pointer;transition:var(--tr);text-align:center}
+.tmpl-opt.sel{border-color:var(--p);background:var(--pl)}
+.tmpl-opt .tmpl-ico{font-size:24px;margin-bottom:6px}
+.tmpl-opt h4{font-size:12px;font-weight:700}
+.tmpl-opt p{font-size:10px;color:var(--ts);line-height:1.4;margin-top:3px}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;padding-top:16px;border-top:1px solid var(--bd)}
+/* ═══ DASHBOARD ════════════════════════════════════════════════ */
+.dash-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap}
+.dash-header h2{font-size:24px;font-weight:800;flex:1}
+.dash-header .proj-badge{background:var(--pl);color:var(--p);border:1px solid var(--ps);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700}
+[data-theme=dark] .dash-header .proj-badge{background:#1a1e40;color:#a5b4fc;border-color:#252a5c}
+.type-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:14px}
+.type-summary{background:var(--sf);border:1.5px solid var(--bd);border-radius:var(--rs);padding:14px;transition:var(--tr);cursor:pointer}
+.type-summary:hover{border-color:var(--pi);box-shadow:var(--sh2);transform:translateY(-2px)}
+.type-summary .ts-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.type-summary .ts-ico{font-size:18px}
+.type-summary .ts-name{font-size:12px;font-weight:700}
+.type-summary .ts-val{font-size:20px;font-weight:800;color:var(--p);line-height:1}
+.type-summary .ts-lbl{font-size:10px;color:var(--tm);margin-top:2px}
+/* ═══ MOBILE ══════════════════════════════════════════════════ */
+@media(max-width:900px){
+  .hamburger{display:flex}
+  .side{transform:translateX(-100%)}
+  .side.open{transform:translateX(0)}
+  .overlay.open{display:block}
+  .main{margin-left:0;padding:58px 14px 100px}
+  .cg2,.cg3{grid-template-columns:1fr}
+  .theory-grid{grid-template-columns:1fr}
+  .mg{grid-template-columns:repeat(2,1fr)}
+  .hero{padding:22px 18px}.hero h1{font-size:20px}
+  .fg{grid-template-columns:repeat(2,1fr)}
+  .proj-grid{grid-template-columns:1fr}
+  .bottom-nav{display:flex}
+}
+/* ═══ BOTTOM NAV ══════════════════════════════════════════════ */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--sf);border-top:1px solid var(--bd);padding:6px 0 env(safe-area-inset-bottom,8px);box-shadow:0 -4px 12px rgba(0,0,0,.1)}
+.bnav-items{display:flex;justify-content:space-around}
+.bnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 6px;border-radius:8px;color:var(--tm);font-size:9px;font-weight:600;transition:var(--tr);min-width:48px}
+.bnav-item.a{color:var(--p)}.bnav-item .ico{font-size:18px}
+/* ═══ SEGMENT SVG PANEL ════════════════════════════════════════ */
+.seg-selector{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.seg-btn{padding:5px 10px;border-radius:6px;border:1.5px solid var(--bd);background:var(--sf);color:var(--ts);font-size:10px;font-weight:600;cursor:pointer;transition:var(--tr);font-family:inherit}
+.seg-btn.a{border-color:var(--p);background:var(--pl);color:var(--p)}
+/* ═══ GLOSSARY GRID ════════════════════════════════════════════ */
+.gloss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.gloss-item{background:var(--sb);border-radius:8px;padding:10px 12px;border:1px solid var(--bd)}
+.gloss-item .gk{font-weight:700;font-size:12px;margin-bottom:3px}
+.gloss-item .gv{font-size:11px;color:var(--ts)}
+/* ═══ MISC ════════════════════════════════════════════════════ */
+.tab-bar{display:flex;gap:2px;background:var(--sb);border-radius:10px;padding:3px;margin-bottom:14px}
+.tab{flex:1;text-align:center;padding:7px 6px;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600;color:var(--ts);transition:var(--tr)}
+.tab.a{background:var(--sf);color:var(--p);box-shadow:var(--sh)}
+.empty-state{text-align:center;padding:60px 20px;color:var(--tm)}
+.empty-state .ico{font-size:48px;margin-bottom:12px}
+.empty-state h3{font-size:16px;font-weight:700;margin-bottom:6px;color:var(--ts)}
+.empty-state p{font-size:13px;line-height:1.6;max-width:340px;margin:0 auto 20px}
+.badge-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:var(--pl);color:var(--p);border:1px solid var(--ps)}
+[data-theme=dark] .badge-pill{background:#1a1e40;color:#a5b4fc;border-color:#252a5c}
+/* ═══ TODO PAGE ═══════════════════════════════════════════════ */
+.todo-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-bottom:14px}
+.todo-stat{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);padding:12px 14px;text-align:center;box-shadow:var(--sh)}
+.todo-stat .tsv{font-size:24px;font-weight:800;line-height:1;margin-bottom:2px}
+.todo-stat .tsl{font-size:10px;color:var(--tm);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+.todo-add-form{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px;margin-bottom:14px;box-shadow:var(--sh)}
+.todo-add-row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+.todo-add-row .fi{flex:1;min-width:180px}
+.todo-add-row .fi.sm{flex:0 0 130px}
+.todo-add-row .fi.xs{flex:0 0 110px}
+.todo-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.todo-filters span{font-size:10px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.5px;margin-right:4px}
+.tf-btn{padding:4px 12px;border-radius:20px;border:1.5px solid var(--bd);background:var(--sf);color:var(--ts);font-size:10px;font-weight:700;cursor:pointer;transition:var(--tr);font-family:inherit;letter-spacing:.2px}
+.tf-btn.a{border-color:var(--p);background:var(--pl);color:var(--p)}
+[data-theme=dark] .tf-btn.a{background:#1a1e40;color:#a5b4fc;border-color:#252a5c}
+.todo-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.todo-item{display:flex;align-items:flex-start;gap:10px;background:var(--sf);border:1.5px solid var(--bd);border-radius:var(--rs);padding:12px 14px;transition:var(--tr);position:relative}
+.todo-item:hover{border-color:var(--bds);box-shadow:var(--sh)}
+.todo-item.done{opacity:.55;border-style:dashed}
+.todo-item.done .ti-text{text-decoration:line-through;color:var(--tm)}
+.todo-cb{width:18px;height:18px;border-radius:5px;border:2px solid var(--bds);cursor:pointer;flex-shrink:0;margin-top:2px;appearance:none;-webkit-appearance:none;background:var(--sf);transition:var(--tr);position:relative}
+.todo-cb:checked{background:var(--s);border-color:var(--s)}
+.todo-cb:checked::after{content:'✓';position:absolute;color:#fff;font-size:11px;font-weight:800;top:50%;left:50%;transform:translate(-50%,-50%)}
+.todo-cb:hover{border-color:var(--p)}
+.ti-body{flex:1;min-width:0}
+.ti-text{font-size:13px;font-weight:500;color:var(--tx);line-height:1.4;margin-bottom:5px}
+.ti-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ti-cat{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;border:1px solid transparent;letter-spacing:.3px}
+.ti-cat.bug{background:rgba(239,68,68,.1);color:#ef4444;border-color:rgba(239,68,68,.2)}
+.ti-cat.feature{background:rgba(79,70,229,.1);color:var(--p);border-color:rgba(79,70,229,.2)}
+.ti-cat.improvement{background:rgba(6,182,212,.1);color:var(--i);border-color:rgba(6,182,212,.2)}
+.ti-cat.infra{background:rgba(16,185,129,.1);color:var(--s);border-color:rgba(16,185,129,.2)}
+[data-theme=dark] .ti-cat.bug{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.3)}
+[data-theme=dark] .ti-cat.feature{background:rgba(79,70,229,.15);border-color:rgba(79,70,229,.3)}
+[data-theme=dark] .ti-cat.improvement{background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.3)}
+[data-theme=dark] .ti-cat.infra{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.3)}
+.ti-prio{font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px}
+.ti-prio.high{background:rgba(239,68,68,.12);color:#ef4444}
+.ti-prio.medium{background:rgba(245,158,11,.12);color:#f59e0b}
+.ti-prio.low{background:rgba(148,163,184,.15);color:var(--ts)}
+.ti-date{font-size:9px;color:var(--tm)}
+.todo-del{background:0;border:0;cursor:pointer;color:var(--tm);font-size:14px;padding:2px 4px;border-radius:4px;transition:var(--tr);flex-shrink:0;line-height:1;margin-top:1px}
+.todo-del:hover{color:var(--d);background:rgba(239,68,68,.1)}
+.todo-section{font-size:10px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.8px;padding:6px 0 4px;border-bottom:1px solid var(--bd);margin-bottom:8px}
+.todo-empty{text-align:center;padding:40px;color:var(--tm);font-size:13px}
+.todo-empty .ico{font-size:36px;margin-bottom:8px}
+.todo-progress{height:6px;background:var(--bd);border-radius:3px;overflow:hidden;margin:10px 0 4px}
+.todo-prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--s),#34d399);transition:width .6s ease}
+</style>
+</head>
+<body>
+
+<button class="hamburger" id="hamburger" onclick="toggleNav()">☰</button>
+<div class="overlay" id="overlay" onclick="toggleNav()"></div>
+
+<div class="app">
+  <nav class="side" id="sidebar"></nav>
+  <main class="main" id="main"></main>
+</div>
+
+<div class="bottom-nav" id="bnav">
+  <div class="bnav-items" id="bnav-items"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-wrap" id="modal-wrap">
+  <div class="modal">
+    <h3 id="modal-title">Nytt projekt</h3>
+    <div class="sub" id="modal-sub">Fyll i projektinformation och välj mall</div>
+    <div id="modal-body"></div>
+    <div class="modal-btns">
+      <button class="btn bs" onclick="closeModal()">Avbryt</button>
+      <button class="btn bp" id="modal-ok" onclick="modalOk()">Skapa projekt</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════════════ */
+const LS='ama_v6';
+let S={projects:{},cur:null,page:'projects',lang:'sv',dark:false,selSeg:0,todos:[]};
+let Charts={},modalMode='new';
+
+/* ═══════════════════════════════════════════════════════════════
+   DEFAULT DATA TEMPLATES
+═══════════════════════════════════════════════════════════════ */
+const CFG_EL={spacingI:.05,spacingL:.05,slopeJord:1,slopeBerg:.2,asphalt:.1,veg:.2,sfh:.3,geoType:2,spont:0};
+const CFG_FV={slope:.2,asphalt:.1,veg:.2,geoType:2,spont:0};
+const CFG_FB={slope:.1,asphalt:.1,veg:.2,geoType:2,spont:0};
+const CFG_TR={slope:1,asphalt:.1,veg:.2,geoType:2,spont:0};
+const CFG_VA={slopeV:.25,slopeH:.2,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,budget:0,pipes:[.3,.16]};
+const PRC_VA={asfalt:100,veg:90,jord:0,berg:0,rustbadd:0,ytaLt:0,ytaGt:0,avtatn:25,badd:540,kring:490,restA:350,restB:0,spont:0,bergAvt:25,tatsom:120,geo:0};
+const VPIPES=['400mm','200mm','160mm','110mm','90mm','75mm','63mm','50mm','40mm','32mm'];
+const DPIPES=['630mm','400mm','315mm','250mm','200mm','160mm','110mm'];
+const SPIPES=['315mm','160mm','110mm'];
+
+function emptyData(){
+  return{
+    EL:{cfg:{...CFG_EL},pts:[{w:0,e:1.2,d:0,h:1,n50:0,n110:2,n160:0,k:1,done:0},{w:50,e:1.2,d:0,h:1,n50:0,n110:2,n160:0,k:1,done:0}]},
+    FV:{cfg:{...CFG_FV},pts:[{i:0,e:2,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0},{i:50,e:2,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0}]},
+    FB:{cfg:{...CFG_FB},pts:[{i:0,e:1.5,f:.15,g:.5,a:.5,c:.2,d:.1,k:1,b:10,done:0},{i:50,e:2,f:.15,g:.5,a:.5,c:.35,d:.2,k:1,b:10,done:0}]},
+    TR:{cfg:{...CFG_TR},pts:[{i:0,e:3,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},{i:50,e:3,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0}]},
+    VA:{cfg:{...CFG_VA},prices:{...PRC_VA},pts:[{n:0,p:0,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0},{n:50,p:50,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0}]},
+    RL:{vatten:{pipes:[...VPIPES],sections:[]},avlopp:{dagPipes:[...DPIPES],spillPipes:[...SPIPES],dagSections:[]},totUtfort:0,kontrollUtfort:0}
+  };
+}
+
+function demoData(){
+  return{
+    EL:{cfg:{...CFG_EL},pts:[
+      {w:0,  e:1.2,d:0,h:1,n50:0,n110:2,n160:0,k:1,done:0},
+      {w:66.5,e:1.2,d:0,h:1,n50:0,n110:2,n160:0,k:1,done:0},
+      {w:133, e:1.5,d:0,h:1,n50:1,n110:2,n160:1,k:1,done:0}
+    ]},
+    FV:{cfg:{...CFG_FV},pts:[
+      {i:0,  e:2.0,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0},
+      {i:10, e:2.0,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0},
+      {i:20, e:2.0,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0},
+      {i:30, e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0},
+      {i:40, e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0},
+      {i:50, e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0},
+      {i:60, e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0},
+      {i:70, e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0},
+      {i:80, e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0},
+      {i:90, e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0},
+      {i:101,e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0}
+    ]},
+    FB:{cfg:{...CFG_FB},pts:[
+      {i:0,  e:1.5,f:.15,g:.5,a:.5,c:.2, d:.1,  k:1,b:10,done:0},
+      {i:10, e:2.0,f:.15,g:.5,a:.5,c:.35,d:.2,  k:1,b:10,done:0},
+      {i:20, e:2.5,f:.15,g:.5,a:.5,c:.35,d:.25, k:1,b:10,done:0},
+      {i:30, e:3.0,f:.15,g:.5,a:.5,c:.35,d:.25, k:1,b:10,done:0},
+      {i:40, e:3.0,f:.15,g:.5,a:.5,c:.35,d:.25, k:1,b:10,done:0},
+      {i:50, e:3.0,f:.15,g:.5,a:.5,c:.35,d:.25, k:1,b:10,done:0},
+      {i:60, e:3.0,f:.15,g:.5,a:.5,c:.35,d:.25, k:1,b:5, done:0}
+    ]},
+    TR:{cfg:{...CFG_TR},pts:[
+      {i:0,  e:3.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
+      {i:10, e:3.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
+      {i:20, e:3.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
+      {i:30, e:2.5,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
+      {i:40, e:2.5,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
+      {i:50, e:2.5,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
+      {i:60, e:2.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
+      {i:70, e:2.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
+      {i:80, e:2.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
+      {i:90, e:2.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
+      {i:100,e:2.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0}
+    ]},
+    VA:{cfg:{slopeV:.25,slopeH:.2,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,budget:21750000,pipes:[.3,.16,.35,.25,.35,.315,.2]},
+      prices:{...PRC_VA},
+      pts:[
+        {n:0, p:0, r:1.8,c:0, d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.7, bw:1.6,done:0,doneR:0},
+        {n:15,p:15,r:1.8,c:0, d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0},
+        {n:30,p:30,r:2.0,c:0, d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0},
+        {n:60,p:60,r:2.1,c:.3,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0},
+        {n:90,p:90,r:2.0,c:0, d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:.95,done:0,doneR:0}
+      ]
+    },
+    RL:{
+      vatten:{pipes:[...VPIPES],sections:[
+        {from:0,to:3.57,len:3.57,counts:[0,1,0,0,0,0,0,0,0,0],done:0},
+        {from:3.57,to:26.39,len:22.82,counts:[0,1,0,1,0,0,0,0,0,0],done:0},
+        {from:26.39,to:45,len:18.61,counts:[0,1,0,1,0,0,0,0,0,0],done:0},
+        {from:45,to:56.6,len:11.6,counts:[0,1,0,1,0,0,0,0,0,0],done:0},
+        {from:56.6,to:95.46,len:38.86,counts:[0,1,0,0,0,0,0,0,0,0],done:0},
+        {from:95.46,to:131.13,len:35.67,counts:[0,1,0,0,0,0,0,0,0,0],done:0},
+        {from:131.13,to:208.35,len:77.22,counts:[0,1,0,0,0,0,0,0,0,0],done:0},
+        {from:259.77,to:410.72,len:150.95,counts:[0,1,0,0,0,0,0,0,0,0],done:0},
+        {from:410.72,to:506.5,len:95.78,counts:[0,1,0,0,0,0,0,0,0,0],done:0},
+        {from:0,to:60.87,len:60.87,counts:[0,0,1,0,0,0,0,0,0,0],done:0},
+        {from:60.87,to:203.98,len:143.11,counts:[0,0,1,0,0,0,0,0,0,0],done:0}
+      ]},
+      avlopp:{dagPipes:[...DPIPES],spillPipes:[...SPIPES],dagSections:[
+        {from:0,to:56.03,len:56.03,dag:[0,0,0,0,0,1,0],spill:[0,0,0],done:0},
+        {from:0,to:228,len:228,dag:[0,0,0,0,0,0,1],spill:[0,0,0],done:0},
+        {from:0,to:229.65,len:229.65,dag:[0,0,0,0,1,0,0],spill:[0,0,0],done:0},
+        {from:0,to:394.96,len:394.96,dag:[0,0,0,0,0,0,0],spill:[1,0,0],done:0},
+        {from:0,to:590.94,len:590.94,dag:[0,0,0,0,0,0,0],spill:[0,1,0],done:0}
+      ]},
+      totUtfort:592.64,kontrollUtfort:56.03
+    }
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STORAGE
+═══════════════════════════════════════════════════════════════ */
+function save(){
+  try{localStorage.setItem(LS,JSON.stringify({projects:S.projects,cur:S.cur,lang:S.lang,dark:S.dark,todos:S.todos}));}catch(e){}
+}
+function load(){
+  try{
+    const d=JSON.parse(localStorage.getItem(LS)||'null');
+    if(d&&d.projects){
+      S.projects=d.projects;S.cur=d.cur;
+      S.lang=d.lang||'sv';S.dark=!!d.dark;S.todos=d.todos||[];
+    }
+  }catch(e){}
+  if(!S.todos.length)S.todos=defaultTodos();
+  if(!Object.keys(S.projects).length){
+    const demo={id:'demo',name:'Demo Projekt',desc:'Förifyllt med exempeldata från beräkningsbladet',created:new Date().toISOString(),modified:new Date().toISOString(),color:0,data:demoData()};
+    S.projects.demo=demo;S.cur=null;
+  }
+  if(S.dark)document.documentElement.setAttribute('data-theme','dark');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PROJECT CRUD
+═══════════════════════════════════════════════════════════════ */
+function createProject(name,desc,template){
+  const id='p_'+Date.now();
+  const colors=Object.keys(S.projects).length%5;
+  const p={id,name,desc:desc||'',created:new Date().toISOString(),modified:new Date().toISOString(),color:colors,data:template==='demo'?demoData():emptyData()};
+  S.projects[id]=p;S.cur=id;save();return id;
+}
+function deleteProject(id){
+  delete S.projects[id];
+  if(S.cur===id)S.cur=null;
+  save();
+}
+function curProj(){return S.projects[S.cur]||null;}
+function D(key){return S.projects[S.cur]?.data?.[key];}
+function touchProj(){if(S.cur&&S.projects[S.cur])S.projects[S.cur].modified=new Date().toISOString();}
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════════════════════════ */
+const T=(sv,en)=>S.lang==='sv'?sv:en;
+function fmt(n,d=2){return typeof n==='number'?n.toFixed(d):String(n);}
+function fmtSEK(n){return n.toLocaleString('sv-SE',{maximumFractionDigits:0})+' kr';}
+function pct(a,b){return b>0?Math.min(100,Math.max(0,a/b*100)):0;}
+function fmtDate(s){try{return new Date(s).toLocaleDateString('sv-SE');}catch{return s;}}
+function toast(m,t=2200){const e=document.getElementById('toast');e.textContent=m;e.style.display='block';e.style.animation='slideUp .3s ease';setTimeout(()=>e.style.display='none',t);}
+function pcBar(done,total,label){
+  if(total<=0)return'';
+  const p=pct(done,total);
+  return`<div style="margin-bottom:10px"><div class="prog-row"><span style="font-size:12px;font-weight:600">${label}</span><span class="pct">${p.toFixed(0)}%</span></div><div class="prog-bar"><div class="prog-fill" style="width:${p}%"></div></div><div style="font-size:10px;color:var(--tm)">${done.toFixed(1)} / ${total.toFixed(1)} m</div></div>`;
+}
+function mc(v,lbl,un,cls='',bar=50){
+  const disp=typeof v==='number'?(v>9999?Math.round(v).toLocaleString('sv-SE'):v>100?v.toFixed(1):v.toFixed(2)):v;
+  return`<div class="mc ${cls}"><div class="v">${disp}</div><div class="lbl">${lbl}</div><div class="un">${un}</div><div class="br"><div class="bf" style="width:${Math.min(100,Math.max(0,bar))}%"></div></div></div>`;
+}
+const COLORS=['#6366f1','#06b6d4','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#f97316','#14b8a6','#a855f7'];
+const PROJ_COLORS=['#4f46e5','#10b981','#f59e0b','#8b5cf6','#06b6d4'];
+
+/* ═══════════════════════════════════════════════════════════════
+   SVG CROSS-SECTION
+═══════════════════════════════════════════════════════════════ */
+function svgSection(bw,tw,d,pipes=[],label='',animated=false){
+  const W=380,H=210,px=44,pt=34;
+  const sc=Math.min((W-2*px)/Math.max(tw,.01),(H-pt-24)/Math.max(d,.01));
+  const cx=W/2,gy=pt,by=gy+d*sc;
+  const hbw=bw*sc/2,htw=tw*sc/2;
+  const pipeC=['#6366f1','#06b6d4','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#f97316'];
+  let pipeSVG='';
+  if(pipes.length){
+    const sp=0.05;
+    const totW=pipes.reduce((s,p)=>s+p,0)*sc+sp*(pipes.length-1)*sc;
+    let px2=cx-totW/2;
+    pipes.forEach((dia,i)=>{
+      const r=Math.max(3,dia*sc/2);
+      const cy=by-r-.04*sc;
+      pipeSVG+=`<circle cx="${(px2+r).toFixed(1)}" cy="${cy.toFixed(1)}" r="${r.toFixed(1)}" fill="${pipeC[i%pipeC.length]}" opacity=".8" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>
+      <text x="${(px2+r).toFixed(1)}" y="${(cy+r+10).toFixed(1)}" text-anchor="middle" font-size="7" fill="rgba(255,255,255,.5)" font-family="Inter,sans-serif">Ø${(dia*1000).toFixed(0)}</text>`;
+      px2+=dia*sc+sp*sc;
+    });
+  }
+  const beddH=Math.max(6,0.15*sc);
+  const kringH=Math.max(8,0.4*sc);
+  const anim=animated?'style="transition:all .4s ease"':'';
+  return`<svg width="${W}" height="${H}" style="border-radius:12px;background:#0b1425;display:block;width:100%;max-width:${W}px" viewBox="0 0 ${W} ${H}">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f2040"/><stop offset="1" stop-color="#1e3a5f"/></linearGradient>
+    <linearGradient id="soil" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d2b1f" stop-opacity=".6"/><stop offset="1" stop-color="#2d1b0e" stop-opacity=".3"/></linearGradient>
+    <pattern id="hatch" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="rgba(99,102,241,.12)" stroke-width="3"/></pattern>
+  </defs>
+  <!-- Sky -->
+  <rect x="0" y="0" width="${W}" height="${gy}" fill="url(#sky)"/>
+  <!-- Soil -->
+  <rect x="0" y="${gy}" width="${W}" height="${H-gy}" fill="url(#soil)"/>
+  <!-- Soil hatch -->
+  <rect x="0" y="${gy}" width="${cx-htw}" height="${H-gy}" fill="url(#hatch)"/>
+  <rect x="${cx+htw}" y="${gy}" width="${W-cx-htw}" height="${H-gy}" fill="url(#hatch)"/>
+  <!-- Ground line -->
+  <line x1="0" y1="${gy}" x2="${W}" y2="${gy}" stroke="#84cc16" stroke-width="1.5" stroke-dasharray="6,4" opacity=".5"/>
+  <!-- Trench -->
+  <polygon ${anim} points="${(cx-htw).toFixed(1)},${gy} ${(cx+htw).toFixed(1)},${gy} ${(cx+hbw).toFixed(1)},${by.toFixed(1)} ${(cx-hbw).toFixed(1)},${by.toFixed(1)}" fill="rgba(15,20,40,.92)" stroke="rgba(99,102,241,.5)" stroke-width="1.5"/>
+  <!-- Kringfyllning zone -->
+  <polygon points="${(cx-hbw).toFixed(1)},${(by-beddH-kringH).toFixed(1)} ${(cx+hbw).toFixed(1)},${(by-beddH-kringH).toFixed(1)} ${(cx+hbw).toFixed(1)},${(by-beddH).toFixed(1)} ${(cx-hbw).toFixed(1)},${(by-beddH).toFixed(1)}" fill="rgba(6,182,212,.2)" stroke="rgba(6,182,212,.3)" stroke-width=".5"/>
+  <!-- Bädd layer -->
+  <rect x="${(cx-hbw).toFixed(1)}" y="${(by-beddH).toFixed(1)}" width="${(hbw*2).toFixed(1)}" height="${beddH.toFixed(1)}" fill="rgba(245,158,11,.55)" stroke="rgba(245,158,11,.4)" stroke-width=".5" rx="2"/>
+  <!-- Pipes -->
+  ${pipeSVG}
+  <!-- TW label -->
+  <line x1="${(cx-htw+2).toFixed(1)}" y1="${(gy+10).toFixed(1)}" x2="${(cx+htw-2).toFixed(1)}" y2="${(gy+10).toFixed(1)}" stroke="#c084fc" stroke-width="1" marker-end="url(#a)"/>
+  <text x="${cx}" y="${(gy-6)}" text-anchor="middle" font-size="10" fill="#c084fc" font-family="Inter,sans-serif" font-weight="700">TW ${tw.toFixed(2)}m</text>
+  <!-- BW label -->
+  <text x="${cx}" y="${(by+16).toFixed(1)}" text-anchor="middle" font-size="10" fill="#fbbf24" font-family="Inter,sans-serif" font-weight="700">BW ${bw.toFixed(2)}m</text>
+  <!-- D label -->
+  <line x1="${(cx+hbw+8).toFixed(1)}" y1="${gy}" x2="${(cx+hbw+8).toFixed(1)}" y2="${by.toFixed(1)}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="${(cx+hbw+14).toFixed(1)}" y="${((gy+by)/2).toFixed(1)}" font-size="10" fill="#94a3b8" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">D ${d.toFixed(2)}m</text>
+  <!-- Layer labels -->
+  <text x="${(cx-hbw-4).toFixed(1)}" y="${(by-beddH/2).toFixed(1)}" text-anchor="end" font-size="8" fill="#fbbf24" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">Bädd</text>
+  <text x="${(cx-hbw-4).toFixed(1)}" y="${(by-beddH-kringH/2).toFixed(1)}" text-anchor="end" font-size="8" fill="#06b6d4" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">Kring</text>
+  ${label?`<text x="${cx}" y="${H-5}" text-anchor="middle" font-size="9" fill="#475569" font-family="Inter,sans-serif">${label}</text>`:''}
+  </svg>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CALCULATIONS
+═══════════════════════════════════════════════════════════════ */
+function fvBW(pt){return Math.max(.6,pt.c+.1+pt.d+.1+.2);}
+function elBW(pt){
+  const n=pt.n50+pt.n110+pt.n160;
+  if(!n)return.42;
+  const dia=pt.n50*.05+pt.n110*.11+pt.n160*.16;
+  const el=D('EL');
+  return dia+(el?.cfg.spacingI||.05)*Math.max(0,n-1)+(el?.cfg.spacingL||.05)*2;
+}
+function elAll(){
+  const EL=D('EL');if(!EL)return{segs:[],tot:zEL()};
+  const c=EL.cfg,pts=EL.pts,segs=[];
+  for(let i=0;i<pts.length-1;i++){
+    const p1=pts[i],p2=pts[i+1],L=Math.abs(p2.w-p1.w);
+    if(L<=0||!p1.h)continue;
+    const bw1=elBW(p1),bw2=elBW(p2);
+    const tw1J=p1.e*c.slopeJord*2+bw1,tw2J=p2.e*c.slopeJord*2+bw2;
+    const tw1B=p1.d>0?p1.d*c.slopeBerg*2+bw1+1:0,tw2B=p2.d>0?p2.d*c.slopeBerg*2+bw2+1:0;
+    const tw1=c.spont>=2?bw1:Math.max(tw1J,tw1B||0);
+    const tw2=c.spont>=2?bw2:Math.max(tw2J,tw2B||0);
+    const jordV=((bw1+tw1J)/2*p1.e+(bw2+tw2J)/2*p2.e)/2*L;
+    const bergV=(p1.d>0?(bw1+tw1B)/2*p1.d:0+p2.d>0?(bw2+tw2B)/2*p2.d:0)/2*L;
+    const excV=jordV+bergV;
+    const ab=(bw1+bw2)/2,at=(tw1+tw2)/2,ad=(p1.e+p1.d+p2.e+p2.d)/2;
+    const bed=L*ab*c.sfh,bedA=L*ab;
+    const sur=Math.max(0,(ab*(c.sfh+.1)*L-bed));
+    const remA=Math.max(0,excV-bed-sur),remB=Math.max(0,jordV-bed-sur);
+    const sLen=Math.sqrt(ad**2+(ad*c.slopeJord)**2);
+    let geo=0;if(c.geoType===1)geo=L*ab*2;else if(c.geoType>=2)geo=L*(ab+2*sLen+.3);
+    const aa=c.asphalt>0?L*at:0,va=c.veg>0?L*at:0,sp=c.spont>0?L*ad*c.spont:0;
+    const bergAvt=bergV>0?L*at*.1:0;
+    segs.push({f:p1.w,t:p2.w,L,ad,ab,at,exc:excV,jord:jordV,berg:bergV,bed,bedA,sur,remA,remB,geo,aa,va,sp,bal:excV-(bed+sur+remA),bergAvt,bw1,tw1,done:p1.done});
+  }
+  return{segs,tot:sumSegs(segs,'el')};
+}
+function calcSections(pts,cfg,getBW){
+  const segs=[];
+  for(let i=0;i<pts.length-1;i++){
+    const p1=pts[i],p2=pts[i+1],L=Math.abs(p2.i-p1.i);
+    if(L<=0)continue;
+    const bw1=getBW(p1),bw2=getBW(p2);
+    const sl=cfg.spont>=2?0:(p1.g||cfg.slope||.5);
+    const d1=p1.e+p1.f,d2=p2.e+p2.f;
+    const tw1=bw1+2*d1*sl,tw2=bw2+2*d2*sl;
+    const exc=((bw1+tw1)/2*d1+(bw2+tw2)/2*d2)/2*L;
+    const jord=exc*(p1.k||1),berg=exc*(1-(p1.k||1));
+    const bed=L*(bw1+bw2)/2*(p1.f+p2.f)/2,bedA=L*(bw1+bw2)/2;
+    const ab=(bw1+bw2)/2,ad=(d1+d2)/2,at=(tw1+tw2)/2;
+    const sur=Math.max(0,(ab*(p1.a+p2.a)/2-(p1.f+p2.f)/2)*L);
+    const rem=Math.max(0,exc-bed-sur);
+    const sLen=Math.sqrt(ad**2+(ad*sl)**2);
+    let geo=0;if(cfg.geoType===1)geo=L*ab;else if(cfg.geoType>=2)geo=L*(ab+2*sLen+.3);
+    segs.push({f:p1.i,t:p2.i,L,ad,ab,at,exc,jord,berg,bed,bedA,sur,rem,geo,aa:cfg.asphalt>0?L*at:0,va:cfg.veg>0?L*at:0,sp:cfg.spont>0?L*ad:0,bal:exc-(bed+sur+rem),bw1,tw1,done:p1.done});
+  }
+  return{segs,tot:sumSegs(segs,'fv')};
+}
+function fvAll(){const FV=D('FV');if(!FV)return{segs:[],tot:zFV()};return calcSections(FV.pts,FV.cfg,fvBW);}
+function fbAll(){const FB=D('FB');if(!FB)return{segs:[],tot:zFV()};return calcSections(FB.pts,FB.cfg,fvBW);}
+function trAll(){const TR=D('TR');if(!TR)return{segs:[],tot:zFV()};return calcSections(TR.pts,TR.cfg,(pt)=>pt.c+pt.d+.1);}
+function vaAll(){
+  const VA=D('VA');if(!VA)return{segs:[],tot:zVA()};
+  const c=VA.cfg,pr=VA.prices,segs=[];
+  for(let i=0;i<VA.pts.length-1;i++){
+    const p1=VA.pts[i],p2=VA.pts[i+1],L=Math.abs(p2.n-p1.n);
+    if(L<=0)continue;
+    const bw=p1.bw||1.1;
+    const d1=p1.r+p1.d+p1.e+c.rb+p1.a,d2=p2.r+p2.d+p2.e+c.rb+p2.a;
+    const slV=c.spont>=2?0:(p1.f||c.slopeV),slH=c.spont>=2?0:(p1.h||c.slopeH);
+    const tw1=bw+d1*(slV+slH),tw2=bw+d2*(slV+slH);
+    const exc=((bw+tw1)/2*d1+(bw+tw2)/2*d2)/2*L;
+    const frac=(p1.c||0)/Math.max(p1.r,1);
+    const jord=exc*(1-frac),berg=Math.max(0,exc-jord);
+    const bed=L*bw*(p1.d+p2.d)/2,bedA=L*bw;
+    const sur=Math.max(0,bw*c.sfh*L-bed),remA=Math.max(0,exc-bed-sur);
+    const ad=(d1+d2)/2,at=(tw1+tw2)/2;
+    const avgSl=(slV+slH)/2,sLen=Math.sqrt(ad**2+(ad*avgSl)**2);
+    let geo=0;if(c.geoType===1)geo=L*bw;else if(c.geoType>=2)geo=L*(bw+2*sLen+.3);
+    const aa=c.asphalt>0?L*Math.max(at,c.roadW):0,va=c.veg>0?L*Math.max(at,c.roadW):0;
+    const sp=c.spont>0?L*ad*c.spont:0,bergAvt=berg>0?L*at*.1:0;
+    const cost=jord*pr.jord+berg*pr.berg+bed*pr.badd+sur*pr.kring+remA*pr.restA+aa*pr.asfalt+va*pr.veg+bergAvt*pr.avtatn+sp*pr.spont;
+    segs.push({f:p1.n,t:p2.n,L,ad,ab:bw,at,exc,jord,berg,bed,bedA,sur,remA,geo,aa,va,sp,bergAvt,bal:exc-(bed+sur+remA),cost,done:p1.done,doneR:p1.doneR,bw,tw:tw1});
+  }
+  return{segs,tot:sumSegsVA(segs)};
+}
+function zEL(){return{l:0,exc:0,jord:0,berg:0,bed:0,bedA:0,sur:0,remA:0,remB:0,geo:0,aa:0,va:0,sp:0,bal:0,bergAvt:0,done:0,total:0};}
+function zFV(){return{l:0,exc:0,jord:0,berg:0,bed:0,bedA:0,sur:0,rem:0,geo:0,aa:0,va:0,sp:0,bal:0,done:0,total:0};}
+function zVA(){return{l:0,exc:0,jord:0,berg:0,bed:0,bedA:0,sur:0,remA:0,geo:0,aa:0,va:0,sp:0,bergAvt:0,bal:0,cost:0,done:0,doneR:0,total:0};}
+function sumSegs(segs,type){
+  const z=type==='el'?zEL():zFV();
+  segs.forEach(s=>{
+    z.l+=s.L;z.exc+=s.exc;z.jord+=s.jord;z.berg+=s.berg;z.bed+=s.bed;z.bedA+=s.bedA;
+    z.sur+=s.sur;z.geo+=s.geo;z.aa+=s.aa;z.va+=s.va;z.sp+=s.sp;z.bal+=s.bal;
+    if(type==='el'){z.remA+=s.remA;z.remB+=s.remB;z.bergAvt+=s.bergAvt;}else{z.rem+=s.rem;}
+    if(s.done)z.done+=s.L;z.total+=s.L;
+  });return z;
+}
+function sumSegsVA(segs){
+  const z=zVA();
+  segs.forEach(s=>{z.l+=s.L;z.exc+=s.exc;z.jord+=s.jord;z.berg+=s.berg;z.bed+=s.bed;z.bedA+=s.bedA;z.sur+=s.sur;z.remA+=s.remA;z.geo+=s.geo;z.aa+=s.aa;z.va+=s.va;z.sp+=s.sp;z.bergAvt+=s.bergAvt;z.bal+=s.bal;z.cost+=s.cost;if(s.done)z.done+=s.L;if(s.doneR)z.doneR+=s.L;z.total+=s.L;});
+  return z;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CHART HELPERS
+═══════════════════════════════════════════════════════════════ */
+function applyChartTheme(){
+  const tc=S.dark?'#94a3b8':'#64748b';
+  const gc=S.dark?'rgba(148,163,184,.07)':'rgba(100,116,139,.07)';
+  Chart.defaults.color=tc;
+  Chart.defaults.borderColor=gc;
+}
+function destroyCharts(){Object.values(Charts).forEach(c=>{try{c.destroy();}catch(e){}});Charts={};}
+function mkPie(id,labels,data,colors){
+  const el=document.getElementById(id);if(!el)return;
+  Charts[id]=new Chart(el,{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors||COLORS,borderWidth:0,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,font:{size:10},padding:8,color:S.dark?'#94a3b8':'#475569'}}},animation:{animateScale:true,duration:600}}});
+}
+function mkBar(id,labels,datasets){
+  const el=document.getElementById(id);if(!el)return;
+  const tc=S.dark?'#94a3b8':'#64748b';
+  const gc=S.dark?'rgba(148,163,184,.07)':'rgba(100,116,139,.07)';
+  Charts[id]=new Chart(el,{type:'bar',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,font:{size:10},padding:8,color:tc}}},scales:{x:{grid:{display:false},ticks:{color:tc}},y:{grid:{color:gc},ticks:{color:tc}}},animation:{duration:500}}});
+}
+function mkLine(id,labels,datasets){
+  const el=document.getElementById(id);if(!el)return;
+  const tc=S.dark?'#94a3b8':'#64748b';
+  const gc=S.dark?'rgba(148,163,184,.07)':'rgba(100,116,139,.07)';
+  Charts[id]=new Chart(el,{type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,font:{size:10},padding:8,color:tc}}},scales:{x:{grid:{display:false},ticks:{color:tc,font:{size:9}}},y:{reverse:true,grid:{color:gc},ticks:{color:tc}}},animation:{duration:500}}});
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════════════════════ */
+function renderSidebar(){
+  const proj=curProj();
+  const projList=Object.values(S.projects);
+  const navSV=[
+    {p:'projects',ico:'📁',sv:'Alla projekt',en:'All projects'},
+    {p:'start',ico:'📚',sv:'Teori & Kalkyl',en:'Theory & Calc'},
+    {p:'todo',ico:'✅',sv:'Todo / Roadmap',en:'Todo / Roadmap'},
+  ];
+  let projNav='';
+  if(proj){
+    projNav=`
+    <div class="proj-divider"></div>
+    <div class="nav-sec">${proj.name}</div>
+    <div class="ni ${S.page==='dashboard'?'a':''}" onclick="go('dashboard')">${navIco('dashboard')} ${T('Översikt','Dashboard')}</div>
+    <div class="ni ${S.page==='el'?'a':''}" onclick="go('el')">⚡ EL-2018<span class="badge">Kabel</span></div>
+    <div class="ni ${S.page==='fv'?'a':''}" onclick="go('fv')">🔥 ${T('FV Fjärrvärme','FV District H.')}</div>
+    <div class="ni ${S.page==='fb'?'a':''}" onclick="go('fb')">🏗️ ${T('Fylln mot byggnad','Fill by building')}</div>
+    <div class="ni ${S.page==='tr'?'a':''}" onclick="go('tr')">🔵 TRUMMA</div>
+    <div class="ni ${S.page==='va'?'a':''}" onclick="go('va')">💧 VA 2026<span class="badge">${T('Budget','Budget')}</span></div>
+    <div class="proj-divider"></div>
+    <div class="nav-sec">${T('Spec','Spec')}</div>
+    <div class="ni ${S.page==='fvspec'?'a':''}" onclick="go('fvspec')">📋 FV-spec</div>
+    <div class="ni ${S.page==='rl'?'a':''}" onclick="go('rl')">📏 ${T('Rörlängder','Pipe lengths')}</div>
+    <div class="ni ${S.page==='sm'?'a':''}" onclick="go('sm')">📊 ${T('Sammanställning','Summary')}</div>
+    `;
+  }
+  document.getElementById('sidebar').innerHTML=`
+  <div class="side-logo">
+    <span class="ico">⛏️</span>
+    <div><h1>AMA/MER Kalkyl</h1><div class="sub">v6 Pro — ${T('Schakt & Fyllning','Excavation')}</div></div>
+  </div>
+  <div class="side-scroll">
+    <div class="nav-sec">${T('Navigering','Navigation')}</div>
+    ${navSV.map(n=>`<div class="ni ${S.page===n.p?'a':''}" onclick="go('${n.p}')">${n.ico} ${T(n.sv,n.en)}</div>`).join('')}
+    <div class="nav-sec">${T('Projekt','Projects')}</div>
+    ${projList.map(p=>`<div class="proj-chip ${S.cur===p.id?'cur':''}" onclick="openProject('${p.id}')">
+      <span class="dot" style="background:${PROJ_COLORS[p.color%5]}"></span>
+      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.name}</span>
+      ${S.cur===p.id?'<span style="font-size:9px;opacity:.6">●</span>':''}
+    </div>`).join('')}
+    <div class="proj-add" onclick="showNewProject()">+ ${T('Nytt projekt','New project')}</div>
+    ${projNav}
+  </div>
+  <div class="side-foot">
+    <div class="lang-row">
+      <button class="lang-btn ${S.lang==='sv'?'a':''}" onclick="setL('sv')">🇸🇪 SV</button>
+      <button class="lang-btn ${S.lang==='en'?'a':''}" onclick="setL('en')">🇬🇧 EN</button>
+    </div>
+    <button class="theme-btn" onclick="tgTheme()">${S.dark?'☀️':'🌙'} ${S.dark?T('Ljust läge','Light mode'):T('Mörkt läge','Dark mode')}</button>
+  </div>`;
+}
+function navIco(p){return{dashboard:'🏠',projects:'📁',start:'📚',el:'⚡',fv:'🔥',fb:'🏗️',tr:'🔵',va:'💧',fvspec:'📋',rl:'📏',sm:'📊',todo:'✅'}[p]||'📄';}
+
+/* ═══════════════════════════════════════════════════════════════
+   BOTTOM NAV (mobile)
+═══════════════════════════════════════════════════════════════ */
+function renderBNav(){
+  const proj=curProj();
+  const items=proj
+    ?[{p:'dashboard',ico:'🏠',lbl:'Start'},{p:'el',ico:'⚡',lbl:'EL'},{p:'fv',ico:'🔥',lbl:'FV'},{p:'va',ico:'💧',lbl:'VA'},{p:'sm',ico:'📊',lbl:'Sum'}]
+    :[{p:'projects',ico:'📁',lbl:T('Projekt','Projects')},{p:'start',ico:'📚',lbl:T('Teori','Theory')}];
+  document.getElementById('bnav-items').innerHTML=items.map(it=>`<div class="bnav-item ${S.page===it.p?'a':''}" onclick="go('${it.p}')"><span class="ico">${it.ico}</span>${it.lbl}</div>`).join('');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════════════════ */
+function go(p){
+  S.page=p;S.selSeg=0;
+  renderSidebar();renderBNav();
+  const m=document.getElementById('main');
+  destroyCharts();
+  const pages={projects:renderProjects,start:renderStart,dashboard:renderDashboard,el:renderEL,fv:renderFV,fb:renderFB,tr:renderTR,va:renderVA,fvspec:renderFVSpec,rl:renderRL,sm:renderSM,todo:renderTodo};
+  m.innerHTML=(pages[p]||renderProjects)();
+  window.scrollTo(0,0);
+  setTimeout(renderCharts,60);
+}
+function openProject(id){S.cur=id;go('dashboard');}
+function toggleNav(){
+  const s=document.getElementById('sidebar'),o=document.getElementById('overlay');
+  s.classList.toggle('open');o.classList.toggle('open');
+}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('open');}
+function setL(l){S.lang=l;save();go(S.page);}
+function tgTheme(){
+  S.dark=!S.dark;
+  document.documentElement.setAttribute('data-theme',S.dark?'dark':'');
+  save();go(S.page);
+}
+function selectSeg(i){S.selSeg=i;document.querySelectorAll('.seg-row').forEach((r,j)=>{r.classList.toggle('sel-row',j===i);});updateSegSVG();}
+
+/* ═══════════════════════════════════════════════════════════════
+   MODAL: NEW PROJECT
+═══════════════════════════════════════════════════════════════ */
+let _modalTemplate='empty';
+function showNewProject(){
+  document.getElementById('modal-title').textContent=T('Nytt projekt','New project');
+  document.getElementById('modal-sub').textContent=T('Fyll i info och välj mall','Fill in info and choose template');
+  document.getElementById('modal-ok').textContent=T('Skapa projekt','Create project');
+  modalMode='new';_modalTemplate='empty';
+  document.getElementById('modal-body').innerHTML=`
+  <div class="fi"><label>${T('Projektnamn','Project name')} *</label><input type="text" id="mn" placeholder="${T('t.ex. Storgatan 2025','e.g. Main Street 2025')}" maxlength="60"></div>
+  <div class="fi"><label>${T('Beskrivning','Description')}</label><textarea id="md" placeholder="${T('Valfri beskrivning...','Optional description...')}" rows="2"></textarea></div>
+  <div class="nav-sec" style="padding-left:0;margin-bottom:8px">${T('Mall','Template')}</div>
+  <div class="tmpl-grid">
+    <div class="tmpl-opt sel" id="t-empty" onclick="selTmpl('empty')">
+      <div class="tmpl-ico">📄</div>
+      <h4>${T('Tomt projekt','Empty project')}</h4>
+      <p>${T('Börja från grunden med minimala startpunkter','Start from scratch with minimal start points')}</p>
+    </div>
+    <div class="tmpl-opt" id="t-demo" onclick="selTmpl('demo')">
+      <div class="tmpl-ico">⭐</div>
+      <h4>${T('Demo-data','Demo data')}</h4>
+      <p>${T('Importera alla Excel-exempeldata som startpunkt','Import all Excel demo data as starting point')}</p>
+    </div>
+  </div>`;
+  document.getElementById('modal-wrap').classList.add('open');
+  setTimeout(()=>document.getElementById('mn')?.focus(),100);
+}
+function selTmpl(t){
+  _modalTemplate=t;
+  document.getElementById('t-empty').classList.toggle('sel',t==='empty');
+  document.getElementById('t-demo').classList.toggle('sel',t==='demo');
+}
+function closeModal(){document.getElementById('modal-wrap').classList.remove('open');}
+function modalOk(){
+  if(modalMode==='new'){
+    const name=(document.getElementById('mn')?.value||'').trim();
+    if(!name){document.getElementById('mn').style.borderColor='var(--d)';return;}
+    const desc=(document.getElementById('md')?.value||'').trim();
+    createProject(name,desc,_modalTemplate);
+    closeModal();go('dashboard');
+    toast('✅ '+T('Projekt skapat!','Project created!'));
+  }
+}
+function confirmDelete(id){
+  const p=S.projects[id];
+  if(!p)return;
+  if(confirm(T(`Ta bort "${p.name}"? Det går inte att ångra.`,`Delete "${p.name}"? This cannot be undone.`))){
+    deleteProject(id);
+    toast('🗑️ '+T('Projekt borttaget','Project deleted'));
+    go('projects');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: PROJECTS LIST
+═══════════════════════════════════════════════════════════════ */
+function renderProjects(){
+  const projs=Object.values(S.projects);
+  const cards=projs.map(p=>{
+    const {el,fv,fb,tr,va}=projSummary(p);
+    const totalExc=el+fv+fb+tr+va;
+    const types=[];
+    if(el>0)types.push('EL');if(fv>0)types.push('FV');if(fb>0)types.push('FB');if(tr>0)types.push('TR');if(va>0)types.push('VA');
+    return`<div class="proj-card color-${p.color%5}" onclick="openProject('${p.id}')">
+      <div class="proj-types">${types.map(t=>`<span class="type-tag">${t}</span>`).join('')||`<span class="type-tag" style="opacity:.5">${T('Tom','Empty')}</span>`}</div>
+      <h3>${p.name}</h3>
+      <div class="proj-desc">${p.desc||T('Ingen beskrivning','No description')}</div>
+      ${totalExc>0?`<div style="font-size:13px;font-weight:700;color:var(--p);margin-bottom:6px">${totalExc.toFixed(0)} m³ ${T('total schakt','total exc.')}</div>`:''}
+      <div class="proj-meta"><span>📅 ${fmtDate(p.created)}</span><span>✏️ ${fmtDate(p.modified)}</span></div>
+      <div class="proj-actions">
+        <button class="btn bp" style="flex:1;justify-content:center" onclick="event.stopPropagation();openProject('${p.id}')">${T('Öppna','Open')}</button>
+        <button class="btn bs" onclick="event.stopPropagation();confirmDelete('${p.id}')" title="${T('Ta bort','Delete')}">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+  return`<div>
+  <div class="ph"><h2>📁 ${T('Mina projekt','My projects')}</h2><div class="sub">${T('Välj ett projekt att arbeta med, eller skapa ett nytt','Choose a project to work with, or create a new one')}</div></div>
+  <div class="proj-grid">${cards}
+    <div class="new-proj-card" onclick="showNewProject()"><div class="plus">+</div><span>${T('Nytt projekt','New project')}</span><span style="font-size:11px;font-weight:400;color:var(--tm)">${T('Skapa och spara','Create and save')}</span></div>
+  </div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--p)"></span>${T('Hur projekt fungerar','How projects work')}</div>
+    <div style="font-size:13px;color:var(--ts);line-height:1.8;max-width:600px">
+      <p>Varje projekt lagrar egna beräkningsdata för EL-2018, FV, Fylln mot byggnad, TRUMMA, VA 2026 och Rörlängder. Data sparas automatiskt i webbläsaren och är separat per projekt.</p>
+      <p style="margin-top:8px">Klicka på <strong>Demo Projekt</strong> för att se ett komplett exempel med förifylld data från kalkylbladet.</p>
+    </div>
+  </div></div>`;
+}
+function projSummary(p){
+  const backup=S.cur;S.cur=p.id;
+  let el=0,fv=0,fb=0,tr=0,va=0;
+  try{el=elAll().tot.exc||0;}catch(e){}
+  try{fv=fvAll().tot.exc||0;}catch(e){}
+  try{fb=fbAll().tot.exc||0;}catch(e){}
+  try{tr=trAll().tot.exc||0;}catch(e){}
+  try{va=vaAll().tot.exc||0;}catch(e){}
+  S.cur=backup;
+  return{el,fv,fb,tr,va};
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: DASHBOARD
+═══════════════════════════════════════════════════════════════ */
+function renderDashboard(){
+  const proj=curProj();if(!proj)return renderProjects();
+  const elT=elAll().tot,fvT=fvAll().tot,fbT=fbAll().tot,trT=trAll().tot,vaT=vaAll().tot;
+  const totExc=elT.exc+fvT.exc+fbT.exc+trT.exc+vaT.exc;
+  const totL=elT.l+fvT.l+fbT.l+trT.l+vaT.l;
+  const totJord=elT.jord+fvT.jord+fbT.jord+trT.jord+vaT.jord;
+  const totBerg=elT.berg+fvT.berg+fbT.berg+trT.berg+vaT.berg;
+  const vaC=D('VA')?.cfg;
+  const budget=vaC?.budget||0;
+  const budgetPct=budget>0?pct(vaT.cost,budget):0;
+  return`<div>
+  <div class="dash-header">
+    <h2 style="background:linear-gradient(135deg,var(--p),var(--i));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${proj.name}</h2>
+    <span class="proj-badge">📅 ${fmtDate(proj.created)}</span>
+    ${proj.desc?`<span class="proj-badge" style="background:var(--sa);color:var(--ts);border-color:var(--bd)">${proj.desc}</span>`:''}
+  </div>
+
+  <div class="mg" style="grid-template-columns:repeat(auto-fill,minmax(140px,1fr))">
+    ${mc(totL.toFixed(0),T('Total längd','Total length'),'m','',100)}
+    ${mc(totExc.toFixed(0),T('Total schakt','Total exc.'),'m³','',100)}
+    ${mc(totJord.toFixed(0),T('Jordschakt','Soil exc.'),'m³','c2',pct(totJord,totExc))}
+    ${mc(totBerg.toFixed(0),T('Bergschakt','Rock exc.'),'m³','c2',pct(totBerg,totExc))}
+    ${mc((elT.bed+fvT.bed+fbT.bed+trT.bed+vaT.bed).toFixed(1),T('Ledningsbädd','Bedding'),'m³','c3',30)}
+    ${mc((elT.sur+fvT.sur+fbT.sur+trT.sur+vaT.sur).toFixed(1),T('Kringfyllning','Surr.fill'),'m³','c3',30)}
+    ${budget>0?mc(fmtSEK(vaT.cost),'VA Kostnad','',`c6`,budgetPct):''}
+  </div>
+
+  ${budget>0?`<div class="budget-card">
+    <h3 style="font-size:12px;font-weight:700;opacity:.75;margin-bottom:4px">${T('VA Projektbudget','VA Project budget')}</h3>
+    <div style="font-size:22px;font-weight:800">${fmtSEK(vaT.cost)} <span style="font-size:14px;opacity:.7">/ ${fmtSEK(budget)}</span></div>
+    <div class="budget-bar"><div class="budget-fill ${budgetPct>90?'over':budgetPct>75?'warn':''}" style="width:${Math.min(100,budgetPct)}%"></div></div>
+    <div style="font-size:11px;opacity:.7">${budgetPct.toFixed(1)}% ${T('av budget använt','of budget used')}</div>
+  </div>`:''}
+
+  <div class="cg2">
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--p)"></span>${T('Volymer per schakttyp','Volume by type')}</div>
+      <div class="ch-wrap"><canvas id="ch-dash-bar"></canvas></div></div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Total volymfördelning','Total volume split')}</div>
+      <div class="ch-wrap"><canvas id="ch-dash-pie"></canvas></div></div>
+  </div>
+
+  <div class="type-grid">
+    ${[
+      {n:'EL-2018',ico:'⚡',p:'el',t:elT,c:'var(--p)'},
+      {n:'FV',ico:'🔥',p:'fv',t:fvT,c:'var(--d)'},
+      {n:'Fylln',ico:'🏗️',p:'fb',t:fbT,c:'var(--a)'},
+      {n:'TRUMMA',ico:'🔵',p:'tr',t:trT,c:'var(--i)'},
+      {n:'VA 2026',ico:'💧',p:'va',t:vaT,c:'var(--s)'},
+    ].map(({n,ico,p,t,c})=>`
+      <div class="type-summary" onclick="go('${p}')">
+        <div class="ts-head"><span class="ts-ico">${ico}</span><span class="ts-name">${n}</span><span style="margin-left:auto;font-size:10px;color:var(--tm)">${t.l>0?t.l.toFixed(0)+'m':'–'}</span></div>
+        <div class="ts-val" style="color:${c}">${t.exc>0?t.exc.toFixed(0):'–'}</div>
+        <div class="ts-lbl">m³ ${T('schakt','exc.')}</div>
+        ${t.total>0?`<div class="prog-bar" style="margin-top:8px"><div class="prog-fill" style="width:${pct(t.done||0,t.total)}%"></div></div>`:''}
+      </div>`).join('')}
+  </div>
+
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Projektåtgärder','Project actions')}</div>
+    <div class="exp-grid">
+      <button class="exp-btn" onclick="xCSV()">📄 ${T('Exportera CSV','Export CSV')}</button>
+      <button class="exp-btn" onclick="xJSON()">{ } ${T('Exportera JSON','Export JSON')}</button>
+      <button class="exp-btn" onclick="xPDF()">📕 ${T('Skriv ut / PDF','Print / PDF')}</button>
+      <button class="exp-btn" onclick="saveLocal()">💾 ${T('Spara manuellt','Save manually')}</button>
+      <button class="exp-btn" style="color:var(--d);border-color:var(--d)" onclick="confirmDelete('${proj.id}')">🗑️ ${T('Ta bort projekt','Delete project')}</button>
+    </div>
+  </div></div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: START & TEORI
+═══════════════════════════════════════════════════════════════ */
+function renderStart(){
+  return`<div>
+  <div class="hero">
+    <h1>⛏️ AMA/MER ${T('Kalkyl Pro','Calc Pro')}</h1>
+    <p>${T('Komplett kalkylsystem för schakt, fyllning och ledningsarbeten enligt AMA/MER. Allt på ett ställe — tydligt, snabbt och mobilanpassat.','Complete calculation system for excavation, backfill and pipe works per AMA/MER standards.')}</p>
+    <div class="tags"><span class="tag">AMA Anläggning</span><span class="tag">MER Anläggning</span><span class="tag">Schaktkalkyl</span><span class="tag">VA · EL · FV</span></div>
+  </div>
+  <div class="theory-grid">
+    <div class="theory-card"><div class="icon">📘</div><h3>${T('Vad är AMA?','What is AMA?')}</h3>
+      <p>AMA ${T('står för','stands for')} <strong>${T('Allmän Material- och Arbetsbeskrivning','General Material and Work Description')}</strong>. ${T('Det är ett standardiserat system för tekniska beskrivningar i bygg- och anläggningsprojekt.','It is a standardized system for technical specifications in construction projects.')}</p>
+      <ul><li>${T('Vilket arbete som ska utföras','Which work shall be performed')}</li><li>${T('Vilket material som ska användas','Which material to use')}</li><li>${T('Vilken kvalitet och utförande som krävs','Required quality and execution')}</li></ul>
+      <p style="margin-top:8px">AMA ${T('är','is')} <em>${T('beskrivningsboken','the description book')}</em> — ${T('den säger hur arbetet ska utföras.','it says how the work shall be performed.')}</p>
+    </div>
+    <div class="theory-card"><div class="icon">📐</div><h3>${T('Vad är MER?','What is MER?')}</h3>
+      <p>MER ${T('står för','stands for')} <strong>${T('Mät- och Ersättningsregler','Measurement and Compensation Rules')}</strong>. ${T('Den bestämmer hur mängder räknas och vad som ska ersättas.','It determines how quantities are measured and what shall be compensated.')}</p>
+      <ul><li>${T('Hur mätning ska göras','How measurement is done')}</li><li>${T('Vilka mängder som ersätts','Which quantities are compensated')}</li><li>${T('Hur avvikelser hanteras','How deviations are handled')}</li></ul>
+      <p style="margin-top:8px">MER ${T('är','is')} <em>${T('räkneboken','the calculation book')}</em> — ${T('den säger hur schakt och fyllning mäts.','it says how excavation and fill is measured.')}</p>
+    </div>
+  </div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--p)"></span>${T('Schaktberäkning steg för steg','Excavation calculation step by step')}</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><h4>${T('Bestäm schakttyp','Determine excavation type')}</h4><p>${T('Identifiera syftet — en ledning, en grund eller en vägkropp. Det styr dimensioner och krav.','Identify the purpose — a pipe, a foundation or a road body. This determines dimensions and requirements.')}</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><h4>${T('Mät bredd och djup','Measure width and depth')}</h4><p>${T('Bottenbredd (BW) bestäms av rördimensioner + avstånd. Topbredd (TW) ökar med slänter. Djup = rörets underkant + bäddlager.','Bottom width (BW) is determined by pipe dimensions + spacing. Top width (TW) increases with slopes.')}</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><h4>${T('Beräkna volym','Calculate volume')}</h4><p>${T('Trapetsprisma: ','Trapezoid prism: ')}<strong>V = L × (BW + TW) / 2 × D</strong></p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><h4>${T('Dra av återfyllning','Subtract backfill')}</h4><p>${T('Ledningsbädd + kringfyllning + restfyllning = återfyllning. Balansen är överskottsmassor.','Bedding + surrounding fill + remaining fill = backfill. Balance is surplus mass.')}</p></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-body"><h4>${T('Kontrollera mot ritning','Check against drawing')}</h4><p>${T('Jämför beräknad volym med inmätningar. Vid avvikelse används MER:s regler.','Compare calculated volume with measurements. Deviations are handled by MER rules.')}</p></div></div>
+    </div>
+  </div>
+  <div class="calc-box"><h3>🧮 ${T('Interaktiv Schaktkalkylator','Interactive Excavation Calculator')}</h3>
+    <p style="font-size:12px;color:var(--ts);margin-bottom:14px">${T('Beräkna schaktvolym direkt — se hur slänter och djup påverkar resultatet i realtid.','Calculate excavation volume directly — see how slopes and depth affect the result in real time.')}</p>
+    <div class="fg" style="grid-template-columns:repeat(auto-fill,minmax(110px,1fr))">
+      <div class="fi"><label>${T('Längd (m)','Length (m)')}</label><input type="number" id="sc_l" value="10" step="0.5" oninput="calcSchakt()"></div>
+      <div class="fi"><label>${T('Bottenbredd BW','Bottom width BW')} (m)</label><input type="number" id="sc_bw" value="1.1" step="0.05" oninput="calcSchakt()"></div>
+      <div class="fi"><label>${T('Djup D (m)','Depth D (m)')}</label><input type="number" id="sc_d" value="2.0" step="0.1" oninput="calcSchakt()"></div>
+      <div class="fi"><label>${T('Slantlutning H:1V','Slope H:1V')}</label><input type="number" id="sc_sl" value="0.5" step="0.25" oninput="calcSchakt()"></div>
+      <div class="fi"><label>${T('Bädddjup (m)','Bed depth (m)')}</label><input type="number" id="sc_badd" value="0.15" step="0.05" oninput="calcSchakt()"></div>
+      <div class="fi"><label>${T('Kringf.höjd (m)','Surr.fill h (m)')}</label><input type="number" id="sc_kring" value="0.4" step="0.05" oninput="calcSchakt()"></div>
+    </div>
+    <div class="formula" id="sc_formula">TW = BW + 2 × D × Slant = –</div>
+    <div class="calc-result" id="sc_result">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px">
+        <div><div class="big" id="sc_tot">–</div><div class="unit">m³ ${T('Schakt','Exc.')}</div></div>
+        <div><div class="big" id="sc_tw" style="color:var(--i)">–</div><div class="unit">m ${T('Topbredd','Top width')}</div></div>
+        <div><div class="big" id="sc_bed" style="color:var(--a)">–</div><div class="unit">m³ ${T('Bädd','Bed')}</div></div>
+        <div><div class="big" id="sc_sur" style="color:var(--s)">–</div><div class="unit">m³ ${T('Kring','Surr.')}</div></div>
+        <div><div class="big" id="sc_bal" style="color:var(--d)">–</div><div class="unit">m³ ${T('Balans','Balance')}</div></div>
+      </div>
+    </div>
+    <div id="sc_svg" style="margin-top:14px"></div>
+  </div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Schakttyper i detta system','Excavation types in this system')}</div>
+    <div class="type-grid" style="margin-bottom:0">
+      ${[
+        {ico:'⚡',title:'EL-2018',desc:T('Kabelschakt för el- och telekabel. Bottenbredd beräknas automatiskt från rörantal och dimensioner (50/110/160mm).','Cable trench for power and telecom cables. Bottom width auto-calculated from pipe count and dimensions.')},
+        {ico:'🔥',title:T('FV Fjärrvärme','FV District Heating'),desc:T('Isolerade parledningar för fjärrvärme. Bottenbredd = rördim 1 + rördim 2 + 20cm. Noggrann kringfyllning skyddar isoleringen.','Insulated twin pipes for district heating. Bottom width = pipe 1 + pipe 2 + 20cm. Careful surround fill protects insulation.')},
+        {ico:'🏗️',title:T('Fylln mot byggnad','Fill by building'),desc:T('Schakt och fyllning längs husgrunder. Slänter anpassas mot befintlig konstruktion. BW = rördim C + D + 20cm.','Excavation along building foundations. Slopes adapted toward existing structure. BW = pipe dim C + D + 20cm.')},
+        {ico:'🔵',title:'TRUMMA',desc:T('Vägtrummor och stora ledningar DN200–400. Bädd och kringfyllning av godkänt krossgrus. BW = rördim C + D + 10cm.','Road culverts and large pipes DN200–400. Bedding and surrounding fill of approved crushed aggregate.')},
+        {ico:'💧',title:'VA 2026',desc:T('Vatten- och avloppsledningar med fullständig kostnadskalkyl. Flera rördiametrar. Budget och prissättning per m³.','Water and sewer pipes with full cost calculation. Multiple pipe diameters. Budget and pricing per m³.')},
+      ].map(({ico,title,desc})=>`<div class="type-summary" style="cursor:default">
+        <div class="ts-head"><span class="ts-ico">${ico}</span><span class="ts-name" style="font-size:13px">${title}</span></div>
+        <p style="font-size:11.5px;color:var(--ts);line-height:1.6;margin-top:4px">${desc}</p>
+      </div>`).join('')}
+    </div>
+  </div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Ord- och begrepp','Glossary')}</div>
+    <div class="gloss-grid">${[
+      [T('Bottenbredd BW','Bottom width BW'),T('Grävningens bredd vid rörets underkant','Trench width at pipe bottom')],
+      [T('Topbredd TW','Top width TW'),T('Grävningens bredd vid markytan — BW + 2×D×Slant','Trench width at surface — BW + 2×D×Slope')],
+      [T('Ledningsbädd','Pipe bedding'),T('Sand/makadam under röret för stöd och dränering','Sand/aggregate under pipe for support and drainage')],
+      [T('Kringfyllning','Surrounding fill'),T('Godkänt material runt röret upp till kringhöjd A','Approved material around pipe up to surround height A')],
+      [T('Restfyllning A','Remaining fill A'),T('Schakt minus bädd och kring — överskottsmassor','Excavation minus bed and surround — surplus masses')],
+      [T('Balans','Balance'),T('Schaktvolym minus all återfyllning. Positiv = överskott','Excavation minus all backfill. Positive = surplus')],
+      [T('Geotextil','Geotextile'),T('Fiberduk som separerar jordlager och förhindrar inblandning','Fibre fabric separating soil layers and preventing mixing')],
+      [T('Slantlutning H:1V','Slope H:1V'),T('Sidornas lutning — ex. 0.5:1 = 50cm horisontellt per meter djup','Side slope — e.g. 0.5:1 = 50cm horizontal per meter depth')],
+      [T('Spontning','Sheet piling'),T('Tillfällig stålvägg mot schaktras i lös jord','Temporary steel wall against collapse in loose soil')],
+      [T('Rustbädd','Foundation bed'),T('Extra stabilisering vid dåliga grundförhållanden (lera, torv)','Extra stabilisation in poor ground conditions (clay, peat)')],
+      [T('Jordfraktion K','Soil fraction K'),T('Andel jord (0-1). K=1 = 100% jord. K=0.5 = 50% berg','Soil fraction (0-1). K=1 = 100% soil. K=0.5 = 50% rock')],
+      [T('Geotextil typ 0-3','Geotextile type 0-3'),T('0=ingen, 1=botten, 2=botten+sidor, 3=hel inkapsling','0=none, 1=bottom, 2=bottom+sides, 3=full encapsulation')],
+    ].map(([k,v])=>`<div class="gloss-item"><div class="gk">${k}</div><div class="gv">${v}</div></div>`).join('')}</div>
+  </div></div>`;
+}
+function calcSchakt(){
+  const l=+document.getElementById('sc_l').value||0;
+  const bw=+document.getElementById('sc_bw').value||0;
+  const d=+document.getElementById('sc_d').value||0;
+  const sl=+document.getElementById('sc_sl').value||0;
+  const badd=+document.getElementById('sc_badd').value||0;
+  const kring=+document.getElementById('sc_kring').value||0;
+  const tw=bw+2*d*sl;
+  const vol=l*(bw+tw)/2*d;
+  const beddV=l*bw*badd;
+  const surV=Math.max(0,l*bw*kring-beddV);
+  const bal=vol-(beddV+surV);
+  document.getElementById('sc_formula').textContent=`TW = ${bw}+2×${d}×${sl} = ${tw.toFixed(2)}m    V = ${l}×(${bw.toFixed(2)}+${tw.toFixed(2)})/2×${d} = ${vol.toFixed(2)} m³`;
+  document.getElementById('sc_tot').textContent=vol.toFixed(2);
+  document.getElementById('sc_tw').textContent=tw.toFixed(2);
+  document.getElementById('sc_bed').textContent=beddV.toFixed(2);
+  document.getElementById('sc_sur').textContent=surV.toFixed(2);
+  document.getElementById('sc_bal').textContent=bal.toFixed(2);
+  document.getElementById('sc_svg').innerHTML=`<div class="svg-box">${svgSection(bw,tw,d,[],`L=${l}m | V=${vol.toFixed(1)}m³`,true)}</div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: EL-2018
+═══════════════════════════════════════════════════════════════ */
+function renderEL(){
+  if(!curProj())return emptyProj();
+  const{segs,tot}=elAll();const EL=D('EL');
+  const mx=Math.max(tot.exc,1);
+  const seg=segs[S.selSeg]||segs[0];
+  const pipes=seg?(() => {
+    const p=EL.pts[S.selSeg]||EL.pts[0];
+    const arr=[];
+    for(let i=0;i<p.n50;i++)arr.push(.05);
+    for(let i=0;i<p.n110;i++)arr.push(.11);
+    for(let i=0;i<p.n160;i++)arr.push(.16);
+    return arr;
+  })():[];
+  return`<div>
+  <div class="ph"><h2>⚡ EL-2018 — ${T('Kabelschakt','Cable Trench')}</h2>
+  <div class="sub">${T('Bottenbredd beräknas automatiskt från rörmix 50/110/160mm. Klicka en rad för att se tvärsnittet.','Bottom width calculated auto from pipe mix. Click a row to preview its cross-section.')}</div></div>
+  <div class="infobox"><h4>ℹ️ ${T('Beräkningsprincip EL-2018','EL-2018 Calculation Principle')}</h4>
+    <p>${T('EL-kabelschakt beräknas enligt AMA EL 2018. Bottenbredden styrs av rörmixen och konfigurerbara avstånd.','EL cable trench is calculated per AMA EL 2018. Bottom width is determined by the pipe mix and configurable spacings.')}</p>
+    <ul style="margin-top:6px">
+      <li><strong>BW</strong> = ${T('∑(dia × antal rör) + avst.inre × (n−1) + avst.yttre × 2','∑(dia × pipe count) + inner spacing × (n−1) + outer spacing × 2')}</li>
+      <li><strong>TW jord</strong> = BW + 2 × E × ${T('Slant jord','Soil slope')}</li>
+      <li><strong>TW berg</strong> = BW + 2 × D × ${T('Slant berg','Rock slope')} + 1.0m</li>
+      <li>${T('Kringfyllning = BW × Kringhöjd × L','Surrounding fill = BW × Surround height × L')}</li>
+    </ul>
+  </div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--p)"></span>${T('Konfiguration','Configuration')}</div>
+  <div class="fg">
+    <div class="fi"><label>${T('Röravst. inre (m)','Inner spacing (m)')}</label><input type="number" value="${EL.cfg.spacingI}" step=".01" oninput="D('EL').cfg.spacingI=+this.value;touchProj();save();go('el')"></div>
+    <div class="fi"><label>${T('Röravst. yttre (m)','Outer spacing (m)')}</label><input type="number" value="${EL.cfg.spacingL}" step=".01" oninput="D('EL').cfg.spacingL=+this.value;touchProj();save();go('el')"></div>
+    <div class="fi"><label>${T('Slant Jord H:1V','Soil slope H:1V')}</label><input type="number" value="${EL.cfg.slopeJord}" step=".25" oninput="D('EL').cfg.slopeJord=+this.value;touchProj();save();go('el')"></div>
+    <div class="fi"><label>${T('Slant Berg H:1V','Rock slope H:1V')}</label><input type="number" value="${EL.cfg.slopeBerg}" step=".1" oninput="D('EL').cfg.slopeBerg=+this.value;touchProj();save();go('el')"></div>
+    <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${EL.cfg.asphalt}" step=".05" oninput="D('EL').cfg.asphalt=+this.value;touchProj();save();go('el')"></div>
+    <div class="fi"><label>${T('Vegetation (m)','Vegetation (m)')}</label><input type="number" value="${EL.cfg.veg}" step=".05" oninput="D('EL').cfg.veg=+this.value;touchProj();save();go('el')"></div>
+    <div class="fi"><label>${T('Kringf.höjd (m)','Surr. fill h (m)')}</label><input type="number" value="${EL.cfg.sfh}" step=".05" oninput="D('EL').cfg.sfh=+this.value;touchProj();save();go('el')"></div>
+    <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select oninput="D('EL').cfg.geoType=+this.value;touchProj();save();go('el')">
+      ${[0,1,2,3].map(v=>`<option value="${v}" ${EL.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
+    <div class="fi"><label>${T('Spontning','Sheet piling')}</label><select oninput="D('EL').cfg.spont=+this.value;touchProj();save();go('el')">
+      ${[0,1,2].map(v=>`<option value="${v}" ${EL.cfg.spont===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
+  </div></div>
+  ${pcBar(tot.done,tot.total,T('Utfört schakt','Completed exc.'))}
+  <div class="mg">
+    ${mc(tot.l,T('Längd','Length'),'m','',100)}
+    ${mc(tot.exc,T('Schakt tot','Exc. total'),'m³','',100)}
+    ${mc(tot.jord,T('Jordschakt','Soil exc.'),'m³','c2',pct(tot.jord,mx))}
+    ${mc(tot.berg,T('Bergschakt','Rock exc.'),'m³','c2',pct(tot.berg,mx))}
+    ${mc(tot.bed,T('Ledningsbädd','Bedding'),'m³','c3',pct(tot.bed,mx))}
+    ${mc(tot.sur,T('Kringfyllning','Surr.fill'),'m³','c3',pct(tot.sur,mx))}
+    ${mc(tot.remA,T('Restfyll A','Rest A'),'m³','c4',pct(tot.remA,mx))}
+    ${mc(tot.geo,T('Geotextil','Geotextile'),'m²','c4',70)}
+  </div>
+  <div class="cg2">
+    <div class="cd"><div class="ct"><span class="dot" style="background:#6366f1"></span>${T('Tvärsnitt — valt segment','Cross-section — selected segment')} ${S.selSeg+1}</div>
+      <div class="svg-box" id="el-svg">${seg?svgSection(seg.bw1,seg.tw1,seg.ad,pipes):T('Inga segment','No segments')}</div>
+    </div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Volymfördelning','Volume split')}</div>
+      <div class="ch-wrap"><canvas id="ch-el-pie"></canvas></div></div>
+  </div>
+  <div class="cg2">
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Djupprofil','Depth profile')}</div>
+      <div class="ch-wrap"><canvas id="ch-el-depth"></canvas></div></div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Volym per segment','Volume per segment')}</div>
+      <div class="ch-wrap"><canvas id="ch-el-seg"></canvas></div></div>
+  </div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Profilpunkter','Profile points')}
+    <span style="margin-left:auto;font-size:9px;font-weight:400;text-transform:none;color:var(--ts)">${T('Klicka rad = visa tvärsnitt','Click row = show section')}</span>
+  </div>
+  <div class="tbl-wrap"><table class="dt">
+    <thead><tr><th>W(m)</th><th>${T('Jorddj.','Soil d.')} E</th><th>${T('Bergdj.','Rock d.')} D</th><th>H</th><th>⌀50</th><th>⌀110</th><th>⌀160</th><th>K</th><th>✓</th><th></th></tr></thead>
+    <tbody>
+    ${EL.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
+      <td><input type="number" value="${p.w}" step="5" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].w=+this.value;touchProj();save();go('el')"></td>
+      <td><input type="number" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].e=+this.value;touchProj();save();go('el')"></td>
+      <td><input type="number" value="${p.d}" step=".1" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].d=+this.value;touchProj();save();go('el')"></td>
+      <td><input type="number" value="${p.h}" step="1" min="0" max="1" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].h=+this.value;touchProj();save();go('el')"></td>
+      <td><input type="number" value="${p.n50}" step="1" min="0" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].n50=+this.value;touchProj();save();go('el')"></td>
+      <td><input type="number" value="${p.n110}" step="1" min="0" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].n110=+this.value;touchProj();save();go('el')"></td>
+      <td><input type="number" value="${p.n160}" step="1" min="0" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].n160=+this.value;touchProj();save();go('el')"></td>
+      <td><input type="number" value="${p.k}" step="1" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].k=+this.value;touchProj();save();go('el')"></td>
+      <td><input type="checkbox" ${p.done?'checked':''} onclick="event.stopPropagation()" onchange="D('EL').pts[${i}].done=this.checked?1:0;touchProj();save();go('el')"></td>
+      <td>${EL.pts.length>2?`<button class="bd-btn" onclick="event.stopPropagation();D('EL').pts.splice(${i},1);touchProj();save();go('el')">✕</button>`:''}</td>
+    </tr>`).join('')}
+    </tbody>
+  </table></div>
+  <div class="btn-row">
+    <button class="btn bp" onclick="D('EL').pts.push({...D('EL').pts[D('EL').pts.length-1],w:D('EL').pts[D('EL').pts.length-1].w+15,done:0});touchProj();save();go('el')">+ ${T('Punkt','Point')}</button>
+  </div></div>
+  ${segs.length?`<div class="cd"><div class="ct"><span class="dot" style="background:#8b5cf6"></span>${T('Segmentdetaljer','Segment details')}</div>
+  <div class="tbl-wrap"><table class="dt">
+    <thead><tr><th>${T('Från','From')}</th><th>${T('Till','To')}</th><th>L(m)</th><th>${T('Medeldjup','Avg depth')}</th><th>BW</th><th>TW</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th><th>${T('Balans','Balance')}</th></tr></thead>
+    <tbody>${segs.map((s,i)=>`<tr class="${s.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
+      <td>${s.f}</td><td>${s.t}</td><td>${s.L.toFixed(1)}</td><td>${s.ad.toFixed(2)}</td>
+      <td>${s.ab.toFixed(2)}</td><td>${s.at.toFixed(2)}</td>
+      <td class="num">${s.jord.toFixed(2)}</td><td class="num">${s.berg.toFixed(2)}</td>
+      <td class="num">${s.bed.toFixed(2)}</td><td class="num">${s.sur.toFixed(2)}</td>
+      <td class="num ${s.bal<0?'bad':''}">${s.bal.toFixed(2)}</td>
+    </tr>`).join('')}</tbody>
+    <tfoot><tr><td colspan="6">${T('TOTALT','TOTAL')}</td><td class="num">${tot.jord.toFixed(2)}</td><td class="num">${tot.berg.toFixed(2)}</td><td class="num">${tot.bed.toFixed(2)}</td><td class="num">${tot.sur.toFixed(2)}</td><td class="num ${tot.bal<0?'bad':''}">${tot.bal.toFixed(2)}</td></tr></tfoot>
+  </table></div></div>`:''}
+  </div>`;
+}
+function updateSegSVG(){
+  const p=S.page;
+  if(p==='el'){
+    const {segs}=elAll();const EL=D('EL');
+    const seg=segs[S.selSeg];if(!seg)return;
+    const pt=EL.pts[S.selSeg]||EL.pts[0];
+    const pipes=[];for(let i=0;i<pt.n50;i++)pipes.push(.05);for(let i=0;i<pt.n110;i++)pipes.push(.11);for(let i=0;i<pt.n160;i++)pipes.push(.16);
+    const el=document.getElementById('el-svg');if(el)el.innerHTML=svgSection(seg.bw1,seg.tw1,seg.ad,pipes,'',true);
+  }else if(p==='fv'){
+    const {segs}=fvAll();const seg=segs[S.selSeg];if(!seg)return;
+    const el=document.getElementById('fv-svg');if(el)el.innerHTML=svgSection(seg.bw1,seg.tw1,seg.ad,[.125,.125],'',true);
+  }else if(p==='fb'){
+    const {segs}=fbAll();const FB=D('FB');const seg=segs[S.selSeg];if(!seg)return;
+    const pt=FB.pts[S.selSeg]||FB.pts[0];
+    const el=document.getElementById('fb-svg');if(el)el.innerHTML=svgSection(seg.bw1,seg.tw1,seg.ad,[pt.c,pt.d],'',true);
+  }else if(p==='tr'){
+    const {segs}=trAll();const TR=D('TR');const seg=segs[S.selSeg];if(!seg)return;
+    const pt=TR.pts[S.selSeg]||TR.pts[0];
+    const el=document.getElementById('tr-svg');if(el)el.innerHTML=svgSection(seg.bw1,seg.tw1,seg.ad,[pt.c,pt.d],'',true);
+  }else if(p==='va'){
+    const {segs}=vaAll();const seg=segs[S.selSeg];if(!seg)return;
+    const pipes=D('VA').cfg.pipes||[];
+    const el=document.getElementById('va-svg');if(el)el.innerHTML=svgSection(seg.ab,seg.tw,seg.ad,pipes,'',true);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: FV
+═══════════════════════════════════════════════════════════════ */
+function renderFV(){
+  if(!curProj())return emptyProj();
+  const{segs,tot}=fvAll();const FV=D('FV');
+  const mx=Math.max(tot.exc,1);
+  const seg=segs[S.selSeg]||segs[0];
+  return`<div>
+  <div class="ph"><h2>🔥 FV — ${T('Fjärrvärme','District Heating')}</h2>
+  <div class="sub">${T('Isolerade parledningar. Bottenbredd beräknas automatiskt. Klicka rad för tvärsnitt.','Insulated twin pipes. Bottom width auto-calculated. Click row to preview.')}</div></div>
+  <div class="infobox"><h4>ℹ️ ${T('Fjärrvärme-schakt AMA','District heating trench AMA')}</h4>
+    <p>${T('FV-rör levereras i par (tilledning + retur). Bottenbredden beräknas automatiskt från rördimensionerna + 20cm. Schaktet kräver noggrann kringfyllning för att skydda isoleringen mot mekanisk skada.','FV pipes come in pairs (supply + return). Bottom width is auto-calculated from pipe diameters + 20cm. Careful surrounding fill protects insulation from mechanical damage.')}</p>
+    <ul style="margin-top:6px">
+      <li><strong>BW</strong> = C (${T('ytterdia tilledning','outer dia supply')}) + D (${T('ytterdia retur','outer dia return')}) + 0.20m</li>
+      <li>${T('Djupspecifikation FV: schakt djupare/grundare än 1.0m redovisas separat','FV depth spec: excavation deeper/shallower than 1.0m is reported separately')} → <span class="badge-pill" onclick="go('fvspec')" style="cursor:pointer">FV-spec ›</span></li>
+      <li>${T('Slant G kan sättas per punkt — override av konfigurationsvärdet','Slope G can be set per point — overrides configuration value')}</li>
+    </ul>
+  </div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--d)"></span>${T('Konfiguration','Configuration')}</div>
+  <div class="fg">
+    <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select oninput="D('FV').cfg.geoType=+this.value;touchProj();save();go('fv')">${[0,1,2,3].map(v=>`<option value="${v}" ${FV.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
+    <div class="fi"><label>${T('Spontning','Sheet piling')}</label><select oninput="D('FV').cfg.spont=+this.value;touchProj();save();go('fv')">${[0,1,2].map(v=>`<option value="${v}" ${FV.cfg.spont===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
+    <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${FV.cfg.asphalt}" step=".05" oninput="D('FV').cfg.asphalt=+this.value;touchProj();save();go('fv')"></div>
+    <div class="fi"><label>${T('Vegetation (m)','Vegetation (m)')}</label><input type="number" value="${FV.cfg.veg}" step=".05" oninput="D('FV').cfg.veg=+this.value;touchProj();save();go('fv')"></div>
+  </div></div>
+  ${pcBar(tot.done,tot.total,T('Utfört FV-schakt','FV completed'))}
+  <div class="mg">
+    ${mc(tot.l,T('Längd','Length'),'m','',100)}${mc(tot.exc,T('Schakt tot','Exc. total'),'m³','',100)}
+    ${mc(tot.jord,T('Jordschakt','Soil exc.'),'m³','c2',pct(tot.jord,mx))}${mc(tot.berg,T('Bergschakt','Rock exc.'),'m³','c2',pct(tot.berg,mx))}
+    ${mc(tot.bed,T('Ledningsbädd','Bedding'),'m³','c3',pct(tot.bed,mx))}${mc(tot.sur,T('Kringfyllning','Surr.fill'),'m³','c3',pct(tot.sur,mx))}
+    ${mc(tot.rem,T('Restfyllning','Remaining'),'m³','c4',pct(tot.rem,mx))}${mc(tot.geo,T('Geotextil','Geotextile'),'m²','c4',70)}
+  </div>
+  <div class="cg2">
+    <div class="cd"><div class="ct"><span class="dot" style="background:#ef4444"></span>${T('Tvärsnitt — segment','Cross-section — segment')} ${S.selSeg+1}</div>
+      <div class="svg-box" id="fv-svg">${seg?svgSection(seg.bw1,seg.tw1,seg.ad,[.125,.125],'FV-ledning'):T('–','–')}</div></div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Volymfördelning','Volume split')}</div>
+      <div class="ch-wrap"><canvas id="ch-fv-pie"></canvas></div></div>
+  </div>
+  <div class="cg2">
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Djupprofil','Depth profile')}</div>
+      <div class="ch-wrap"><canvas id="ch-fv-depth"></canvas></div></div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Volymer per segment','Volume per segment')}</div>
+      <div class="ch-wrap"><canvas id="ch-fv-seg"></canvas></div></div>
+  </div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Profilpunkter — klicka rad för tvärsnitt','Profile points — click row for section')}</div>
+  <div class="tbl-wrap"><table class="dt">
+    <thead><tr><th>I(m)</th><th>E</th><th>F(bädd)</th><th>G(slant)</th><th>A(kring)</th><th>C(dia)</th><th>D(dia)</th><th>K%</th><th>✓</th><th></th></tr></thead>
+    <tbody>${FV.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
+      <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].i=+this.value;touchProj();save();go('fv')"></td>
+      <td><input type="number" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].e=+this.value;touchProj();save();go('fv')"></td>
+      <td><input type="number" value="${p.f}" step=".05" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].f=+this.value;touchProj();save();go('fv')"></td>
+      <td><input type="number" value="${p.g}" step=".25" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].g=+this.value;touchProj();save();go('fv')"></td>
+      <td><input type="number" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].a=+this.value;touchProj();save();go('fv')"></td>
+      <td><input type="number" value="${p.c}" step=".01" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].c=+this.value;touchProj();save();go('fv')"></td>
+      <td><input type="number" value="${p.d}" step=".01" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].d=+this.value;touchProj();save();go('fv')"></td>
+      <td><input type="number" value="${p.k}" step=".1" min="0" max="1" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].k=+this.value;touchProj();save();go('fv')"></td>
+      <td><input type="checkbox" ${p.done?'checked':''} onclick="event.stopPropagation()" onchange="D('FV').pts[${i}].done=this.checked?1:0;touchProj();save();go('fv')"></td>
+      <td>${FV.pts.length>2?`<button class="bd-btn" onclick="event.stopPropagation();D('FV').pts.splice(${i},1);touchProj();save();go('fv')">✕</button>`:''}</td>
+    </tr>`).join('')}</tbody>
+  </table></div>
+  <div class="btn-row">
+    <button class="btn bp" onclick="const l=D('FV').pts;l.push({...l[l.length-1],i:l[l.length-1].i+10,done:0});touchProj();save();go('fv')">+ ${T('Punkt','Point')}</button>
+  </div></div></div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: FYLLN MOT BYGGNAD (abbreviated)
+═══════════════════════════════════════════════════════════════ */
+function renderFB(){
+  if(!curProj())return emptyProj();
+  const{segs,tot}=fbAll();const FB=D('FB');const mx=Math.max(tot.exc,1);
+  const seg=segs[S.selSeg]||segs[0];
+  return`<div>
+  <div class="ph"><h2>🏗️ ${T('Fylln mot byggnad','Fill by building')}</h2>
+  <div class="sub">${T('Schakt längs husgrunder och källarmurar. Bottenbredd beräknas automatiskt från rördimensioner.','Excavation along building foundations and basement walls. Bottom width auto-calculated.')}</div></div>
+  <div class="infobox"><h4>ℹ️ ${T('Vad är Fylln mot byggnad?','What is Fill by building?')}</h4>
+    <p>${T('Fylln mot byggnad avser schakt och fyllning utmed husgrunder och källarmurar. Arbetet utförs med försiktighet för att inte skada befintlig konstruktion. Bottenbredden styrs av rörledningarnas yttermått plus säkerhetsavstånd.','Fill by building refers to excavation and fill alongside building foundations and basement walls. Work is done carefully to avoid damaging existing structures. Bottom width is controlled by pipe outer dimensions plus safety margins.')}</p>
+    <ul style="margin-top:6px">
+      <li>${T('BW = ytterdia tilledning (C) + ytterdia retur (D) + 0.20m','BW = outer dia supply pipe (C) + outer dia return pipe (D) + 0.20m')}</li>
+      <li>${T('Slänter är normalt flackare (0.1:1) pga risk för ras mot byggnaden','Slopes are normally shallower (0.1:1) due to collapse risk against the building')}</li>
+      <li>${T('Djupet E avser schaktdjup; F är bäddlagrets tjocklek','Depth E is excavation depth; F is bedding layer thickness')}</li>
+    </ul>
+  </div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--o)"></span>${T('Konfiguration','Configuration')}</div>
+  <div class="fg">
+    <div class="fi"><label>${T('Slant H:1V (standard)','Slope H:1V (default)')}</label><input type="number" value="${FB.cfg.slope}" step=".1" oninput="D('FB').cfg.slope=+this.value;touchProj();save();go('fb')"></div>
+    <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${FB.cfg.asphalt}" step=".05" oninput="D('FB').cfg.asphalt=+this.value;touchProj();save();go('fb')"></div>
+    <div class="fi"><label>${T('Vegetation (m)','Vegetation (m)')}</label><input type="number" value="${FB.cfg.veg}" step=".05" oninput="D('FB').cfg.veg=+this.value;touchProj();save();go('fb')"></div>
+    <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select oninput="D('FB').cfg.geoType=+this.value;touchProj();save();go('fb')">${[0,1,2,3].map(v=>`<option value="${v}" ${FB.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
+    <div class="fi"><label>${T('Spontning','Sheet piling')}</label><select oninput="D('FB').cfg.spont=+this.value;touchProj();save();go('fb')">${[0,1,2].map(v=>`<option value="${v}" ${FB.cfg.spont===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
+  </div></div>
+  ${pcBar(tot.done,tot.total,T('Utfört Fylln-schakt','FB completed'))}
+  <div class="mg">
+    ${mc(tot.l,T('Längd','Length'),'m','',100)}${mc(tot.exc,T('Schakt tot','Exc. total'),'m³','',100)}
+    ${mc(tot.jord,T('Jordschakt','Soil exc.'),'m³','c2',pct(tot.jord,mx))}${mc(tot.berg,T('Bergschakt','Rock exc.'),'m³','c2',pct(tot.berg,mx))}
+    ${mc(tot.bed,T('Ledningsbädd','Bedding'),'m³','c3',pct(tot.bed,mx))}${mc(tot.sur,T('Kringfyllning','Surr.fill'),'m³','c3',pct(tot.sur,mx))}
+    ${mc(tot.rem,T('Restfyllning','Remaining'),'m³','c4',pct(tot.rem,mx))}${mc(tot.geo,T('Geotextil','Geotextile'),'m²','c4',70)}
+  </div>
+  <div class="cg2">
+    <div class="cd"><div class="ct"><span class="dot" style="background:#f97316"></span>${T('Tvärsnitt — segment','Cross-section — segment')} ${S.selSeg+1}</div>
+      <div class="svg-box" id="fb-svg">${seg?svgSection(seg.bw1,seg.tw1,seg.ad,[.2,.1],'FB'):T('–','–')}</div></div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Volymfördelning','Volume split')}</div>
+      <div class="ch-wrap"><canvas id="ch-fb-pie"></canvas></div></div>
+  </div>
+  <div class="cg2">
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Djupprofil','Depth profile')}</div>
+      <div class="ch-wrap"><canvas id="ch-fb-depth"></canvas></div></div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Volymer per segment','Volume per segment')}</div>
+      <div class="ch-wrap"><canvas id="ch-fb-seg"></canvas></div></div>
+  </div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Profilpunkter — klicka rad för tvärsnitt','Profile points — click row for section')}
+    <span style="margin-left:auto;font-size:9px;color:var(--ts);font-weight:400;text-transform:none">${T('I=Station · E=Schaktdjup · F=Bäddtjocklek · G=Slant · A=Kringh. · C/D=Rördim · K=Jordfraktion','I=Station · E=Exc.depth · F=Bed thickness · G=Slope · A=Surr.h · C/D=Pipe diam · K=Soil fraction')}</span>
+  </div>
+  <div class="tbl-wrap"><table class="dt">
+    <thead><tr><th>I(m)</th><th>E ${T('Djup','depth')}</th><th>F ${T('Bädd','bed')}</th><th>G ${T('Slant','slope')}</th><th>A ${T('Kring','surr.')}</th><th>C ${T('Dia1','dia1')}</th><th>D ${T('Dia2','dia2')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
+    <tbody>${FB.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
+      <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].i=+this.value;touchProj();save();go('fb')"></td>
+      <td><input type="number" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].e=+this.value;touchProj();save();go('fb')"></td>
+      <td><input type="number" value="${p.f}" step=".05" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].f=+this.value;touchProj();save();go('fb')"></td>
+      <td><input type="number" value="${p.g}" step=".25" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].g=+this.value;touchProj();save();go('fb')"></td>
+      <td><input type="number" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].a=+this.value;touchProj();save();go('fb')"></td>
+      <td><input type="number" value="${p.c}" step=".01" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].c=+this.value;touchProj();save();go('fb')"></td>
+      <td><input type="number" value="${p.d}" step=".01" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].d=+this.value;touchProj();save();go('fb')"></td>
+      <td><input type="number" value="${p.k}" step=".1" min="0" max="1" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].k=+this.value;touchProj();save();go('fb')"></td>
+      <td><input type="checkbox" ${p.done?'checked':''} onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].done=this.checked?1:0;touchProj();save();go('fb')"></td>
+      <td>${FB.pts.length>2?`<button class="bd-btn" onclick="event.stopPropagation();D('FB').pts.splice(${i},1);touchProj();save();go('fb')">✕</button>`:''}</td>
+    </tr>`).join('')}</tbody>
+  </table></div>
+  <div class="btn-row"><button class="btn bp" onclick="const l=D('FB').pts;l.push({...l[l.length-1],i:l[l.length-1].i+10,done:0});touchProj();save();go('fb')">+ ${T('Punkt','Point')}</button></div></div>
+  ${segs.length?`<div class="cd"><div class="ct"><span class="dot" style="background:#8b5cf6"></span>${T('Segmentdetaljer','Segment details')}</div>
+  <div class="tbl-wrap"><table class="dt">
+    <thead><tr><th>${T('Från','From')}</th><th>${T('Till','To')}</th><th>L(m)</th><th>${T('Medeldjup','Avg depth')}</th><th>BW</th><th>TW</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th><th>${T('Balans','Balance')}</th></tr></thead>
+    <tbody>${segs.map((s,i)=>`<tr class="${s.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
+      <td>${s.f}</td><td>${s.t}</td><td>${s.L.toFixed(1)}</td><td>${s.ad.toFixed(2)}</td>
+      <td>${s.ab.toFixed(2)}</td><td>${s.at.toFixed(2)}</td>
+      <td class="num">${s.jord.toFixed(2)}</td><td class="num">${s.berg.toFixed(2)}</td>
+      <td class="num">${s.bed.toFixed(2)}</td><td class="num">${s.sur.toFixed(2)}</td>
+      <td class="num ${s.bal<0?'bad':''}">${s.bal.toFixed(2)}</td>
+    </tr>`).join('')}</tbody>
+    <tfoot><tr><td colspan="6">${T('TOTALT','TOTAL')}</td><td class="num">${tot.jord.toFixed(2)}</td><td class="num">${tot.berg.toFixed(2)}</td><td class="num">${tot.bed.toFixed(2)}</td><td class="num">${tot.sur.toFixed(2)}</td><td class="num ${tot.bal<0?'bad':''}">${tot.bal.toFixed(2)}</td></tr></tfoot>
+  </table></div></div>`:''}
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: TRUMMA
+═══════════════════════════════════════════════════════════════ */
+function renderTR(){
+  if(!curProj())return emptyProj();
+  const{segs,tot}=trAll();const TR=D('TR');const mx=Math.max(tot.exc,1);
+  const seg=segs[S.selSeg]||segs[0];
+  const trPipe1=TR.pts[S.selSeg]?.c||.315,trPipe2=TR.pts[S.selSeg]?.d||.315;
+  return`<div>
+  <div class="ph"><h2>🔵 TRUMMA — ${T('Ledningsschakt stora rör','Large pipe trench')}</h2>
+  <div class="sub">${T('Betong- och plasttrummor DN200–DN400. Djupa schakt med breda bottnar och extra stabila bäddar.','Concrete and plastic culverts DN200–DN400. Deep trenches with wide bottoms and extra stable bedding.')}</div></div>
+  <div class="infobox"><h4>ℹ️ ${T('Beräkningsprincip TRUMMA','TRUMMA calculation principle')}</h4>
+    <p>${T('TRUMMA-schakt avser vägtrummor och stora ledningar (DN200–DN400). Bottenbredden beräknas som ytterdiameter rör 1 + ytterdiameter rör 2 + 10cm. Schaktet kräver noggrant anpassad bädd och kringfyllning av godkänt material.','TRUMMA trench refers to road culverts and large pipes (DN200–DN400). Bottom width = outer diameter pipe 1 + outer diameter pipe 2 + 10cm. Trench requires carefully adapted bedding and surrounding fill of approved material.')}</p>
+    <ul style="margin-top:6px">
+      <li>${T('BW = C (dia rör 1) + D (dia rör 2) + 0.10m','BW = C (dia pipe 1) + D (dia pipe 2) + 0.10m')}</li>
+      <li>${T('Slant standard 1:1 — kontrollera markförhållanden','Standard slope 1:1 — check ground conditions')}</li>
+      <li>${T('F = bäddlagrets tjocklek under rörets underkant','F = bedding layer thickness below pipe bottom')}</li>
+      <li>${T('A = kringfyllningshöjd upp till täcklager','A = surrounding fill height up to top layer')}</li>
+    </ul>
+  </div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Konfiguration','Configuration')}</div>
+  <div class="fg">
+    <div class="fi"><label>${T('Slant H:1V (standard)','Slope H:1V (default)')}</label><input type="number" value="${TR.cfg.slope}" step=".25" oninput="D('TR').cfg.slope=+this.value;touchProj();save();go('tr')"></div>
+    <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${TR.cfg.asphalt}" step=".05" oninput="D('TR').cfg.asphalt=+this.value;touchProj();save();go('tr')"></div>
+    <div class="fi"><label>${T('Vegetation (m)','Vegetation (m)')}</label><input type="number" value="${TR.cfg.veg}" step=".05" oninput="D('TR').cfg.veg=+this.value;touchProj();save();go('tr')"></div>
+    <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select oninput="D('TR').cfg.geoType=+this.value;touchProj();save();go('tr')">${[0,1,2,3].map(v=>`<option value="${v}" ${TR.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
+    <div class="fi"><label>${T('Spontning','Sheet piling')}</label><select oninput="D('TR').cfg.spont=+this.value;touchProj();save();go('tr')">${[0,1,2].map(v=>`<option value="${v}" ${TR.cfg.spont===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
+  </div></div>
+  ${pcBar(tot.done,tot.total,T('Utfört TRUMMA-schakt','TRUMMA completed'))}
+  <div class="mg">
+    ${mc(tot.l,T('Längd','Length'),'m','',100)}${mc(tot.exc,T('Schakt tot','Exc. total'),'m³','',100)}
+    ${mc(tot.jord,T('Jordschakt','Soil exc.'),'m³','c2',pct(tot.jord,mx))}${mc(tot.berg,T('Bergschakt','Rock exc.'),'m³','c2',pct(tot.berg,mx))}
+    ${mc(tot.bed,T('Ledningsbädd','Bedding'),'m³','c3',pct(tot.bed,mx))}${mc(tot.sur,T('Kringfyllning','Surr.fill'),'m³','c3',pct(tot.sur,mx))}
+    ${mc(tot.rem,T('Restfyllning','Remaining'),'m³','c4',pct(tot.rem,mx))}${mc(tot.geo,T('Geotextil','Geotextile'),'m²','c4',70)}
+  </div>
+  <div class="cg2">
+    <div class="cd"><div class="ct"><span class="dot" style="background:#06b6d4"></span>${T('Tvärsnitt — segment','Cross-section — segment')} ${S.selSeg+1}</div>
+      <div class="svg-box" id="tr-svg">${seg?svgSection(seg.bw1,seg.tw1,seg.ad,[trPipe1,trPipe2],'TRUMMA DN'+Math.round(trPipe1*1000)):T('–','–')}</div></div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Volymfördelning','Volume split')}</div>
+      <div class="ch-wrap"><canvas id="ch-tr-pie"></canvas></div></div>
+  </div>
+  <div class="cg2">
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Djupprofil','Depth profile')}</div>
+      <div class="ch-wrap"><canvas id="ch-tr-depth"></canvas></div></div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Volymer per segment','Volume per segment')}</div>
+      <div class="ch-wrap"><canvas id="ch-tr-seg"></canvas></div></div>
+  </div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Profilpunkter — klicka rad för tvärsnitt','Profile points — click row for section')}
+    <span style="margin-left:auto;font-size:9px;color:var(--ts);font-weight:400;text-transform:none">${T('I=Station · E=Schaktdjup · F=Bäddtjocklek · G=Slant · A=Kringh. · C/D=Rördim','I=Station · E=Exc.depth · F=Bed thickness · G=Slope · A=Surr.h · C/D=Pipe diam')}</span>
+  </div>
+  <div class="tbl-wrap"><table class="dt">
+    <thead><tr><th>I(m)</th><th>E ${T('Djup','depth')}</th><th>F ${T('Bädd','bed')}</th><th>G ${T('Slant','slope')}</th><th>A ${T('Kring','surr.')}</th><th>C ${T('Dia1','dia1')}</th><th>D ${T('Dia2','dia2')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
+    <tbody>${TR.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
+      <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].i=+this.value;touchProj();save();go('tr')"></td>
+      <td><input type="number" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].e=+this.value;touchProj();save();go('tr')"></td>
+      <td><input type="number" value="${p.f}" step=".05" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].f=+this.value;touchProj();save();go('tr')"></td>
+      <td><input type="number" value="${p.g}" step=".25" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].g=+this.value;touchProj();save();go('tr')"></td>
+      <td><input type="number" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].a=+this.value;touchProj();save();go('tr')"></td>
+      <td><input type="number" value="${p.c}" step=".005" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].c=+this.value;touchProj();save();go('tr')"></td>
+      <td><input type="number" value="${p.d}" step=".005" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].d=+this.value;touchProj();save();go('tr')"></td>
+      <td><input type="number" value="${p.k}" step=".1" min="0" max="1" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].k=+this.value;touchProj();save();go('tr')"></td>
+      <td><input type="checkbox" ${p.done?'checked':''} onclick="event.stopPropagation()" onchange="D('TR').pts[${i}].done=this.checked?1:0;touchProj();save();go('tr')"></td>
+      <td>${TR.pts.length>2?`<button class="bd-btn" onclick="event.stopPropagation();D('TR').pts.splice(${i},1);touchProj();save();go('tr')">✕</button>`:''}</td>
+    </tr>`).join('')}</tbody>
+  </table></div>
+  <div class="btn-row"><button class="btn bp" onclick="const l=D('TR').pts;l.push({...l[l.length-1],i:l[l.length-1].i+10,done:0});touchProj();save();go('tr')">+ ${T('Punkt','Point')}</button></div></div>
+  ${segs.length?`<div class="cd"><div class="ct"><span class="dot" style="background:#8b5cf6"></span>${T('Segmentdetaljer','Segment details')}</div>
+  <div class="tbl-wrap"><table class="dt">
+    <thead><tr><th>${T('Från','From')}</th><th>${T('Till','To')}</th><th>L(m)</th><th>${T('Medeldjup','Avg depth')}</th><th>BW</th><th>TW</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th><th>${T('Balans','Balance')}</th></tr></thead>
+    <tbody>${segs.map((s,i)=>`<tr class="${s.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
+      <td>${s.f}</td><td>${s.t}</td><td>${s.L.toFixed(1)}</td><td>${s.ad.toFixed(2)}</td>
+      <td>${s.ab.toFixed(2)}</td><td>${s.at.toFixed(2)}</td>
+      <td class="num">${s.jord.toFixed(2)}</td><td class="num">${s.berg.toFixed(2)}</td>
+      <td class="num">${s.bed.toFixed(2)}</td><td class="num">${s.sur.toFixed(2)}</td>
+      <td class="num ${s.bal<0?'bad':''}">${s.bal.toFixed(2)}</td>
+    </tr>`).join('')}</tbody>
+    <tfoot><tr><td colspan="6">${T('TOTALT','TOTAL')}</td><td class="num">${tot.jord.toFixed(2)}</td><td class="num">${tot.berg.toFixed(2)}</td><td class="num">${tot.bed.toFixed(2)}</td><td class="num">${tot.sur.toFixed(2)}</td><td class="num ${tot.bal<0?'bad':''}">${tot.bal.toFixed(2)}</td></tr></tfoot>
+  </table></div></div>`:''}
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: VA 2026
+═══════════════════════════════════════════════════════════════ */
+function renderVA(){
+  if(!curProj())return emptyProj();
+  const{segs,tot}=vaAll();const VA=D('VA');const mx=Math.max(tot.exc,1);
+  const seg=segs[S.selSeg]||segs[0];
+  const budgetPct=VA.cfg.budget>0?pct(tot.cost,VA.cfg.budget):0;
+  return`<div>
+  <div class="ph"><h2>💧 VA 2026 — ${T('VA-ledningar','Water & Sewer')}</h2>
+  <div class="sub">${T('Vatten- och avloppsledningar med fullständig kostnadskalkyl mot budget.','Water and sewer pipes with full cost calculation against budget.')}</div></div>
+  ${VA.cfg.budget>0?`<div class="budget-card">
+    <div style="font-size:12px;font-weight:600;opacity:.7;margin-bottom:4px">${T('Projektbudget VA','VA Project budget')}</div>
+    <div style="font-size:24px;font-weight:800">${fmtSEK(tot.cost)} <span style="font-size:15px;opacity:.65">/ ${fmtSEK(VA.cfg.budget)}</span></div>
+    <div class="budget-bar"><div class="budget-fill ${budgetPct>90?'over':budgetPct>75?'warn':''}" style="width:${Math.min(100,budgetPct)}%"></div></div>
+    <div style="font-size:11px;opacity:.65">${budgetPct.toFixed(1)}% ${T('av budget','of budget')}</div>
+  </div>`:''}
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Rör & konfiguration','Pipes & configuration')}</div>
+  <div class="fg">
+    <div class="fi" style="grid-column:span 2"><label>${T('Rörkonfiguration (diameter m, kommaseparerat)','Pipe configuration (diameter m, comma-separated)')}</label>
+      <input type="text" value="${VA.cfg.pipes.join(',')}" oninput="try{const v=this.value.split(',').map(x=>+x.trim()).filter(x=>x>0);if(v.length)D('VA').cfg.pipes=v;touchProj();save();}catch(e){}"></div>
+    <div class="fi"><label>${T('Budget (kr)','Budget (SEK)')}</label><input type="number" value="${VA.cfg.budget}" step="100000" oninput="D('VA').cfg.budget=+this.value;touchProj();save();go('va')"></div>
+    <div class="fi"><label>${T('Slant V H:1V','Slope V H:1V')}</label><input type="number" value="${VA.cfg.slopeV}" step=".05" oninput="D('VA').cfg.slopeV=+this.value;touchProj();save();go('va')"></div>
+    <div class="fi"><label>${T('Slant H H:1V','Slope H H:1V')}</label><input type="number" value="${VA.cfg.slopeH}" step=".05" oninput="D('VA').cfg.slopeH=+this.value;touchProj();save();go('va')"></div>
+    <div class="fi"><label>${T('Kringf.höjd (m)','Surr.fill h (m)')}</label><input type="number" value="${VA.cfg.sfh}" step=".05" oninput="D('VA').cfg.sfh=+this.value;touchProj();save();go('va')"></div>
+  </div></div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Prissättning (kr/enhet)','Pricing (SEK/unit)')}</div>
+  <p style="font-size:11.5px;color:var(--ts);margin-bottom:10px">${T('Ange enhetspriser för varje kostnadsposter i kronor per m³ eller m². Kostnad = volym × pris.','Enter unit prices for each cost category in SEK per m³ or m². Cost = volume × price.')}</p>
+  <div class="fg">${[
+    ['asfalt',T('Asfalt (kr/m²)','Asphalt (SEK/m²)')],
+    ['veg',T('Vegetation (kr/m²)','Vegetation (SEK/m²)')],
+    ['jord',T('Jordschakt (kr/m³)','Soil exc. (SEK/m³)')],
+    ['berg',T('Bergschakt (kr/m³)','Rock exc. (SEK/m³)')],
+    ['rustbadd',T('Rustbädd (kr/m³)','Foundation bed (SEK/m³)')],
+    ['ytaLt',T('Yta <1m djup (kr/m³)','Area <1m deep (SEK/m³)')],
+    ['ytaGt',T('Yta >1m djup (kr/m³)','Area >1m deep (SEK/m³)')],
+    ['avtatn',T('Avtagning berg (kr/m²)','Rock stripping (SEK/m²)')],
+    ['badd',T('Ledningsbädd (kr/m³)','Pipe bedding (SEK/m³)')],
+    ['kring',T('Kringfyllning (kr/m³)','Surr. fill (SEK/m³)')],
+    ['restA',T('Restfyllning A (kr/m³)','Remaining fill A (SEK/m³)')],
+    ['restB',T('Restfyllning B (kr/m³)','Remaining fill B (SEK/m³)')],
+    ['spont',T('Spontning (kr/m²)','Sheet piling (SEK/m²)')],
+    ['bergAvt',T('Bergavtagning (kr/m³)','Rock removal (SEK/m³)')],
+    ['tatsom',T('Tätskikt/muff (kr/m)','Seal/coupling (SEK/m)')],
+    ['geo',T('Geotextil (kr/m²)','Geotextile (SEK/m²)')],
+  ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${VA.prices[k]||0}" step="5" oninput="D('VA').prices['${k}']=+this.value;touchProj();save();go('va')"></div>`).join('')}</div></div>
+  <div class="mg">
+    ${mc(tot.l,T('Längd','Length'),'m','',100)}${mc(tot.exc,T('Schakt tot','Exc. total'),'m³','',100)}
+    ${mc(tot.jord,T('Jordschakt','Soil exc.'),'m³','c2',pct(tot.jord,mx))}${mc(tot.berg,T('Bergschakt','Rock exc.'),'m³','c2',pct(tot.berg,mx))}
+    ${mc(tot.bed,T('Ledningsbädd','Bedding'),'m³','c3',pct(tot.bed,mx))}${mc(tot.sur,T('Kringfyllning','Surr.fill'),'m³','c3',pct(tot.sur,mx))}
+    ${mc(tot.remA,T('Restfyll A','Rest A'),'m³','c4',pct(tot.remA,mx))}${mc(fmtSEK(tot.cost),T('Kostnad','Cost'),'','c6',budgetPct)}
+  </div>
+  <div class="cg2">
+    <div class="cd"><div class="ct"><span class="dot" style="background:#06b6d4"></span>${T('Tvärsnitt','Cross-section')} ${S.selSeg+1}</div>
+      <div class="svg-box" id="va-svg">${seg?svgSection(seg.ab,seg.tw,seg.ad,VA.cfg.pipes,'VA'):T('–','–')}</div></div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Volym & kostnad','Volume & cost')}</div>
+      <div class="ch-wrap"><canvas id="ch-va-pie"></canvas></div></div>
+  </div>
+  <div class="cg2">
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Djupprofil','Depth profile')}</div>
+      <div class="ch-wrap"><canvas id="ch-va-depth"></canvas></div></div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Kostnad per segment','Cost per segment')}</div>
+      <div class="ch-wrap"><canvas id="ch-va-cost"></canvas></div></div>
+  </div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Profilpunkter','Profile points')}
+    <span style="margin-left:auto;font-size:9px;font-weight:400;text-transform:none;color:var(--ts)">${T('Klicka rad = visa tvärsnitt','Click row = show section')}</span>
+  </div>
+  <div class="tbl-wrap"><table class="dt">
+    <thead><tr><th>N(m)</th><th>R(dj)</th><th>C(berg)</th><th>BW</th><th>A(kring)</th><th>${T('Jord','Soil')} m³</th><th>${T('Berg','Rock')} m³</th><th>${T('Bädd','Bed')} m³</th><th>${T('Kring','Surr')} m³</th><th>${T('Kostnad','Cost')} kr</th><th>✓</th><th></th></tr></thead>
+    <tbody>${VA.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
+      <td><input type="number" value="${p.n}" step="5" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].n=+this.value;touchProj();save();go('va')"></td>
+      <td><input type="number" value="${p.r}" step=".1" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].r=+this.value;touchProj();save();go('va')"></td>
+      <td><input type="number" value="${p.c}" step=".1" min="0" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].c=+this.value;touchProj();save();go('va')"></td>
+      <td><input type="number" value="${p.bw}" step=".05" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].bw=+this.value;touchProj();save();go('va')"></td>
+      <td><input type="number" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].a=+this.value;touchProj();save();go('va')"></td>
+      ${segs[i]?`<td class="num">${segs[i].jord.toFixed(1)}</td><td class="num">${segs[i].berg.toFixed(1)}</td><td class="num">${segs[i].bed.toFixed(1)}</td><td class="num">${segs[i].sur.toFixed(1)}</td><td class="num">${Math.round(segs[i].cost).toLocaleString('sv-SE')}</td>`:'<td colspan="5">–</td>'}
+      <td><input type="checkbox" ${p.done?'checked':''} onclick="event.stopPropagation()" onchange="D('VA').pts[${i}].done=this.checked?1:0;touchProj();save();go('va')"></td>
+      <td>${VA.pts.length>2?`<button class="bd-btn" onclick="event.stopPropagation();D('VA').pts.splice(${i},1);touchProj();save();go('va')">✕</button>`:''}</td>
+    </tr>`).join('')}
+    </tbody>
+    <tfoot><tr><td colspan="5">${T('TOTALT','TOTAL')}</td><td class="num">${tot.jord.toFixed(1)}</td><td class="num">${tot.berg.toFixed(1)}</td><td class="num">${tot.bed.toFixed(1)}</td><td class="num">${tot.sur.toFixed(1)}</td><td class="num">${Math.round(tot.cost).toLocaleString('sv-SE')}</td><td colspan="2"></td></tr></tfoot>
+  </table></div>
+  <div class="btn-row"><button class="btn bp" onclick="const l=D('VA').pts;l.push({...l[l.length-1],n:l[l.length-1].n+15,done:0,doneR:0});touchProj();save();go('va')">+ ${T('Punkt','Point')}</button></div></div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: FV-SPEC
+═══════════════════════════════════════════════════════════════ */
+function renderFVSpec(){
+  if(!curProj())return emptyProj();
+  const{segs,tot}=fvAll();
+  const deep=segs.filter(s=>s.ad>1),shallow=segs.filter(s=>s.ad<=1);
+  const dJord=deep.reduce((s,x)=>s+x.jord,0),sJord=shallow.reduce((s,x)=>s+x.jord,0);
+  const dBerg=deep.reduce((s,x)=>s+x.berg,0);
+  const dLen=deep.reduce((s,x)=>s+x.L,0),sLen=shallow.reduce((s,x)=>s+x.L,0);
+  return`<div>
+  <div class="ph"><h2>📋 FV-spec — ${T('Djupspecifikation','Depth specification')}</h2>
+  <div class="sub">${T('Uppdelning av FV-schakt per djup (>1.0m / ≤1.0m) enligt MER.','FV excavation split by depth (>1.0m / ≤1.0m) per MER rules.')}</div></div>
+  <div class="infobox"><h4>ℹ️ ${T('MER-krav för djupspecifikation','MER requirements for depth specification')}</h4>
+    ${T('MER kräver separat redovisning av schakt djupare och grundare än 1.0m. Automatisk beräkning baseras på medeldjupet per segment.','MER requires separate reporting of excavation deeper and shallower than 1.0m. Automatic calculation based on average depth per segment.')}</div>
+  <div class="cg2">
+    <div class="cd" style="border-left:4px solid var(--d)"><div class="ct"><span class="dot" style="background:var(--d)"></span>${T('Djupt schakt > 1.0m','Deep excavation > 1.0m')}</div>
+      <div class="mg" style="margin-bottom:0">
+        ${mc(dLen.toFixed(0),T('Längd','Length'),'m','c2',pct(dLen,tot.l))}
+        ${mc(dJord.toFixed(1),T('Jordschakt','Soil exc.'),'m³','c2',pct(dJord,tot.jord))}
+        ${mc(dBerg.toFixed(1),T('Bergschakt','Rock exc.'),'m³','c2',pct(dBerg,tot.berg))}
+      </div></div>
+    <div class="cd" style="border-left:4px solid var(--s)"><div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Grunt schakt ≤ 1.0m','Shallow excavation ≤ 1.0m')}</div>
+      <div class="mg" style="margin-bottom:0">
+        ${mc(sLen.toFixed(0),T('Längd','Length'),'m','c4',pct(sLen,tot.l))}
+        ${mc(sJord.toFixed(1),T('Jordschakt','Soil exc.'),'m³','c4',pct(sJord,tot.jord))}
+        ${mc((tot.sur).toFixed(1),T('Kringfyllning','Surr.fill'),'m³','c4',50)}
+      </div></div>
+  </div>
+  <div class="cg2">
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--p)"></span>${T('Längdfördelning djup','Length split by depth')}</div>
+      <div class="ch-wrap"><canvas id="ch-fvs-depth"></canvas></div></div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Volymfördelning djup','Volume split by depth')}</div>
+      <div class="ch-wrap"><canvas id="ch-fvs-vol"></canvas></div></div>
+  </div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:#8b5cf6"></span>${T('Segment per djupklass','Segments by depth class')}</div>
+  <div class="tbl-wrap"><table class="dt">
+    <thead><tr><th>${T('Från','From')}</th><th>${T('Till','To')}</th><th>L(m)</th><th>${T('Medeldjup','Avg depth')}</th><th>${T('Klass','Class')}</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th></tr></thead>
+    <tbody>${segs.map(s=>`<tr>
+      <td>${s.f}</td><td>${s.t}</td><td>${s.L.toFixed(1)}</td><td>${s.ad.toFixed(2)}</td>
+      <td><span style="font-weight:700;color:${s.ad>1?'var(--d)':'var(--s)'}">${s.ad>1?'>1.0m':'≤1.0m'}</span></td>
+      <td class="num">${s.jord.toFixed(2)}</td><td class="num">${s.berg.toFixed(2)}</td>
+      <td class="num">${s.bed.toFixed(2)}</td><td class="num">${s.sur.toFixed(2)}</td>
+    </tr>`).join('')}</tbody>
+  </table></div></div></div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: RÖRLÄNGDER
+═══════════════════════════════════════════════════════════════ */
+function renderRL(){
+  if(!curProj())return emptyProj();
+  const RL=D('RL');
+  const vTotals=RL.vatten.pipes.map((_,pi)=>RL.vatten.sections.reduce((s,sec)=>s+(sec.counts[pi]||0)*sec.len,0));
+  const dTotals=RL.avlopp.dagPipes.map((_,pi)=>RL.avlopp.dagSections.reduce((s,sec)=>s+(sec.dag[pi]||0)*sec.len,0));
+  const sTotals=RL.avlopp.spillPipes.map((_,pi)=>RL.avlopp.dagSections.reduce((s,sec)=>s+(sec.spill[pi]||0)*sec.len,0));
+  const vTotal=vTotals.reduce((a,b)=>a+b,0),dTotal=dTotals.reduce((a,b)=>a+b,0),sTotal=sTotals.reduce((a,b)=>a+b,0);
+  return`<div>
+  <div class="ph"><h2>📏 ${T('Rörlängder','Pipe lengths')}</h2>
+  <div class="sub">${T('VA-kontroll och utförda rörlängder per dimension och sträcka.','VA control and executed pipe lengths per dimension and section.')}</div></div>
+  <div class="infobox"><h4>ℹ️ ${T('Om Rörlängdertabellen','About the Pipe lengths table')}</h4>
+    <p>${T('Rörlängdertabellen visar vilka rörledningar som installerats i varje sträcka (Från–Till). Markera en bock (✓) i kolumnen för att visa att sträckan är utförd och kontrollerad. Totalt utfört och kontrollutfört redovisas i mätvärdena ovan.','The pipe lengths table shows which pipes have been installed in each section (From–To). Check (✓) in the column to indicate the section is completed and inspected. Total completed and inspection completed are shown in the metrics above.')}</p>
+    <p style="margin-top:6px">${T('Lägg till sektioner med knappen nedan. Fyll i Från/Till-stationer och markera vilka rördimensioner som finns i sträckan.','Add sections using the button below. Fill in From/To stations and check which pipe dimensions exist in the section.')}</p>
+  </div>
+  <div class="mg">
+    ${mc(RL.kontrollUtfort.toFixed(1),T('Kontroll utfört','Inspection done'),'m','c4',pct(RL.kontrollUtfort,RL.totUtfort))}
+    ${mc(RL.totUtfort.toFixed(1),T('Totalt utfört','Total done'),'m','',100)}
+    ${mc(vTotal.toFixed(1),T('Vatten tot','Water total'),'m','c3',pct(vTotal,vTotal+dTotal+sTotal))}
+    ${mc((dTotal+sTotal).toFixed(1),T('Avlopp tot','Sewer total'),'m','c2',pct(dTotal+sTotal,vTotal+dTotal+sTotal))}
+  </div>
+  <div class="rl-cat"><div class="rl-cat-header"><span>💧 ${T('Vattenledningar','Water pipes')}</span><span>${vTotal.toFixed(1)} m</span></div>
+  <div class="rl-cat-body"><table class="dt" style="font-size:10px">
+    <thead><tr><th>${T('Från','From')}</th><th>${T('Till','To')}</th><th>L(m)</th>${RL.vatten.pipes.map(p=>`<th>${p}</th>`).join('')}<th>✓</th><th></th></tr></thead>
+    <tbody>${RL.vatten.sections.map((s,si)=>`<tr class="${s.done?'done-row':''}">
+      <td><input type="number" value="${s.from}" step=".01" style="width:52px" onchange="D('RL').vatten.sections[${si}].from=+this.value;const sec=D('RL').vatten.sections[${si}];sec.len=Math.abs(sec.to-sec.from);touchProj();save();go('rl')"></td>
+      <td><input type="number" value="${s.to}" step=".01" style="width:52px" onchange="D('RL').vatten.sections[${si}].to=+this.value;const sec=D('RL').vatten.sections[${si}];sec.len=Math.abs(sec.to-sec.from);touchProj();save();go('rl')"></td>
+      <td>${s.len.toFixed(2)}</td>
+      ${RL.vatten.pipes.map((_,pi)=>`<td><input type="checkbox" ${s.counts[pi]?'checked':''} onchange="D('RL').vatten.sections[${si}].counts[${pi}]=this.checked?1:0;touchProj();save();go('rl')"></td>`).join('')}
+      <td><input type="checkbox" ${s.done?'checked':''} onchange="D('RL').vatten.sections[${si}].done=this.checked?1:0;touchProj();save();go('rl')"></td>
+      <td><button class="bd-btn" onclick="D('RL').vatten.sections.splice(${si},1);touchProj();save();go('rl')">✕</button></td>
+    </tr>`).join('')}</tbody>
+    <tfoot><tr><td colspan="3">${T('TOTALT','TOTAL')}</td>${vTotals.map(v=>`<td class="num">${v>0?v.toFixed(1):'–'}</td>`).join('')}<td></td><td></td></tr></tfoot>
+  </table></div>
+  <div class="btn-row"><button class="btn bp" onclick="const rl=D('RL');const last=rl.vatten.sections[rl.vatten.sections.length-1];rl.vatten.sections.push({from:last?last.to:0,to:last?last.to+10:10,len:10,counts:new Array(rl.vatten.pipes.length).fill(0),done:0});touchProj();save();go('rl')">+ ${T('Sektion','Section')}</button></div>
+  </div></div>
+  <div class="rl-cat"><div class="rl-cat-header" style="background:linear-gradient(135deg,var(--s),#059669)"><span>🌊 ${T('Dagvatten','Storm water')}</span><span>${dTotal.toFixed(1)} m</span></div>
+  <div class="rl-cat-body"><table class="dt" style="font-size:10px">
+    <thead><tr><th>${T('Från','From')}</th><th>${T('Till','To')}</th><th>L(m)</th>${RL.avlopp.dagPipes.map(p=>`<th>${p}</th>`).join('')}<th>✓</th><th></th></tr></thead>
+    <tbody>${RL.avlopp.dagSections.map((s,si)=>`<tr class="${s.done?'done-row':''}">
+      <td><input type="number" value="${s.from}" step=".01" style="width:52px" onchange="D('RL').avlopp.dagSections[${si}].from=+this.value;const sec=D('RL').avlopp.dagSections[${si}];sec.len=Math.abs(sec.to-sec.from);touchProj();save();go('rl')"></td>
+      <td><input type="number" value="${s.to}" step=".01" style="width:52px" onchange="D('RL').avlopp.dagSections[${si}].to=+this.value;const sec=D('RL').avlopp.dagSections[${si}];sec.len=Math.abs(sec.to-sec.from);touchProj();save();go('rl')"></td>
+      <td>${s.len.toFixed(2)}</td>
+      ${RL.avlopp.dagPipes.map((_,pi)=>`<td><input type="checkbox" ${s.dag[pi]?'checked':''} onchange="D('RL').avlopp.dagSections[${si}].dag[${pi}]=this.checked?1:0;touchProj();save();go('rl')"></td>`).join('')}
+      <td><input type="checkbox" ${s.done?'checked':''} onchange="D('RL').avlopp.dagSections[${si}].done=this.checked?1:0;touchProj();save();go('rl')"></td>
+      <td><button class="bd-btn" onclick="D('RL').avlopp.dagSections.splice(${si},1);touchProj();save();go('rl')">✕</button></td>
+    </tr>`).join('')}</tbody>
+    <tfoot><tr><td colspan="3">${T('TOTALT','TOTAL')}</td>${dTotals.map(v=>`<td class="num">${v>0?v.toFixed(1):'–'}</td>`).join('')}<td></td><td></td></tr></tfoot>
+  </table></div>
+  <div class="btn-row"><button class="btn bp" onclick="const rl=D('RL');const last=rl.avlopp.dagSections[rl.avlopp.dagSections.length-1];rl.avlopp.dagSections.push({from:last?last.to:0,to:last?last.to+10:10,len:10,dag:new Array(rl.avlopp.dagPipes.length).fill(0),spill:new Array(rl.avlopp.spillPipes.length).fill(0),done:0});touchProj();save();go('rl')">+ ${T('Sektion','Section')}</button></div>
+  </div></div>
+  <div class="rl-cat"><div class="rl-cat-header" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)"><span>🚿 ${T('Spillvatten','Sewage water')}</span><span>${sTotal.toFixed(1)} m</span></div>
+  <div class="rl-cat-body"><table class="dt" style="font-size:10px">
+    <thead><tr><th>${T('Från','From')}</th><th>${T('Till','To')}</th><th>L(m)</th>${RL.avlopp.spillPipes.map(p=>`<th>${p}</th>`).join('')}<th>✓</th></tr></thead>
+    <tbody>${RL.avlopp.dagSections.map((s,si)=>`<tr class="${s.done?'done-row':''}">
+      <td>${s.from}</td><td>${s.to}</td><td>${s.len.toFixed(2)}</td>
+      ${RL.avlopp.spillPipes.map((_,pi)=>`<td><input type="checkbox" ${s.spill[pi]?'checked':''} onchange="D('RL').avlopp.dagSections[${si}].spill[${pi}]=this.checked?1:0;touchProj();save();go('rl')"></td>`).join('')}
+      <td><input type="checkbox" ${s.done?'checked':''} onchange="D('RL').avlopp.dagSections[${si}].done=this.checked?1:0;touchProj();save();go('rl')"></td>
+    </tr>`).join('')}</tbody>
+    <tfoot><tr><td colspan="3">${T('TOTALT','TOTAL')}</td>${sTotals.map(v=>`<td class="num">${v>0?v.toFixed(1):'–'}</td>`).join('')}<td></td></tr></tfoot>
+  </table></div></div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Kontrollmätning','Inspection measurement')}</div>
+  <div class="fg">
+    <div class="fi"><label>${T('Totalt utfört (m)','Total completed (m)')}</label><input type="number" value="${RL.totUtfort}" step=".1" oninput="D('RL').totUtfort=+this.value;touchProj();save();go('rl')"></div>
+    <div class="fi"><label>${T('Kontroll utfört (m)','Inspection done (m)')}</label><input type="number" value="${RL.kontrollUtfort}" step=".1" oninput="D('RL').kontrollUtfort=+this.value;touchProj();save();go('rl')"></div>
+  </div>
+  ${pcBar(RL.kontrollUtfort,RL.totUtfort,T('Kontroll utfört','Inspection completed'))}
+  </div>
+  <div class="cg2">
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--p)"></span>${T('Fördelning ledningstyp','Pipe type split')}</div>
+      <div class="ch-wrap"><canvas id="ch-rl-type"></canvas></div></div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Vattenledning per dim','Water by dimension')}</div>
+      <div class="ch-wrap"><canvas id="ch-rl-vdim"></canvas></div></div>
+  </div></div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: SAMMANSTÄLLNING
+═══════════════════════════════════════════════════════════════ */
+function renderSM(){
+  if(!curProj())return emptyProj();
+  const el=elAll().tot,fv=fvAll().tot,fb=fbAll().tot,tr=trAll().tot,va=vaAll().tot;
+  const totExc=el.exc+fv.exc+fb.exc+tr.exc+va.exc;
+  const totJord=el.jord+fv.jord+fb.jord+tr.jord+va.jord;
+  const totBerg=el.berg+fv.berg+fb.berg+tr.berg+va.berg;
+  const totBed=el.bed+fv.bed+fb.bed+tr.bed+va.bed;
+  const totSur=el.sur+fv.sur+fb.sur+tr.sur+va.sur;
+  const totGeo=el.geo+fv.geo+fb.geo+tr.geo+va.geo;
+  const totRem=el.remA+fv.rem+fb.rem+tr.rem+va.remA;
+  const totBal=el.bal+fv.bal+fb.bal+tr.bal+va.bal;
+  const totL=el.l+fv.l+fb.l+tr.l+va.l;
+  const proj=curProj();
+  return`<div>
+  <div class="ph"><h2>📊 ${T('Sammanställning','Summary')}</h2><div class="sub">${T('Komplett översikt för alla schakttyper — ${proj?.name||\"\"}.','Complete overview for all excavation types — ${proj?.name||\"\"}.').replace('${proj?.name||""}',proj?.name||'')}</div></div>
+  <div class="infobox"><h4>ℹ️ ${T('Om sammanställningen','About the summary')}</h4>
+    <p>${T('Sammanställningen visar totala volymer och kostnader för alla schakttyper i projektet. Balansen visar skillnaden mellan total schaktvolym och all återfyllning (bädd + kring + rest). Negativ balans = underfyllning; positiv balans = överskottsmassor att deponera.','The summary shows total volumes and costs for all excavation types. The balance shows the difference between total excavation volume and all backfill (bed + surround + remaining). Negative balance = underfilling; positive balance = surplus masses to deposit.')}</p>
+  </div>
+  <div class="mg">
+    ${mc(totL.toFixed(0),T('Total längd','Total length'),'m','',100)}
+    ${mc(totExc.toFixed(0),T('Total schakt','Total exc.'),'m³','',100)}
+    ${mc(totJord.toFixed(0),T('Jordschakt tot','Total soil'),'m³','c2',pct(totJord,totExc))}
+    ${mc(totBerg.toFixed(1),T('Bergschakt tot','Total rock'),'m³','c2',pct(totBerg,totExc))}
+    ${mc(totBed.toFixed(1),T('Bädd tot','Total bed'),'m³','c3',pct(totBed,totExc))}
+    ${mc(totSur.toFixed(1),T('Kring tot','Total surr.'),'m³','c3',pct(totSur,totExc))}
+    ${mc(totRem.toFixed(1),T('Rest tot','Total rest'),'m³','c4',pct(totRem,totExc))}
+    ${mc(totGeo.toFixed(0),T('Geotextil tot','Total geo'),'m²','c4',70)}
+    ${mc(fmtSEK(va.cost),T('VA Kostnad','VA Cost'),'','c6',50)}
+    ${mc(totBal.toFixed(0),T('Balans tot','Total balance'),'m³',totBal<0?'c2':'c4',50)}
+  </div>
+  ${totBal!==0?`<div class="infobox" style="background:${totBal>0?'rgba(239,68,68,.07)':'rgba(16,185,129,.07)'};border-color:${totBal>0?'var(--d)':'var(--s)'}">
+    <h4 style="color:${totBal>0?'var(--d)':'var(--s)'}">${totBal>0?'⚠️ '+T('Överskottsmassor','Surplus masses'):'✅ '+T('Underskott — import behövs','Deficit — import needed')}</h4>
+    <p>${totBal>0?T(`${totBal.toFixed(0)} m³ schaktmassor är i överskott och behöver transporteras bort eller deponeras.`,`${totBal.toFixed(0)} m³ excavation surplus needs to be hauled away or deposited.`).replace('${totBal.toFixed(0)}',totBal.toFixed(0)):T(`${Math.abs(totBal).toFixed(0)} m³ fyllnadsmassa behöver importeras för att fylla schaktet.`,`${Math.abs(totBal).toFixed(0)} m³ fill material needs to be imported.`).replace('${Math.abs(totBal).toFixed(0)}',Math.abs(totBal).toFixed(0))}</p>
+  </div>`:''}
+  <div class="cg2">
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--p)"></span>${T('Schakt per typ','Exc. by type')}</div>
+      <div class="ch-wrap lg"><canvas id="ch-sm-bar"></canvas></div></div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Total fördelning','Total split')}</div>
+      <div class="ch-wrap lg"><canvas id="ch-sm-pie"></canvas></div></div>
+  </div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Detaljerad sammanställning per schakttyp','Detailed summary per excavation type')}</div>
+  <div class="tbl-wrap"><table class="dt">
+    <thead><tr><th>${T('Schakttyp','Excavation type')}</th><th>${T('Längd m','Length m')}</th><th>${T('Schakt m³','Exc m³')}</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th><th>${T('Rest m³','Rest m³')}</th><th>${T('Geo m²','Geo m²')}</th><th>${T('Balans m³','Balance m³')}</th></tr></thead>
+    <tbody>
+      <tr onclick="go('el')" style="cursor:pointer"><td style="text-align:left;font-weight:700">⚡ EL-2018</td><td>${el.l.toFixed(1)}</td><td class="num">${el.exc.toFixed(1)}</td><td class="num">${el.jord.toFixed(1)}</td><td class="num">${el.berg.toFixed(1)}</td><td class="num">${el.bed.toFixed(1)}</td><td class="num">${el.sur.toFixed(1)}</td><td class="num">${el.remA.toFixed(1)}</td><td class="num">${el.geo.toFixed(1)}</td><td class="num ${el.bal<0?'bad':''}">${el.bal.toFixed(1)}</td></tr>
+      <tr onclick="go('fv')" style="cursor:pointer"><td style="text-align:left;font-weight:700">🔥 FV</td><td>${fv.l.toFixed(1)}</td><td class="num">${fv.exc.toFixed(1)}</td><td class="num">${fv.jord.toFixed(1)}</td><td class="num">${fv.berg.toFixed(1)}</td><td class="num">${fv.bed.toFixed(1)}</td><td class="num">${fv.sur.toFixed(1)}</td><td class="num">${fv.rem.toFixed(1)}</td><td class="num">${fv.geo.toFixed(1)}</td><td class="num ${fv.bal<0?'bad':''}">${fv.bal.toFixed(1)}</td></tr>
+      <tr onclick="go('fb')" style="cursor:pointer"><td style="text-align:left;font-weight:700">🏗️ Fylln</td><td>${fb.l.toFixed(1)}</td><td class="num">${fb.exc.toFixed(1)}</td><td class="num">${fb.jord.toFixed(1)}</td><td class="num">${fb.berg.toFixed(1)}</td><td class="num">${fb.bed.toFixed(1)}</td><td class="num">${fb.sur.toFixed(1)}</td><td class="num">${fb.rem.toFixed(1)}</td><td class="num">${fb.geo.toFixed(1)}</td><td class="num ${fb.bal<0?'bad':''}">${fb.bal.toFixed(1)}</td></tr>
+      <tr onclick="go('tr')" style="cursor:pointer"><td style="text-align:left;font-weight:700">🔵 TRUMMA</td><td>${tr.l.toFixed(1)}</td><td class="num">${tr.exc.toFixed(1)}</td><td class="num">${tr.jord.toFixed(1)}</td><td class="num">${tr.berg.toFixed(1)}</td><td class="num">${tr.bed.toFixed(1)}</td><td class="num">${tr.sur.toFixed(1)}</td><td class="num">${tr.rem.toFixed(1)}</td><td class="num">${tr.geo.toFixed(1)}</td><td class="num ${tr.bal<0?'bad':''}">${tr.bal.toFixed(1)}</td></tr>
+      <tr onclick="go('va')" style="cursor:pointer"><td style="text-align:left;font-weight:700">💧 VA 2026</td><td>${va.l.toFixed(1)}</td><td class="num">${va.exc.toFixed(1)}</td><td class="num">${va.jord.toFixed(1)}</td><td class="num">${va.berg.toFixed(1)}</td><td class="num">${va.bed.toFixed(1)}</td><td class="num">${va.sur.toFixed(1)}</td><td class="num">${va.remA.toFixed(1)}</td><td class="num">${va.geo.toFixed(1)}</td><td class="num ${va.bal<0?'bad':''}">${va.bal.toFixed(1)}</td></tr>
+    </tbody>
+    <tfoot><tr><td style="text-align:left">${T('TOTALT','TOTAL')}</td><td>${totL.toFixed(1)}</td><td>${totExc.toFixed(1)}</td><td>${totJord.toFixed(1)}</td><td>${totBerg.toFixed(1)}</td><td>${totBed.toFixed(1)}</td><td>${totSur.toFixed(1)}</td><td>${totRem.toFixed(1)}</td><td>${totGeo.toFixed(1)}</td><td class="${totBal<0?'bad':''}">${totBal.toFixed(1)}</td></tr></tfoot>
+  </table></div></div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Export & Åtgärder','Export & Actions')}</div>
+  <div class="exp-grid">
+    <button class="exp-btn" onclick="xCSV()">📄 ${T('Exportera CSV','Export CSV')}</button>
+    <button class="exp-btn" onclick="xJSON()">{ } ${T('Exportera JSON','Export JSON')}</button>
+    <button class="exp-btn" onclick="xPDF()">📕 ${T('Skriv ut / PDF','Print / PDF')}</button>
+    <button class="exp-btn" onclick="saveLocal()">💾 ${T('Spara manuellt','Save manually')}</button>
+  </div></div></div>`;
+}
+function emptyProj(){
+  return`<div class="empty-state"><div class="ico">📁</div><h3>${T('Inget projekt valt','No project selected')}</h3><p>${T('Välj ett projekt från menyn eller skapa ett nytt för att börja.','Select a project from the menu or create a new one to get started.')}</p><button class="btn bp" onclick="go('projects')">${T('Visa projekt','View projects')}</button></div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TODO / ROADMAP
+═══════════════════════════════════════════════════════════════ */
+let _todoFilter='all';
+const TODO_CATS={bug:{sv:'🐛 Bugg',en:'🐛 Bug'},feature:{sv:'🚀 Ny funktion',en:'🚀 Feature'},improvement:{sv:'✨ Förbättring',en:'✨ Improvement'},infra:{sv:'🔧 Infrastruktur',en:'🔧 Infrastructure'}};
+const TODO_PRIOS={high:{sv:'Hög',en:'High'},medium:{sv:'Medium',en:'Medium'},low:{sv:'Låg',en:'Low'}};
+
+function defaultTodos(){
+  const now=new Date().toISOString();
+  return[
+    {id:'td1',text:'PWA-installation — lägg till på hemskärmen (offline-stöd, service worker)',cat:'feature',prio:'high',done:false,created:now},
+    {id:'td2',text:'Webbhosting — driftsätta på Netlify / Vercel med automatisk deploy',cat:'infra',prio:'high',done:false,created:now},
+    {id:'td3',text:'GitHub Actions CI/CD — automatisera bygge, test och deploy vid push',cat:'infra',prio:'high',done:false,created:now},
+    {id:'td4',text:'Export till PDF — korrekt layout med logotyp, projektinfo och sidhuvud/-fot',cat:'improvement',prio:'high',done:false,created:now},
+    {id:'td5',text:'Desktop-app med Tauri — paketera som .exe/.msi (Windows) och .dmg (macOS)',cat:'feature',prio:'medium',done:false,created:now},
+    {id:'td6',text:'Stripe-integration — Pro 299 kr/mån, Team 799 kr/mån, desktop-licens 1 990 kr',cat:'feature',prio:'medium',done:false,created:now},
+    {id:'td7',text:'Supabase cloud sync — byt ut localStorage mot molnlagring för Pro-användare',cat:'feature',prio:'medium',done:false,created:now},
+    {id:'td8',text:'Mobil-app via Capacitor — publicera på Google Play Store och Apple App Store',cat:'feature',prio:'medium',done:false,created:now},
+    {id:'td9',text:'Förbättra engelska översättningar — granska alla T()-strängar med native speaker',cat:'improvement',prio:'medium',done:false,created:now},
+    {id:'td10',text:'Diagram i mörkt läge — kalibrera Chart.js-färger för bättre kontrast i dark mode',cat:'bug',prio:'medium',done:false,created:now},
+    {id:'td11',text:'Rörlängder: validera att sektioner inte överlappar varandra (from/to-kontroll)',cat:'bug',prio:'medium',done:false,created:now},
+    {id:'td12',text:'Budgetkalkyl per schakttyp — bryt ner VA-budgeten på EL/FV/FB/TRUMMA',cat:'improvement',prio:'medium',done:false,created:now},
+    {id:'td13',text:'API & BIM-integration — exportera kalkyldata till IFC/BIM-format (Fas 6)',cat:'feature',prio:'low',done:false,created:now},
+    {id:'td14',text:'Nordisk expansion — NO/DK/FI marknadslokalisering och prisomvandling',cat:'feature',prio:'low',done:false,created:now},
+    {id:'td15',text:'Spara enskild sida som PDF-rapport med sektion-för-sektion-layout',cat:'improvement',prio:'low',done:false,created:now},
+  ];
+}
+
+function addTodo(){
+  const txt=(document.getElementById('todo-new-text')||{}).value||'';
+  const cat=(document.getElementById('todo-new-cat')||{}).value||'feature';
+  const prio=(document.getElementById('todo-new-prio')||{}).value||'medium';
+  if(!txt.trim())return;
+  S.todos.push({id:'td'+Date.now(),text:txt.trim(),cat,prio,done:false,created:new Date().toISOString()});
+  save();go('todo');
+}
+function toggleTodo(id){
+  const t=S.todos.find(x=>x.id===id);if(t)t.done=!t.done;save();go('todo');
+}
+function deleteTodo(id){
+  S.todos=S.todos.filter(x=>x.id!==id);save();go('todo');
+}
+function setTodoFilter(f){_todoFilter=f;go('todo');}
+
+function fmtTodoDate(iso){
+  try{const d=new Date(iso);return d.toLocaleDateString(S.lang==='sv'?'sv-SE':'en-GB',{day:'numeric',month:'short'});}catch(e){return'';}
+}
+function todoItem(t){
+  const catLabel=(TODO_CATS[t.cat]||{})[S.lang==='sv'?'sv':'en']||t.cat;
+  const prioLabel=(TODO_PRIOS[t.prio]||{})[S.lang==='sv'?'sv':'en']||t.prio;
+  return`<div class="todo-item${t.done?' done':''}">
+  <input type="checkbox" class="todo-cb" ${t.done?'checked':''} onchange="toggleTodo('${t.id}')">
+  <div class="ti-body">
+    <div class="ti-text">${t.text}</div>
+    <div class="ti-meta">
+      <span class="ti-cat ${t.cat}">${catLabel}</span>
+      <span class="ti-prio ${t.prio}">${prioLabel}</span>
+      <span class="ti-date">${fmtTodoDate(t.created)}</span>
+    </div>
+  </div>
+  <button class="todo-del" onclick="deleteTodo('${t.id}')" title="${T('Ta bort','Delete')}">✕</button>
+</div>`;
+}
+
+function renderTodo(){
+  const all=S.todos;
+  const total=all.length,done=all.filter(x=>x.done).length,pct=total?Math.round(done/total*100):0;
+  const filtered=_todoFilter==='all'?all:_todoFilter==='done'?all.filter(x=>x.done):_todoFilter==='open'?all.filter(x=>!x.done):all.filter(x=>x.cat===_todoFilter);
+  const open=all.filter(x=>!x.done);
+  const hiPri=open.filter(x=>x.prio==='high').length;
+
+  const filterBtns=[
+    {k:'all',sv:'Alla',en:'All'},
+    {k:'open',sv:'Öppna',en:'Open'},
+    {k:'done',sv:'Klara',en:'Done'},
+    {k:'bug',sv:'🐛 Buggar',en:'🐛 Bugs'},
+    {k:'feature',sv:'🚀 Funktioner',en:'🚀 Features'},
+    {k:'improvement',sv:'✨ Förbättringar',en:'✨ Improvements'},
+    {k:'infra',sv:'🔧 Infrastruktur',en:'🔧 Infrastructure'},
+  ].map(f=>`<button class="tf-btn${_todoFilter===f.k?' a':''}" onclick="setTodoFilter('${f.k}')">${T(f.sv,f.en)}</button>`).join('');
+
+  const listHtml=filtered.length
+    ?filtered.map(todoItem).join('')
+    :`<div class="todo-empty"><div class="ico">🎉</div>${T('Inga uppgifter hittades för detta filter.','No tasks found for this filter.')}</div>`;
+
+  return`<div>
+  <div class="ph"><h2>✅ ${T('Todo & Roadmap','Todo & Roadmap')}</h2><div class="sub">${T('Förbättringar, buggar och planerade funktioner för AMA/MER Kalkyl Pro.','Improvements, bugs and planned features for AMA/MER Kalkyl Pro.')}</div></div>
+
+  <div class="todo-stats">
+    <div class="todo-stat"><div class="tsv" style="color:var(--p)">${total}</div><div class="tsl">${T('Totalt','Total')}</div></div>
+    <div class="todo-stat"><div class="tsv" style="color:var(--s)">${done}</div><div class="tsl">${T('Klara','Done')}</div></div>
+    <div class="todo-stat"><div class="tsv" style="color:var(--a)">${open.length}</div><div class="tsl">${T('Öppna','Open')}</div></div>
+    <div class="todo-stat"><div class="tsv" style="color:var(--d)">${hiPri}</div><div class="tsl">${T('Hög prio','High prio')}</div></div>
+    <div class="todo-stat" style="grid-column:span 2;text-align:left;padding:12px 14px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:4px">
+        <span>${T('Framsteg','Progress')}</span><span style="color:var(--s)">${pct}%</span>
+      </div>
+      <div class="todo-progress"><div class="todo-prog-fill" style="width:${pct}%"></div></div>
+      <div style="font-size:10px;color:var(--tm)">${done} ${T('av','of')} ${total} ${T('uppgifter klara','tasks completed')}</div>
+    </div>
+  </div>
+
+  <div class="todo-add-form">
+    <div class="ct" style="margin-bottom:12px"><span class="dot" style="background:var(--p)"></span>${T('Lägg till uppgift','Add task')}</div>
+    <div class="todo-add-row">
+      <div class="fi"><label>${T('Beskrivning','Description')}</label><input id="todo-new-text" type="text" placeholder="${T('Vad behöver göras?','What needs to be done?')}" onkeydown="if(event.key==='Enter')addTodo()"></div>
+      <div class="fi sm"><label>${T('Kategori','Category')}</label><select id="todo-new-cat">${Object.entries(TODO_CATS).map(([k,v])=>`<option value="${k}">${v[S.lang==='sv'?'sv':'en']}</option>`).join('')}</select></div>
+      <div class="fi xs"><label>${T('Prioritet','Priority')}</label><select id="todo-new-prio">${Object.entries(TODO_PRIOS).map(([k,v])=>`<option value="${k}">${v[S.lang==='sv'?'sv':'en']}</option>`).join('')}</select></div>
+      <button class="btn bp" onclick="addTodo()" style="margin-bottom:0;align-self:flex-end">+ ${T('Lägg till','Add')}</button>
+    </div>
+  </div>
+
+  <div class="todo-filters"><span>${T('Filtrera:','Filter:')}</span>${filterBtns}</div>
+  <div class="todo-list">${listHtml}</div>
+</div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CHARTS
+═══════════════════════════════════════════════════════════════ */
+function renderCharts(){
+  applyChartTheme();
+  const p=S.page;
+  if(p==='dashboard'&&curProj()){
+    const el=elAll().tot,fv=fvAll().tot,fb=fbAll().tot,tr=trAll().tot,va=vaAll().tot;
+    mkBar('ch-dash-bar',['EL-2018','FV','Fylln','TRUMMA','VA 2026'],[
+      {label:T('Jordschakt','Soil exc.'),data:[el.jord,fv.jord,fb.jord,tr.jord,va.jord],backgroundColor:'#818cf8',borderRadius:4},
+      {label:T('Bergschakt','Rock exc.'),data:[el.berg,fv.berg,fb.berg,tr.berg,va.berg],backgroundColor:'#a78bfa',borderRadius:4},
+      {label:T('Bädd','Bed'),data:[el.bed,fv.bed,fb.bed,tr.bed,va.bed],backgroundColor:'#f59e0b',borderRadius:4},
+      {label:T('Kring','Surr.'),data:[el.sur,fv.sur,fb.sur,tr.sur,va.sur],backgroundColor:'#06b6d4',borderRadius:4}
+    ]);
+    mkPie('ch-dash-pie',[T('Jordschakt','Soil'),T('Bergschakt','Rock'),T('Bädd','Bed'),T('Kring','Surr.')],[el.jord+fv.jord+fb.jord+tr.jord+va.jord,el.berg+fv.berg+fb.berg+tr.berg+va.berg,el.bed+fv.bed+fb.bed+tr.bed+va.bed,el.sur+fv.sur+fb.sur+tr.sur+va.sur]);
+  }else if(p==='el'){
+    const{segs,tot}=elAll();
+    mkPie('ch-el-pie',[T('Jord','Soil'),T('Berg','Rock'),T('Bädd','Bed'),T('Kring','Surr'),T('Rest','Rest')],[tot.jord,tot.berg,tot.bed,tot.sur,tot.remA],['#818cf8','#a78bfa','#f59e0b','#06b6d4','#10b981']);
+    if(segs.length){
+      mkLine('ch-el-depth',segs.map(s=>`${s.f}-${s.t}m`),[{label:T('Medeldjup (m)','Avg depth (m)'),data:segs.map(s=>s.ad),borderColor:'#6366f1',fill:true,backgroundColor:'rgba(99,102,241,.08)',tension:.3,pointRadius:4}]);
+      mkBar('ch-el-seg',segs.map(s=>`${s.f}-${s.t}`),[
+        {label:T('Jord','Soil'),data:segs.map(s=>s.jord),backgroundColor:'#818cf8',borderRadius:4},
+        {label:T('Berg','Rock'),data:segs.map(s=>s.berg),backgroundColor:'#a78bfa',borderRadius:4},
+        {label:T('Bädd','Bed'),data:segs.map(s=>s.bed),backgroundColor:'#f59e0b',borderRadius:4}
+      ]);
+    }
+  }else if(p==='fv'){
+    const{segs,tot}=fvAll();
+    mkPie('ch-fv-pie',[T('Jord','Soil'),T('Berg','Rock'),T('Bädd','Bed'),T('Kring','Surr'),T('Rest','Rest')],[tot.jord,tot.berg,tot.bed,tot.sur,tot.rem],['#818cf8','#a78bfa','#f59e0b','#06b6d4','#10b981']);
+    if(segs.length){
+      mkLine('ch-fv-depth',segs.map(s=>`${s.f}m`),[{label:T('Djup','Depth'),data:segs.map(s=>s.ad),borderColor:'#ef4444',fill:true,backgroundColor:'rgba(239,68,68,.07)',tension:.3,pointRadius:3}]);
+      mkBar('ch-fv-seg',segs.map(s=>`${s.f}-${s.t}`),[
+        {label:T('Jord','Soil'),data:segs.map(s=>s.jord),backgroundColor:'#818cf8',borderRadius:3},
+        {label:T('Kring','Surr.'),data:segs.map(s=>s.sur),backgroundColor:'#06b6d4',borderRadius:3},
+        {label:T('Bädd','Bed'),data:segs.map(s=>s.bed),backgroundColor:'#f59e0b',borderRadius:3}
+      ]);
+    }
+  }else if(p==='fb'){
+    const{segs,tot}=fbAll();
+    mkPie('ch-fb-pie',[T('Jord','Soil'),T('Berg','Rock'),T('Bädd','Bed'),T('Kring','Surr'),T('Rest','Rest')],[tot.jord,tot.berg,tot.bed,tot.sur,tot.rem],['#818cf8','#a78bfa','#f59e0b','#06b6d4','#10b981']);
+    if(segs.length){
+      mkLine('ch-fb-depth',segs.map(s=>`${s.f}m`),[{label:T('Djup','Depth'),data:segs.map(s=>s.ad),borderColor:'#f97316',fill:true,backgroundColor:'rgba(249,115,22,.07)',tension:.3,pointRadius:3}]);
+      mkBar('ch-fb-seg',segs.map(s=>`${s.f}-${s.t}`),[
+        {label:T('Jord','Soil'),data:segs.map(s=>s.jord),backgroundColor:'#818cf8',borderRadius:3},
+        {label:T('Kring','Surr.'),data:segs.map(s=>s.sur),backgroundColor:'#06b6d4',borderRadius:3},
+        {label:T('Bädd','Bed'),data:segs.map(s=>s.bed),backgroundColor:'#f59e0b',borderRadius:3}
+      ]);
+    }
+  }else if(p==='tr'){
+    const{segs,tot}=trAll();
+    mkPie('ch-tr-pie',[T('Jord','Soil'),T('Berg','Rock'),T('Bädd','Bed'),T('Kring','Surr'),T('Rest','Rest')],[tot.jord,tot.berg,tot.bed,tot.sur,tot.rem],['#818cf8','#a78bfa','#f59e0b','#06b6d4','#10b981']);
+    if(segs.length){
+      mkLine('ch-tr-depth',segs.map(s=>`${s.f}m`),[{label:T('Djup','Depth'),data:segs.map(s=>s.ad),borderColor:'#06b6d4',fill:true,backgroundColor:'rgba(6,182,212,.08)',tension:.3,pointRadius:3}]);
+      mkBar('ch-tr-seg',segs.map(s=>`${s.f}-${s.t}`),[
+        {label:T('Jord','Soil'),data:segs.map(s=>s.jord),backgroundColor:'#818cf8',borderRadius:3},
+        {label:T('Kring','Surr.'),data:segs.map(s=>s.sur),backgroundColor:'#06b6d4',borderRadius:3},
+        {label:T('Bädd','Bed'),data:segs.map(s=>s.bed),backgroundColor:'#f59e0b',borderRadius:3}
+      ]);
+    }
+  }else if(p==='va'){
+    const{segs,tot}=vaAll();
+    mkPie('ch-va-pie',[T('Jord','Soil'),T('Berg','Rock'),T('Bädd','Bed'),T('Kring','Surr'),T('Rest A','Rest A')],[tot.jord,tot.berg,tot.bed,tot.sur,tot.remA],['#06b6d4','#8b5cf6','#f59e0b','#10b981','#ec4899']);
+    if(segs.length){
+      mkLine('ch-va-depth',segs.map(s=>`${s.f}-${s.t}m`),[{label:T('Djup','Depth'),data:segs.map(s=>s.ad),borderColor:'#06b6d4',fill:true,backgroundColor:'rgba(6,182,212,.08)',tension:.3,pointRadius:4}]);
+      mkBar('ch-va-cost',segs.map(s=>`${s.f}-${s.t}`),[{label:T('Kostnad kr','Cost SEK'),data:segs.map(s=>Math.round(s.cost)),backgroundColor:'#6366f1',borderRadius:4}]);
+    }
+  }else if(p==='fvspec'){
+    const{segs,tot}=fvAll();
+    const deep=segs.filter(s=>s.ad>1),shallow=segs.filter(s=>s.ad<=1);
+    mkPie('ch-fvs-depth',[T('Djup > 1.0m','Deep > 1.0m'),T('Grunt ≤ 1.0m','Shallow ≤ 1.0m')],[deep.reduce((s,x)=>s+x.L,0),shallow.reduce((s,x)=>s+x.L,0)],['#ef4444','#10b981']);
+    mkPie('ch-fvs-vol',[T('Jord >1m','Soil >1m'),T('Jord ≤1m','Soil ≤1m'),T('Berg','Rock'),T('Bädd','Bed'),T('Kring','Surr')],[deep.reduce((s,x)=>s+x.jord,0),shallow.reduce((s,x)=>s+x.jord,0),tot.berg,tot.bed,tot.sur],['#ef4444','#10b981','#8b5cf6','#f59e0b','#06b6d4']);
+  }else if(p==='rl'){
+    const RL=D('RL');
+    const vTotals=RL.vatten.pipes.map((_,pi)=>RL.vatten.sections.reduce((s,sec)=>s+(sec.counts[pi]||0)*sec.len,0));
+    const dTotals=RL.avlopp.dagPipes.map((_,pi)=>RL.avlopp.dagSections.reduce((s,sec)=>s+(sec.dag[pi]||0)*sec.len,0));
+    const sTotals=RL.avlopp.spillPipes.map((_,pi)=>RL.avlopp.dagSections.reduce((s,sec)=>s+(sec.spill[pi]||0)*sec.len,0));
+    mkPie('ch-rl-type',[T('Vatten','Water'),T('Dag-avlopp','Storm w.'),T('Spillvatten','Sewage')],[vTotals.reduce((a,b)=>a+b,0),dTotals.reduce((a,b)=>a+b,0),sTotals.reduce((a,b)=>a+b,0)],['#6366f1','#10b981','#8b5cf6']);
+    const vNZ=RL.vatten.pipes.filter((_,i)=>vTotals[i]>0),vV=vTotals.filter(v=>v>0);
+    if(vNZ.length)mkPie('ch-rl-vdim',vNZ,vV);
+  }else if(p==='sm'){
+    const el=elAll().tot,fv=fvAll().tot,fb=fbAll().tot,tr=trAll().tot,va=vaAll().tot;
+    mkBar('ch-sm-bar',['EL-2018','FV','Fylln','TRUMMA','VA 2026'],[
+      {label:T('Jord','Soil'),data:[el.jord,fv.jord,fb.jord,tr.jord,va.jord],backgroundColor:'#818cf8',borderRadius:4},
+      {label:T('Berg','Rock'),data:[el.berg,fv.berg,fb.berg,tr.berg,va.berg],backgroundColor:'#a78bfa',borderRadius:4},
+      {label:T('Bädd','Bed'),data:[el.bed,fv.bed,fb.bed,tr.bed,va.bed],backgroundColor:'#f59e0b',borderRadius:4},
+      {label:T('Kring','Surr.'),data:[el.sur,fv.sur,fb.sur,tr.sur,va.sur],backgroundColor:'#06b6d4',borderRadius:4}
+    ]);
+    const totJ=el.jord+fv.jord+fb.jord+tr.jord+va.jord,totB=el.berg+fv.berg+fb.berg+tr.berg+va.berg,totBed=el.bed+fv.bed+fb.bed+tr.bed+va.bed,totS=el.sur+fv.sur+fb.sur+tr.sur+va.sur;
+    mkPie('ch-sm-pie',[T('Jordschakt','Soil exc.'),T('Bergschakt','Rock exc.'),T('Bädd','Bedding'),T('Kringfyllning','Surr.fill')],[totJ,totB,totBed,totS]);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EXPORT
+═══════════════════════════════════════════════════════════════ */
+function dl(name,content,mime){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:mime}));a.download=name;a.click();}
+function saveLocal(){save();toast('💾 '+T('Data sparad!','Data saved!'));}
+function xCSV(){
+  if(!curProj())return;
+  const el=elAll().tot,fv=fvAll().tot,fb=fbAll().tot,tr=trAll().tot,va=vaAll().tot;
+  let c=`${T('Projekt','Project')}: ${curProj().name}\n`;
+  c+='Typ,Längd,Schakt m³,Jord m³,Berg m³,Bädd m³,Kring m³,Rest m³,Geo m²\n';
+  [[' EL-2018',el],[' FV',fv],[' Fylln',fb],[' TRUMMA',tr],[' VA 2026',va]].forEach(([n,t])=>{
+    c+=`${n},${t.l?.toFixed(1)||0},${t.exc.toFixed(2)},${t.jord.toFixed(2)},${t.berg.toFixed(2)},${t.bed.toFixed(2)},${t.sur.toFixed(2)},${(t.remA||t.rem||0).toFixed(2)},${t.geo.toFixed(2)}\n`;
+  });
+  dl(`${curProj().name}-kalkyl.csv`,c,'text/csv');toast('📄 CSV exporterat');
+}
+function xJSON(){
+  if(!curProj())return;
+  dl(`${curProj().name}-kalkyl.json`,JSON.stringify({project:curProj(),totals:{EL:elAll(),FV:fvAll(),FB:fbAll(),TR:trAll(),VA:vaAll()},exported:new Date().toISOString()},null,2),'application/json');
+  toast('{ } JSON exporterat');
+}
+function xPDF(){
+  if(!curProj())return;
+  const el=elAll().tot,fv=fvAll().tot,va=vaAll().tot,proj=curProj();
+  const w=window.open('');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>AMA/MER – ${proj.name}</title>
+  <style>body{font-family:Arial,sans-serif;margin:30px;font-size:12px;color:#0f172a}h1{color:#4f46e5;margin-bottom:4px}
+  .sub{color:#64748b;font-size:11px;margin-bottom:20px}table{border-collapse:collapse;width:100%;margin:12px 0}
+  th{background:#4f46e5;color:#fff;padding:7px;text-align:left}td{padding:5px;border-bottom:1px solid #e2e8f0}
+  tfoot td{font-weight:700;background:#f1f5f9}.m{display:inline-block;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;margin:4px;text-align:center;min-width:100px}
+  .v{font-size:20px;font-weight:800;color:#4f46e5}.l{font-size:9px;color:#64748b;text-transform:uppercase}</style></head>
+  <body><h1>⛏️ AMA/MER Kalkylrapport</h1>
+  <div class="sub">${proj.name} · ${proj.desc||''} · Genererad: ${new Date().toLocaleDateString('sv-SE')} · AMA/MER Kalkyl Pro v6</div>
+  <div class="m"><div class="v">${(el.exc+fv.exc+va.exc).toFixed(0)}</div><div class="l">Total schakt m³</div></div>
+  <div class="m"><div class="v">${(el.jord+fv.jord+va.jord).toFixed(0)}</div><div class="l">Jordschakt m³</div></div>
+  <div class="m"><div class="v">${fmtSEK(va.cost)}</div><div class="l">VA Kostnad</div></div>
+  <table><tr><th>Typ</th><th>Längd</th><th>Schakt m³</th><th>Jord m³</th><th>Berg m³</th><th>Bädd m³</th><th>Kring m³</th></tr>
+  ${[['EL-2018',el],['FV',fv],['VA 2026',va]].map(([n,t])=>`<tr><td>${n}</td><td>${t.l?.toFixed(1)||0}m</td><td>${t.exc.toFixed(1)}</td><td>${t.jord.toFixed(1)}</td><td>${t.berg.toFixed(1)}</td><td>${t.bed.toFixed(1)}</td><td>${t.sur.toFixed(1)}</td></tr>`).join('')}
+  </table>
+  <p style="color:#94a3b8;margin-top:20px;font-size:10px">Tryck Ctrl+P för att spara som PDF · AMA/MER Kalkyl Pro v6</p>
+  </body></html>`);
+  w.document.close();toast('📕 Utskrift öppnad');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════════ */
+load();
+renderSidebar();
+renderBNav();
+go('projects');
+calcSchakt();
+// Auto-save every 90s
+setInterval(()=>{save();},90000);
+// Close modal on overlay click
+document.getElementById('modal-wrap').addEventListener('click',function(e){if(e.target===this)closeModal();});
+</script>
+</body>
+</html>
