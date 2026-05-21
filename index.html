@@ -1311,7 +1311,20 @@ function renderFV(){
   </table></div>
   <div class="btn-row">
     <button class="btn bp" onclick="const l=D('FV').pts;l.push({...l[l.length-1],i:l[l.length-1].i+10,done:0});touchProj();save();go('fv')">+ ${T('Punkt','Point')}</button>
-  </div></div></div>`;
+  </div></div>
+  ${segs.length?`<div class="cd"><div class="ct"><span class="dot" style="background:#8b5cf6"></span>${T('Segmentdetaljer','Segment details')}</div>
+  <div class="tbl-wrap"><table class="dt">
+    <thead><tr><th>${T('Från','From')}</th><th>${T('Till','To')}</th><th>L(m)</th><th>${T('Medeldjup','Avg depth')}</th><th>BW</th><th>TW</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th><th>${T('Balans','Balance')}</th></tr></thead>
+    <tbody>${segs.map((s,i)=>`<tr class="${s.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
+      <td>${s.f}</td><td>${s.t}</td><td>${s.L.toFixed(1)}</td><td>${s.ad.toFixed(2)}</td>
+      <td>${s.ab.toFixed(2)}</td><td>${s.at.toFixed(2)}</td>
+      <td class="num">${s.jord.toFixed(2)}</td><td class="num">${s.berg.toFixed(2)}</td>
+      <td class="num">${s.bed.toFixed(2)}</td><td class="num">${s.sur.toFixed(2)}</td>
+      <td class="num ${s.bal<0?'bad':''}">${s.bal.toFixed(2)}</td>
+    </tr>`).join('')}</tbody>
+    <tfoot><tr><td colspan="6">${T('TOTALT','TOTAL')}</td><td class="num">${tot.jord.toFixed(2)}</td><td class="num">${tot.berg.toFixed(2)}</td><td class="num">${tot.bed.toFixed(2)}</td><td class="num">${tot.sur.toFixed(2)}</td><td class="num ${tot.bal<0?'bad':''}">${tot.bal.toFixed(2)}</td></tr></tfoot>
+  </table></div></div>`:''}
+  </div>`;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1612,6 +1625,19 @@ function renderVA(){
     <tfoot><tr><td colspan="5">${T('TOTALT','TOTAL')}</td><td class="num">${tot.jord.toFixed(1)}</td><td class="num">${tot.berg.toFixed(1)}</td><td class="num">${tot.bed.toFixed(1)}</td><td class="num">${tot.sur.toFixed(1)}</td><td class="num">${Math.round(tot.cost).toLocaleString('sv-SE')}</td><td colspan="2"></td></tr></tfoot>
   </table></div>
   <div class="btn-row"><button class="btn bp" onclick="const l=D('VA').pts;l.push({...l[l.length-1],n:l[l.length-1].n+15,done:0,doneR:0});touchProj();save();go('va')">+ ${T('Punkt','Point')}</button></div></div>
+  ${segs.length?`<div class="cd"><div class="ct"><span class="dot" style="background:#8b5cf6"></span>${T('Segmentdetaljer','Segment details')}</div>
+  <div class="tbl-wrap"><table class="dt">
+    <thead><tr><th>${T('Från','From')}</th><th>${T('Till','To')}</th><th>L(m)</th><th>${T('Medeldjup','Avg depth')}</th><th>BW</th><th>TW</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th><th>${T('Kostnad kr','Cost SEK')}</th><th>${T('Balans','Balance')}</th></tr></thead>
+    <tbody>${segs.map((s,i)=>`<tr class="${s.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
+      <td>${s.f}</td><td>${s.t}</td><td>${s.L.toFixed(1)}</td><td>${s.ad.toFixed(2)}</td>
+      <td>${s.ab.toFixed(2)}</td><td>${s.at.toFixed(2)}</td>
+      <td class="num">${s.jord.toFixed(2)}</td><td class="num">${s.berg.toFixed(2)}</td>
+      <td class="num">${s.bed.toFixed(2)}</td><td class="num">${s.sur.toFixed(2)}</td>
+      <td class="num">${Math.round(s.cost).toLocaleString('sv-SE')}</td>
+      <td class="num ${s.bal<0?'bad':''}">${s.bal.toFixed(2)}</td>
+    </tr>`).join('')}</tbody>
+    <tfoot><tr><td colspan="6">${T('TOTALT','TOTAL')}</td><td class="num">${tot.jord.toFixed(2)}</td><td class="num">${tot.berg.toFixed(2)}</td><td class="num">${tot.bed.toFixed(2)}</td><td class="num">${tot.sur.toFixed(2)}</td><td class="num">${Math.round(tot.cost).toLocaleString('sv-SE')}</td><td class="num ${tot.bal<0?'bad':''}">${tot.bal.toFixed(2)}</td></tr></tfoot>
+  </table></div></div>`:''}
   </div>`;
 }
 
