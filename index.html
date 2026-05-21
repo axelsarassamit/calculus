@@ -185,12 +185,6 @@ a{color:inherit;text-decoration:none}
 .calc-result{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);padding:14px;margin-top:12px}
 .calc-result .big{font-size:28px;font-weight:800;color:var(--p)}
 .formula{background:var(--sb);border-radius:var(--rss);padding:10px 14px;font-family:monospace;font-size:12px;color:var(--ts);margin:8px 0;border-left:3px solid var(--p)}
-/* ═══ BUDGET BAR ════════════════════════════════════════════ */
-.budget-card{background:linear-gradient(135deg,#064e3b,#065f46);border-radius:var(--r);padding:18px;color:#fff;margin-bottom:14px}
-.budget-bar{height:10px;background:rgba(255,255,255,.2);border-radius:5px;overflow:hidden;margin:10px 0}
-.budget-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#34d399,#6ee7b7);transition:width .6s}
-.budget-fill.warn{background:linear-gradient(90deg,#fbbf24,#f59e0b)}
-.budget-fill.over{background:linear-gradient(90deg,#f87171,#ef4444)}
 /* ═══ EXPORT ═════════════════════════════════════════════════ */
 .exp-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .exp-btn{display:flex;align-items:center;gap:8px;padding:9px 15px;border-radius:10px;border:1.5px solid var(--bd);background:var(--sf);cursor:pointer;font-size:12px;font-weight:600;color:var(--ts);transition:var(--tr);font-family:inherit}
@@ -289,6 +283,44 @@ a{color:inherit;text-decoration:none}
 .empty-state p{font-size:13px;line-height:1.6;max-width:340px;margin:0 auto 20px}
 .badge-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:var(--pl);color:var(--p);border:1px solid var(--ps)}
 [data-theme=dark] .badge-pill{background:#1a1e40;color:#a5b4fc;border-color:#252a5c}
+/* ═══ BUDGET PAGE ═════════════════════════════════════════════ */
+.bud-section{margin-bottom:14px}
+.bud-rows{display:flex;flex-direction:column;gap:4px}
+.bud-row{display:grid;grid-template-columns:1fr 100px 100px 110px auto;gap:6px;align-items:center;background:var(--sa);border:1px solid var(--bd);border-radius:var(--rss);padding:7px 10px}
+.bud-row input{width:100%;padding:5px 8px;border:1.5px solid var(--bd);border-radius:6px;font-size:12px;background:var(--sf);color:var(--tx);font-family:inherit;transition:var(--tr)}
+.bud-row input:focus{border-color:var(--p);outline:0;box-shadow:0 0 0 2px rgba(79,70,229,.1)}
+.bud-row .row-total{font-size:12px;font-weight:700;color:var(--p);text-align:right;white-space:nowrap}
+.bud-row .row-lbl{font-size:10px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bud-add{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:var(--rss);border:1.5px dashed var(--bd);color:var(--tm);font-size:11px;font-weight:600;cursor:pointer;transition:var(--tr);background:0;font-family:inherit;margin-top:4px}
+.bud-add:hover{border-color:var(--p);color:var(--p);background:var(--pl)}
+.bud-del{background:0;border:0;cursor:pointer;color:var(--tm);font-size:13px;padding:2px 4px;border-radius:4px;transition:var(--tr)}
+.bud-del:hover{color:var(--d);background:rgba(239,68,68,.1)}
+.bud-summary{background:linear-gradient(135deg,#1e1b4b 0%,#1e2d5c 100%);border-radius:var(--r);padding:22px 24px;color:#fff;margin-bottom:14px}
+.bud-sum-grid{display:grid;grid-template-columns:1fr auto;gap:4px 20px;margin-top:12px}
+.bud-sum-row{display:contents}
+.bud-sum-row .k{font-size:12px;opacity:.75;align-self:center}
+.bud-sum-row .v{font-size:13px;font-weight:700;text-align:right;align-self:center;white-space:nowrap}
+.bud-sum-row.total .k{font-size:14px;font-weight:800;opacity:1;padding-top:10px;border-top:1px solid rgba(255,255,255,.15)}
+.bud-sum-row.total .v{font-size:18px;font-weight:800;padding-top:10px;border-top:1px solid rgba(255,255,255,.15)}
+.bud-sum-row.netto .k{font-size:15px;font-weight:800;opacity:1;color:#34d399}
+.bud-sum-row.netto .v{font-size:22px;font-weight:800;color:#34d399}
+.bud-sum-row.sep .k,.bud-sum-row.sep .v{padding-top:6px;margin-top:6px;border-top:1px solid rgba(255,255,255,.08)}
+.bud-vol-info{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;font-size:11px;opacity:.8;margin-top:12px;display:flex;gap:16px;flex-wrap:wrap}
+.bud-vol-info span{display:flex;align-items:center;gap:4px}
+.bud-factor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.bud-factor-item{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);padding:12px 14px;box-shadow:var(--sh)}
+.bud-factor-item label{font-size:10px;font-weight:700;color:var(--tm);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+.bud-factor-item input{width:100%;padding:6px 8px;border:1.5px solid var(--bd);border-radius:6px;font-size:13px;font-weight:700;background:var(--sf);color:var(--tx);font-family:inherit}
+.bud-factor-item .hint{font-size:10px;color:var(--tm);margin-top:4px}
+.bud-markup-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.rot-card{background:linear-gradient(135deg,#064e3b,#065f46);border-radius:var(--r);padding:16px 18px;color:#fff;margin-bottom:14px}
+.rot-card h4{font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.rot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.rot-input{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:8px 12px}
+.rot-input label{font-size:10px;opacity:.7;font-weight:600;display:block;margin-bottom:3px;text-transform:uppercase}
+.rot-input input,.rot-input select{width:100%;background:0;border:0;color:#fff;font-size:13px;font-weight:700;font-family:inherit;outline:0}
+.rot-result{background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.3);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:13px}
+.rot-result .big{font-size:22px;font-weight:800;color:#34d399}
 </style>
 </head>
 <body>
@@ -334,7 +366,16 @@ const CFG_EL={spacingI:.05,spacingL:.05,slopeJord:1,slopeBerg:.2,asphalt:.1,veg:
 const CFG_FV={slope:.2,asphalt:.1,veg:.2,geoType:2,spont:0};
 const CFG_FB={slope:.1,asphalt:.1,veg:.2,geoType:2,spont:0};
 const CFG_TR={slope:1,asphalt:.1,veg:.2,geoType:2,spont:0};
-const CFG_VA={slopeV:.25,slopeH:.2,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,budget:0,pipes:[.3,.16]};
+const CFG_VA={slopeV:.25,slopeH:.2,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,pipes:[.3,.16]};
+const CFG_BUD={
+  mask:[{n:'Grävmaskin 20t',r:1800,h:0},{n:'Hjullastare',r:1200,h:0},{n:'Lastbil (schakttransport)',r:900,h:0}],
+  arb:[{n:'Maskinist',r:420,h:0},{n:'Grovarbetare',r:340,h:0},{n:'Arbetsledare',r:580,h:0}],
+  mat:0,etab:0,
+  jord_r:80,berg_r:650,dep_r:65,
+  prod:120,f_berg:5.0,
+  risk:10,oh:12,vinst:8,ofor:5,
+  rot:0,rot_pers:1,rot_max:50000
+};
 const PRC_VA={asfalt:100,veg:90,jord:0,berg:0,rustbadd:0,ytaLt:0,ytaGt:0,avtatn:25,badd:540,kring:490,restA:350,restB:0,spont:0,bergAvt:25,tatsom:120,geo:0};
 const VPIPES=['400mm','200mm','160mm','110mm','90mm','75mm','63mm','50mm','40mm','32mm'];
 const DPIPES=['630mm','400mm','315mm','250mm','200mm','160mm','110mm'];
@@ -347,7 +388,8 @@ function emptyData(){
     FB:{cfg:{...CFG_FB},pts:[{i:0,e:1.5,f:.15,g:.5,a:.5,c:.2,d:.1,k:1,b:10,done:0},{i:50,e:2,f:.15,g:.5,a:.5,c:.35,d:.2,k:1,b:10,done:0}]},
     TR:{cfg:{...CFG_TR},pts:[{i:0,e:3,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},{i:50,e:3,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0}]},
     VA:{cfg:{...CFG_VA},prices:{...PRC_VA},pts:[{n:0,p:0,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0},{n:50,p:50,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0}]},
-    RL:{vatten:{pipes:[...VPIPES],sections:[]},avlopp:{dagPipes:[...DPIPES],spillPipes:[...SPIPES],dagSections:[]},totUtfort:0,kontrollUtfort:0}
+    RL:{vatten:{pipes:[...VPIPES],sections:[]},avlopp:{dagPipes:[...DPIPES],spillPipes:[...SPIPES],dagSections:[]},totUtfort:0,kontrollUtfort:0},
+    BUD:{cfg:{mask:[...CFG_BUD.mask.map(m=>({...m}))],arb:[...CFG_BUD.arb.map(a=>({...a}))],mat:0,etab:0,jord_r:80,berg_r:650,dep_r:65,prod:120,f_berg:5.0,risk:10,oh:12,vinst:8,ofor:5,rot:0,rot_pers:1,rot_max:50000}}
   };
 }
 
@@ -393,7 +435,7 @@ function demoData(){
       {i:90, e:2.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
       {i:100,e:2.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0}
     ]},
-    VA:{cfg:{slopeV:.25,slopeH:.2,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,budget:21750000,pipes:[.3,.16,.35,.25,.35,.315,.2]},
+    VA:{cfg:{slopeV:.25,slopeH:.2,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,pipes:[.3,.16,.35,.25,.35,.315,.2]},
       prices:{...PRC_VA},
       pts:[
         {n:0, p:0, r:1.8,c:0, d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.7, bw:1.6,done:0,doneR:0},
@@ -425,7 +467,16 @@ function demoData(){
         {from:0,to:590.94,len:590.94,dag:[0,0,0,0,0,0,0],spill:[0,1,0],done:0}
       ]},
       totUtfort:592.64,kontrollUtfort:56.03
-    }
+    },
+    BUD:{cfg:{
+      mask:[{n:'Grävmaskin 20t',r:1800,h:180},{n:'Hjullastare',r:1200,h:80},{n:'Lastbil (schakttransport)',r:900,h:240}],
+      arb:[{n:'Maskinist',r:420,h:180},{n:'Grovarbetare',r:340,h:360},{n:'Arbetsledare',r:580,h:60}],
+      mat:850000,etab:145000,
+      jord_r:80,berg_r:650,dep_r:65,
+      prod:120,f_berg:5.0,
+      risk:10,oh:12,vinst:8,ofor:5,
+      rot:0,rot_pers:2,rot_max:50000
+    }}
   };
 }
 
@@ -703,12 +754,13 @@ function renderSidebar(){
     <div class="ni ${S.page==='fv'?'a':''}" onclick="go('fv')">🔥 ${T('FV Fjärrvärme','FV District H.')}</div>
     <div class="ni ${S.page==='fb'?'a':''}" onclick="go('fb')">🏗️ ${T('Fylln mot byggnad','Fill by building')}</div>
     <div class="ni ${S.page==='tr'?'a':''}" onclick="go('tr')">🔵 TRUMMA</div>
-    <div class="ni ${S.page==='va'?'a':''}" onclick="go('va')">💧 VA 2026<span class="badge">${T('Budget','Budget')}</span></div>
+    <div class="ni ${S.page==='va'?'a':''}" onclick="go('va')">💧 VA 2026</div>
     <div class="proj-divider"></div>
     <div class="nav-sec">${T('Spec','Spec')}</div>
     <div class="ni ${S.page==='fvspec'?'a':''}" onclick="go('fvspec')">📋 FV-spec</div>
     <div class="ni ${S.page==='rl'?'a':''}" onclick="go('rl')">📏 ${T('Rörlängder','Pipe lengths')}</div>
     <div class="ni ${S.page==='sm'?'a':''}" onclick="go('sm')">📊 ${T('Sammanställning','Summary')}</div>
+    <div class="ni ${S.page==='budget'?'a':''}" onclick="go('budget')">💰 ${T('Budget','Budget')}</div>
     `;
   }
   document.getElementById('sidebar').innerHTML=`
@@ -736,7 +788,7 @@ function renderSidebar(){
     <button class="theme-btn" onclick="tgTheme()">${S.dark?'☀️':'🌙'} ${S.dark?T('Ljust läge','Light mode'):T('Mörkt läge','Dark mode')}</button>
   </div>`;
 }
-function navIco(p){return{dashboard:'🏠',projects:'📁',start:'📚',el:'⚡',fv:'🔥',fb:'🏗️',tr:'🔵',va:'💧',fvspec:'📋',rl:'📏',sm:'📊'}[p]||'📄';}
+function navIco(p){return{dashboard:'🏠',projects:'📁',start:'📚',el:'⚡',fv:'🔥',fb:'🏗️',tr:'🔵',va:'💧',fvspec:'📋',rl:'📏',sm:'📊',budget:'💰'}[p]||'📄';}
 
 /* ═══════════════════════════════════════════════════════════════
    BOTTOM NAV (mobile)
@@ -757,7 +809,7 @@ function go(p){
   renderSidebar();renderBNav();
   const m=document.getElementById('main');
   destroyCharts();
-  const pages={projects:renderProjects,start:renderStart,dashboard:renderDashboard,el:renderEL,fv:renderFV,fb:renderFB,tr:renderTR,va:renderVA,fvspec:renderFVSpec,rl:renderRL,sm:renderSM};
+  const pages={projects:renderProjects,start:renderStart,dashboard:renderDashboard,el:renderEL,fv:renderFV,fb:renderFB,tr:renderTR,va:renderVA,fvspec:renderFVSpec,rl:renderRL,sm:renderSM,budget:renderBudget};
   m.innerHTML=(pages[p]||renderProjects)();
   window.scrollTo(0,0);
   setTimeout(renderCharts,60);
@@ -886,9 +938,6 @@ function renderDashboard(){
   const totL=elT.l+fvT.l+fbT.l+trT.l+vaT.l;
   const totJord=elT.jord+fvT.jord+fbT.jord+trT.jord+vaT.jord;
   const totBerg=elT.berg+fvT.berg+fbT.berg+trT.berg+vaT.berg;
-  const vaC=D('VA')?.cfg;
-  const budget=vaC?.budget||0;
-  const budgetPct=budget>0?pct(vaT.cost,budget):0;
   return`<div>
   <div class="dash-header">
     <h2 style="background:linear-gradient(135deg,var(--p),var(--i));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${proj.name}</h2>
@@ -903,15 +952,8 @@ function renderDashboard(){
     ${mc(totBerg.toFixed(0),T('Bergschakt','Rock exc.'),'m³','c2',pct(totBerg,totExc))}
     ${mc((elT.bed+fvT.bed+fbT.bed+trT.bed+vaT.bed).toFixed(1),T('Ledningsbädd','Bedding'),'m³','c3',30)}
     ${mc((elT.sur+fvT.sur+fbT.sur+trT.sur+vaT.sur).toFixed(1),T('Kringfyllning','Surr.fill'),'m³','c3',30)}
-    ${budget>0?mc(fmtSEK(vaT.cost),'VA Kostnad','',`c6`,budgetPct):''}
+    ${mc(fmtSEK(vaT.cost),T('VA Kostnad','VA Cost'),'','c6',50)}
   </div>
-
-  ${budget>0?`<div class="budget-card">
-    <h3 style="font-size:12px;font-weight:700;opacity:.75;margin-bottom:4px">${T('VA Projektbudget','VA Project budget')}</h3>
-    <div style="font-size:22px;font-weight:800">${fmtSEK(vaT.cost)} <span style="font-size:14px;opacity:.7">/ ${fmtSEK(budget)}</span></div>
-    <div class="budget-bar"><div class="budget-fill ${budgetPct>90?'over':budgetPct>75?'warn':''}" style="width:${Math.min(100,budgetPct)}%"></div></div>
-    <div style="font-size:11px;opacity:.7">${budgetPct.toFixed(1)}% ${T('av budget använt','of budget used')}</div>
-  </div>`:''}
 
   <div class="cg2">
     <div class="cd"><div class="ct"><span class="dot" style="background:var(--p)"></span>${T('Volymer per schakttyp','Volume by type')}</div>
@@ -1414,21 +1456,13 @@ function renderVA(){
   if(!curProj())return emptyProj();
   const{segs,tot}=vaAll();const VA=D('VA');const mx=Math.max(tot.exc,1);
   const seg=segs[S.selSeg]||segs[0];
-  const budgetPct=VA.cfg.budget>0?pct(tot.cost,VA.cfg.budget):0;
   return`<div>
   <div class="ph"><h2>💧 VA 2026 — ${T('VA-ledningar','Water & Sewer')}</h2>
-  <div class="sub">${T('Vatten- och avloppsledningar med fullständig kostnadskalkyl mot budget.','Water and sewer pipes with full cost calculation against budget.')}</div></div>
-  ${VA.cfg.budget>0?`<div class="budget-card">
-    <div style="font-size:12px;font-weight:600;opacity:.7;margin-bottom:4px">${T('Projektbudget VA','VA Project budget')}</div>
-    <div style="font-size:24px;font-weight:800">${fmtSEK(tot.cost)} <span style="font-size:15px;opacity:.65">/ ${fmtSEK(VA.cfg.budget)}</span></div>
-    <div class="budget-bar"><div class="budget-fill ${budgetPct>90?'over':budgetPct>75?'warn':''}" style="width:${Math.min(100,budgetPct)}%"></div></div>
-    <div style="font-size:11px;opacity:.65">${budgetPct.toFixed(1)}% ${T('av budget','of budget')}</div>
-  </div>`:''}
+  <div class="sub">${T('Vatten- och avloppsledningar med fullständig volyms- och kostnadskalkyl.','Water and sewer pipes with full volume and cost calculation.')}</div></div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Rör & konfiguration','Pipes & configuration')}</div>
   <div class="fg">
     <div class="fi" style="grid-column:span 2"><label>${T('Rörkonfiguration (diameter m, kommaseparerat)','Pipe configuration (diameter m, comma-separated)')}</label>
       <input type="text" value="${VA.cfg.pipes.join(',')}" oninput="try{const v=this.value.split(',').map(x=>+x.trim()).filter(x=>x>0);if(v.length)D('VA').cfg.pipes=v;touchProj();save();}catch(e){}"></div>
-    <div class="fi"><label>${T('Budget (kr)','Budget (SEK)')}</label><input type="number" value="${VA.cfg.budget}" step="100000" oninput="D('VA').cfg.budget=+this.value;touchProj();save();go('va')"></div>
     <div class="fi"><label>${T('Slant V H:1V','Slope V H:1V')}</label><input type="number" value="${VA.cfg.slopeV}" step=".05" oninput="D('VA').cfg.slopeV=+this.value;touchProj();save();go('va')"></div>
     <div class="fi"><label>${T('Slant H H:1V','Slope H H:1V')}</label><input type="number" value="${VA.cfg.slopeH}" step=".05" oninput="D('VA').cfg.slopeH=+this.value;touchProj();save();go('va')"></div>
     <div class="fi"><label>${T('Kringf.höjd (m)','Surr.fill h (m)')}</label><input type="number" value="${VA.cfg.sfh}" step=".05" oninput="D('VA').cfg.sfh=+this.value;touchProj();save();go('va')"></div>
@@ -1457,7 +1491,7 @@ function renderVA(){
     ${mc(tot.l,T('Längd','Length'),'m','',100)}${mc(tot.exc,T('Schakt tot','Exc. total'),'m³','',100)}
     ${mc(tot.jord,T('Jordschakt','Soil exc.'),'m³','c2',pct(tot.jord,mx))}${mc(tot.berg,T('Bergschakt','Rock exc.'),'m³','c2',pct(tot.berg,mx))}
     ${mc(tot.bed,T('Ledningsbädd','Bedding'),'m³','c3',pct(tot.bed,mx))}${mc(tot.sur,T('Kringfyllning','Surr.fill'),'m³','c3',pct(tot.sur,mx))}
-    ${mc(tot.remA,T('Restfyll A','Rest A'),'m³','c4',pct(tot.remA,mx))}${mc(fmtSEK(tot.cost),T('Kostnad','Cost'),'','c6',budgetPct)}
+    ${mc(tot.remA,T('Restfyll A','Rest A'),'m³','c4',pct(tot.remA,mx))}${mc(fmtSEK(tot.cost),T('Kostnad','Cost'),'','c6',50)}
   </div>
   <div class="cg2">
     <div class="cd"><div class="ct"><span class="dot" style="background:#06b6d4"></span>${T('Tvärsnitt','Cross-section')} ${S.selSeg+1}</div>
@@ -1685,6 +1719,247 @@ function emptyProj(){
   return`<div class="empty-state"><div class="ico">📁</div><h3>${T('Inget projekt valt','No project selected')}</h3><p>${T('Välj ett projekt från menyn eller skapa ett nytt för att börja.','Select a project from the menu or create a new one to get started.')}</p><button class="btn bp" onclick="go('projects')">${T('Visa projekt','View projects')}</button></div>`;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   BUDGET
+═══════════════════════════════════════════════════════════════ */
+function budSave(){touchProj();save();go('budget');}
+function budAddMask(){const b=D('BUD').cfg;b.mask.push({n:T('Ny maskin','New machine'),r:1500,h:0});budSave();}
+function budAddArb(){const b=D('BUD').cfg;b.arb.push({n:T('Ny anställd','New employee'),r:380,h:0});budSave();}
+function budDelMask(i){D('BUD').cfg.mask.splice(i,1);budSave();}
+function budDelArb(i){D('BUD').cfg.arb.splice(i,1);budSave();}
+function budField(path,val,step,label){
+  return`<div class="bud-factor-item"><label>${label}</label><input type="number" value="${val}" step="${step}" oninput="D('BUD').cfg.${path}=+this.value;budSave()"></div>`;
+}
+
+function renderBudget(){
+  if(!curProj())return emptyProj();
+  // Migrate old projects that pre-date the Budget page
+  if(!D('BUD')){
+    S.projects[S.cur].data.BUD={cfg:{
+      mask:[...CFG_BUD.mask.map(m=>({...m}))],arb:[...CFG_BUD.arb.map(a=>({...a}))],
+      mat:0,etab:0,jord_r:80,berg_r:650,dep_r:65,prod:120,f_berg:5.0,
+      risk:10,oh:12,vinst:8,ofor:5,rot:0,rot_pers:1,rot_max:50000
+    }};
+    save();
+  }
+  const cfg=D('BUD').cfg;
+
+  // ── Auto-pull volumes from all calc types ──────────────────
+  const el=elAll().tot,fv=fvAll().tot,fb=fbAll().tot,tr=trAll().tot,va=vaAll().tot;
+  const totJord = el.jord+fv.jord+fb.jord+tr.jord+va.jord;
+  const totBerg = el.berg+fv.berg+fb.berg+tr.berg+va.berg;
+  const totBal  = el.bal +fv.bal +fb.bal +tr.bal +va.bal;
+  const overskott = Math.max(0, totBal);
+
+  // ── Cost calculations ──────────────────────────────────────
+  const maskCost = cfg.mask.reduce((s,m)=>s+m.r*m.h, 0);
+  const arbCost  = cfg.arb.reduce((s,a)=>s+a.r*a.h, 0);
+  const bergLoss = totBerg * cfg.berg_r;
+  const jordMass = totJord * cfg.jord_r;
+  const depCost  = overskott * cfg.dep_r;
+  const massCost = jordMass + bergLoss + depCost;
+  const direktCost = maskCost + arbCost + cfg.mat + cfg.etab + massCost;
+
+  // ── Påslag ─────────────────────────────────────────────────
+  const riskAmt  = direktCost * cfg.risk / 100;
+  const ohAmt    = direktCost * cfg.oh   / 100;
+  const vinAmt   = direktCost * cfg.vinst/ 100;
+  const oforAmt  = direktCost * cfg.ofor / 100;
+  const pAslagTot= riskAmt + ohAmt + vinAmt + oforAmt;
+
+  const totalExMoms  = direktCost + pAslagTot;
+  const moms         = totalExMoms * 0.25;
+  const totalInkMoms = totalExMoms + moms;
+
+  // ── ROT-avdrag ─────────────────────────────────────────────
+  // 30% of labour, capped at rot_max per person
+  const rotPerPers = Math.min(arbCost * 0.30, cfg.rot_max);
+  const rotTotal   = cfg.rot ? Math.min(rotPerPers * cfg.rot_pers, arbCost * 0.30) : 0;
+  const netto      = totalInkMoms - rotTotal;
+
+  // ── Time estimation ────────────────────────────────────────
+  // Normal förhållanden: 1x → jord at prod rate
+  // Losshållning berg: f_berg × (default 5.0 = +400%)
+  const estH_jord  = cfg.prod > 0 ? totJord / cfg.prod : 0;
+  const estH_berg  = cfg.prod > 0 ? (totBerg / cfg.prod) * cfg.f_berg : 0;
+  const estH_tot   = estH_jord + estH_berg;
+  const estDays    = estH_tot / 8;
+
+  const fmtH = h => h < 1 ? '<1' : h.toFixed(0);
+  const S2 = x => x.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+
+  // ── Mask rows ──────────────────────────────────────────────
+  const maskRows = cfg.mask.map((m,i)=>`
+    <div class="bud-row">
+      <input value="${m.n}" oninput="D('BUD').cfg.mask[${i}].n=this.value;budSave()" style="font-size:12px;font-weight:600">
+      <input type="number" value="${m.r}" step="50" placeholder="${T('kr/h','SEK/h')}" oninput="D('BUD').cfg.mask[${i}].r=+this.value;budSave()">
+      <input type="number" value="${m.h}" step="1"  placeholder="${T('Timmar','Hours')}"  oninput="D('BUD').cfg.mask[${i}].h=+this.value;budSave()">
+      <span class="row-total">${fmtSEK(m.r*m.h)}</span>
+      <button class="bud-del" onclick="budDelMask(${i})">✕</button>
+    </div>`).join('');
+
+  const arbRows = cfg.arb.map((a,i)=>`
+    <div class="bud-row">
+      <input value="${a.n}" oninput="D('BUD').cfg.arb[${i}].n=this.value;budSave()" style="font-size:12px;font-weight:600">
+      <input type="number" value="${a.r}" step="10" placeholder="${T('kr/h','SEK/h')}" oninput="D('BUD').cfg.arb[${i}].r=+this.value;budSave()">
+      <input type="number" value="${a.h}" step="1"  placeholder="${T('Timmar','Hours')}"  oninput="D('BUD').cfg.arb[${i}].h=+this.value;budSave()">
+      <span class="row-total">${fmtSEK(a.r*a.h)}</span>
+      <button class="bud-del" onclick="budDelArb(${i})">✕</button>
+    </div>`).join('');
+
+  const colHdr=`<div style="display:grid;grid-template-columns:1fr 100px 100px 110px auto;gap:6px;padding:0 10px 4px;font-size:9px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.4px">
+    <span>${T('Benämning','Name')}</span><span>${T('kr/h','SEK/h')}</span><span>${T('Timmar','Hours')}</span><span style="text-align:right">${T('Kostnad','Cost')}</span><span></span></div>`;
+
+  return`<div>
+  <div class="ph"><h2>💰 ${T('Budget & Kostnadskalkyl','Budget & Cost Estimate')}</h2>
+  <div class="sub">${T('Komplett projektkalkyl med maskin-, arbets-, material- och masskostnader, påslag och ROT-avdrag.','Complete project estimate: machine, labour, material and mass costs, markups and ROT deduction.')}</div></div>
+
+  <!-- ══ VOLYMER (auto) ══ -->
+  <div class="infobox" style="margin-bottom:14px">
+    <h4>📐 ${T('Beräknade volymer från projektet (automatisk)','Calculated volumes from project (automatic)')}</h4>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:6px;font-size:12px">
+      <span>🟤 ${T('Jordschakt','Soil exc.')}: <strong>${totJord.toFixed(0)} m³</strong></span>
+      <span>🪨 ${T('Bergschakt','Rock exc.')}: <strong>${totBerg.toFixed(0)} m³</strong></span>
+      <span>♻️ ${T('Överskottsmassor','Surplus masses')}: <strong>${overskott.toFixed(0)} m³</strong></span>
+      <span style="margin-left:auto;opacity:.7;font-size:11px">${T('Uppdateras från EL / FV / FB / TRUMMA / VA','Auto-updated from EL / FV / FB / TRUMMA / VA')}</span>
+    </div>
+  </div>
+
+  <!-- ══ MASKINKOSTNADER ══ -->
+  <div class="cd bud-section">
+    <div class="ct"><span class="dot" style="background:var(--p)"></span>${T('Maskinkostnader','Machine costs')} <span style="margin-left:auto;font-weight:800;font-size:12px;color:var(--p)">${fmtSEK(maskCost)}</span></div>
+    ${colHdr}
+    <div class="bud-rows">${maskRows}</div>
+    <button class="bud-add" onclick="budAddMask()">+ ${T('Lägg till maskin','Add machine')}</button>
+  </div>
+
+  <!-- ══ ARBETSKOSTNADER ══ -->
+  <div class="cd bud-section">
+    <div class="ct"><span class="dot" style="background:var(--v)"></span>${T('Arbetskostnader','Labour costs')}
+      <span style="font-size:9px;background:rgba(16,185,129,.12);color:var(--s);border:1px solid rgba(16,185,129,.2);border-radius:20px;padding:1px 7px;margin-left:6px;font-weight:700">ROT</span>
+      <span style="margin-left:auto;font-weight:800;font-size:12px;color:var(--v)">${fmtSEK(arbCost)}</span></div>
+    ${colHdr}
+    <div class="bud-rows">${arbRows}</div>
+    <button class="bud-add" onclick="budAddArb()">+ ${T('Lägg till anställd','Add employee')}</button>
+  </div>
+
+  <!-- ══ DIREKTA KOSTNADER ══ -->
+  <div class="cd bud-section">
+    <div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Direkta kostnader','Direct costs')}</div>
+    <div class="fg" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
+      <div class="fi"><label>${T('Materialkostnader (kr)','Material costs (SEK)')}</label>
+        <input type="number" value="${cfg.mat}" step="10000" oninput="D('BUD').cfg.mat=+this.value;budSave()"></div>
+      <div class="fi"><label>${T('Etableringskostnader (kr)','Establishment costs (SEK)')}</label>
+        <input type="number" value="${cfg.etab}" step="5000" oninput="D('BUD').cfg.etab=+this.value;budSave()"></div>
+    </div>
+  </div>
+
+  <!-- ══ MASSKOSTNADER ══ -->
+  <div class="cd bud-section">
+    <div class="ct"><span class="dot" style="background:var(--o)"></span>${T('Masskostnader','Mass/earthwork costs')} <span style="margin-left:auto;font-weight:800;font-size:12px;color:var(--o)">${fmtSEK(massCost)}</span></div>
+    <div class="fg" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));margin-bottom:10px">
+      <div class="fi"><label>${T('Jordschakt (kr/m³)','Soil excavation (SEK/m³)')}</label>
+        <input type="number" value="${cfg.jord_r}" step="5" oninput="D('BUD').cfg.jord_r=+this.value;budSave()"></div>
+      <div class="fi"><label>${T('Losshållning berg (kr/m³)','Rock loosening (SEK/m³)')}<span title="${T('Inkl. borrning, sprängning, lastning & transport. Typvärde 500–800 kr/m³.','Incl. drilling, blasting, loading & haul. Typical 500–800 SEK/m³.')}" style="cursor:help;margin-left:4px;opacity:.6">ℹ️</span></label>
+        <input type="number" value="${cfg.berg_r}" step="25" oninput="D('BUD').cfg.berg_r=+this.value;budSave()"></div>
+      <div class="fi"><label>${T('Deponering överskott (kr/m³)','Surplus disposal (SEK/m³)')}</label>
+        <input type="number" value="${cfg.dep_r}" step="5" oninput="D('BUD').cfg.dep_r=+this.value;budSave()"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:11px;padding:8px 10px;background:var(--sa);border-radius:var(--rss);border:1px solid var(--bd)">
+      <div><span style="color:var(--tm)">${T('Jordschakt:','Soil:')}</span> <strong>${totJord.toFixed(0)} m³ × ${cfg.jord_r} = ${fmtSEK(jordMass)}</strong></div>
+      <div><span style="color:var(--tm)">${T('Berglosshållning:','Rock loss.:')}</span> <strong>${totBerg.toFixed(0)} m³ × ${cfg.berg_r} = ${fmtSEK(bergLoss)}</strong></div>
+      <div><span style="color:var(--tm)">${T('Deponering:','Disposal:')}</span> <strong>${overskott.toFixed(0)} m³ × ${cfg.dep_r} = ${fmtSEK(depCost)}</strong></div>
+    </div>
+  </div>
+
+  <!-- ══ TIDSUPPFATTNING ══ -->
+  <div class="cd bud-section">
+    <div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Tidsuppfattning','Time estimation')}</div>
+    <div class="bud-factor-grid">
+      ${budField('prod',cfg.prod,10,T('Produktionstakt jord (m³/h)','Soil production rate (m³/h)'))}
+      ${budField('f_berg',cfg.f_berg,0.5,T('Tidsfaktor berg (×)','Rock time factor (×)'))}
+    </div>
+    <div style="margin-top:10px;padding:12px 14px;background:var(--sa);border:1px solid var(--bd);border-radius:var(--rs);font-size:12px">
+      <div style="display:flex;gap:24px;flex-wrap:wrap">
+        <span>⏱ ${T('Normala förhållanden (1×):','Normal conditions (1×):')}<strong style="margin-left:6px">${fmtH(estH_jord)} h</strong></span>
+        <span>🪨 ${T('Losshållning berg (+${pct}%):','Rock loosening (+${pct}%):').replace('${pct}',((cfg.f_berg-1)*100).toFixed(0))}<strong style="margin-left:6px">${fmtH(estH_berg)} h</strong></span>
+        <span style="font-weight:700;color:var(--p)">Σ <strong>${fmtH(estH_tot)} h</strong> ≈ <strong>${estDays.toFixed(1)} ${T('arbetsdagar','working days')}</strong></span>
+      </div>
+      <div style="font-size:10px;color:var(--tm);margin-top:6px">${T('Faktor 5× för berg = +400% mer tid per m³ än jordschakt (typvärde).','Factor 5× for rock = +400% more time per m³ than soil (typical value).')}</div>
+    </div>
+  </div>
+
+  <!-- ══ PÅSLAG & MARGINALER ══ -->
+  <div class="cd bud-section">
+    <div class="ct"><span class="dot" style="background:var(--d)"></span>${T('Påslag & Marginaler','Markups & Margins')}</div>
+    <div class="bud-markup-grid">
+      ${budField('risk',cfg.risk,1,T('Riskpåslag (%)','Risk contingency (%)'))}
+      ${budField('oh',cfg.oh,1,T('OH / Allmänna kost. (%)','Overhead (%)'))}
+      ${budField('vinst',cfg.vinst,1,T('Vinst / Marginal (%)','Profit margin (%)'))}
+      ${budField('ofor',cfg.ofor,1,T('Oförutsett (%)','Unforeseen (%)'))}
+    </div>
+    <div style="margin-top:10px;padding:10px 14px;background:var(--sa);border:1px solid var(--bd);border-radius:var(--rs);font-size:11px;display:flex;gap:16px;flex-wrap:wrap">
+      <span>${T('Risk:','Risk:')} <strong>${fmtSEK(riskAmt)}</strong></span>
+      <span>OH: <strong>${fmtSEK(ohAmt)}</strong></span>
+      <span>${T('Vinst:','Profit:')} <strong>${fmtSEK(vinAmt)}</strong></span>
+      <span>${T('Oförutsett:','Unforeseen:')} <strong>${fmtSEK(oforAmt)}</strong></span>
+      <span style="font-weight:700;color:var(--d)">${T('Summa påslag:','Total markups:')} <strong>${fmtSEK(pAslagTot)}</strong></span>
+    </div>
+  </div>
+
+  <!-- ══ ROT-AVDRAG ══ -->
+  <div class="rot-card">
+    <h4>🏠 ROT-avdrag <span style="font-size:10px;opacity:.6;font-weight:400">${T('(gäller arbetskostnader på privatbostad)','(applies to labour on private residential property)')}</span></h4>
+    <div class="rot-grid">
+      <div class="rot-input">
+        <label>${T('Aktivera ROT','Enable ROT')}</label>
+        <select onchange="D('BUD').cfg.rot=+this.value;budSave()">
+          <option value="0" ${!cfg.rot?'selected':''}>Nej / No</option>
+          <option value="1" ${cfg.rot?'selected':''}>Ja / Yes</option>
+        </select>
+      </div>
+      <div class="rot-input">
+        <label>${T('Antal personer','Number of persons')}</label>
+        <input type="number" value="${cfg.rot_pers}" min="1" step="1" oninput="D('BUD').cfg.rot_pers=+this.value;budSave()">
+      </div>
+      <div class="rot-input">
+        <label>${T('Max ROT per person (kr)','Max ROT per person (SEK)')}</label>
+        <input type="number" value="${cfg.rot_max}" step="5000" oninput="D('BUD').cfg.rot_max=+this.value;budSave()">
+      </div>
+    </div>
+    ${cfg.rot?`<div class="rot-result">
+      <div style="font-size:11px;opacity:.7;margin-bottom:4px">${T('30% av arbetskostnader (','30% of labour costs (') + fmtSEK(arbCost) + '), ' + T('max','max') + ' ' + fmtSEK(cfg.rot_max) + ' × ' + cfg.rot_pers + T(' pers.','  pers.')}</div>
+      <div class="big">− ${fmtSEK(rotTotal)}</div>
+    </div>`:''}
+  </div>
+
+  <!-- ══ SAMMANFATTNING ══ -->
+  <div class="bud-summary">
+    <div style="font-size:11px;font-weight:700;opacity:.5;text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px">${T('Kostnadskalkyl','Cost summary')}</div>
+    <div style="font-size:13px;opacity:.7">${curProj().name}</div>
+    <div class="bud-sum-grid">
+      <div class="bud-sum-row"><span class="k">🏗️ ${T('Maskinkostnader','Machine costs')}</span><span class="v">${fmtSEK(maskCost)}</span></div>
+      <div class="bud-sum-row"><span class="k">👷 ${T('Arbetskostnader','Labour costs')}</span><span class="v">${fmtSEK(arbCost)}</span></div>
+      <div class="bud-sum-row"><span class="k">📦 ${T('Materialkostnader','Material costs')}</span><span class="v">${fmtSEK(cfg.mat)}</span></div>
+      <div class="bud-sum-row"><span class="k">🏕️ ${T('Etableringskostnader','Establishment costs')}</span><span class="v">${fmtSEK(cfg.etab)}</span></div>
+      <div class="bud-sum-row"><span class="k">🪨 ${T('Masskostnader (jord+berg+dep.)','Mass costs (soil+rock+disposal)')}</span><span class="v">${fmtSEK(massCost)}</span></div>
+      <div class="bud-sum-row sep"><span class="k">${T('Delsumma','Subtotal')}</span><span class="v">${fmtSEK(direktCost)}</span></div>
+      <div class="bud-sum-row"><span class="k">📈 ${T('Påslag (risk + OH + vinst + oföruts.)','Markups (risk + OH + profit + unforeseen)')}</span><span class="v">+ ${fmtSEK(pAslagTot)}</span></div>
+      <div class="bud-sum-row total"><span class="k">${T('Totalt exkl. moms','Total excl. VAT')}</span><span class="v">${fmtSEK(totalExMoms)}</span></div>
+      <div class="bud-sum-row"><span class="k" style="opacity:.6">${T('Moms 25%','VAT 25%')}</span><span class="v" style="opacity:.7">+ ${fmtSEK(moms)}</span></div>
+      <div class="bud-sum-row sep"><span class="k">${T('Totalt inkl. moms','Total incl. VAT')}</span><span class="v">${fmtSEK(totalInkMoms)}</span></div>
+      ${cfg.rot?`<div class="bud-sum-row"><span class="k" style="color:#34d399">🏠 ROT-avdrag</span><span class="v" style="color:#34d399">− ${fmtSEK(rotTotal)}</span></div>`:''}
+      <div class="bud-sum-row netto"><span class="k">${T('Nettokostnad','Net cost')}</span><span class="v">${fmtSEK(netto)}</span></div>
+    </div>
+    <div class="bud-vol-info">
+      <span>📏 ${totJord.toFixed(0)+' m³ '+T('jord','soil')}</span>
+      <span>🪨 ${totBerg.toFixed(0)+' m³ '+T('berg','rock')}</span>
+      <span>⏱ ~${fmtH(estH_tot)} h</span>
+      <span>📅 ~${estDays.toFixed(1)} ${T('dagar','days')}</span>
+    </div>
+  </div>
+</div>`;
+}
 
 /* ═══════════════════════════════════════════════════════════════
    CHARTS
