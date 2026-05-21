@@ -1583,9 +1583,7 @@ function renderVA(){
   </div>`;
   })()}
   </div>
-
-
-
+  ${pcBar(tot.done,tot.total,T('Utfört VA-schakt','VA completed'))}
 
   <div class="mg">
     ${mc(tot.l,T('Längd','Length'),'m','',100)}${mc(tot.exc,T('Schakt tot','Exc. total'),'m³','',100)}
@@ -1602,6 +1600,8 @@ function renderVA(){
   <div class="cg2">
     <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Djupprofil','Depth profile')}</div>
       <div class="ch-wrap"><canvas id="ch-va-depth"></canvas></div></div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Volymer per segment','Volume per segment')}</div>
+      <div class="ch-wrap"><canvas id="ch-va-seg"></canvas></div></div>
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Profilpunkter','Profile points')}
     <span style="margin-left:auto;font-size:9px;font-weight:400;text-transform:none;color:var(--ts)">${T('Klicka rad = visa tvärsnitt','Click row = show section')}</span>
@@ -1767,7 +1767,7 @@ function renderRL(){
 ═══════════════════════════════════════════════════════════════ */
 function renderSM(){
   if(!curProj())return emptyProj();
-  const el=elAll().tot,fv=fvAll().tot,fb=fbAll().tot,tr=trAll().tot,va=vaAll().tot;
+  const {segs:elSegs,tot:el}=elAll(),{segs:fvSegs,tot:fv}=fvAll(),{segs:fbSegs,tot:fb}=fbAll(),{segs:trSegs,tot:tr}=trAll(),{segs:vaSegs,tot:va}=vaAll();
   const totExc=el.exc+fv.exc+fb.exc+tr.exc+va.exc;
   const totJord=el.jord+fv.jord+fb.jord+tr.jord+va.jord;
   const totBerg=el.berg+fv.berg+fb.berg+tr.berg+va.berg;
@@ -2085,6 +2085,61 @@ function renderBudget(){
     </table></div>
   </div>
 
+  <!-- ══ SEGMENTDETALJER PER SCHAKTTYP ══ -->
+  <div class="cd bud-section">
+    <div class="ct"><span class="dot" style="background:#8b5cf6"></span>${T('Segmentdetaljer & kostnad per schakttyp','Segment details & cost per excavation type')}
+      <span style="margin-left:auto;font-weight:800;font-size:12px;color:#8b5cf6">${fmtSEK(schaktTotal)}</span></div>
+    <p style="font-size:11px;color:var(--ts);margin-bottom:12px;padding:0 2px">${T('Kostnad per segment beräknas från enhetspriser × volymer. VA-kostnad inkluderar tätskikt/muff.','Cost per segment calculated from unit prices × volumes. VA cost includes seal/coupling.')}</p>
+    ${(()=>{
+      const tabDefs=[
+        {ico:'⚡',lbl:T('EL kanalisation','EL Canalisation'),segs:elSegs,cost:s=>calcTab(s),col:'var(--p)',nav:'el'},
+        {ico:'🔥',lbl:T('Fjärrvärme','District Heating'),segs:fvSegs,cost:s=>calcTab(s),col:'#ef4444',nav:'fv'},
+        {ico:'🏗️',lbl:T('Fyllnad mot byggnad','Fill against building'),segs:fbSegs,cost:s=>calcTab(s),col:'#f97316',nav:'fb'},
+        {ico:'🔵',lbl:T('Trumma','Culvert'),segs:trSegs,cost:s=>calcTab(s),col:'#06b6d4',nav:'tr'},
+        {ico:'💧',lbl:T('Vatten & Avlopp','Water & Sewer'),segs:vaSegs,cost:s=>s.cost,col:'var(--s)',nav:'va'},
+      ];
+      return tabDefs.filter(td=>td.segs.length>0).map(td=>{
+        const segTotal=td.segs.reduce((sum,s)=>sum+td.cost(s),0);
+        return`<div style="margin-bottom:16px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;cursor:pointer" onclick="go('${td.nav}')">
+            <span style="font-size:13px;font-weight:700">${td.ico} ${td.lbl}</span>
+            <span style="font-size:11px;font-weight:700;color:${td.col};margin-left:auto">${fmtSEK(segTotal)}</span>
+          </div>
+          <div class="tbl-wrap"><table class="dt" style="font-size:11.5px">
+            <thead><tr>
+              <th style="text-align:left">${T('Segment','Segment')}</th>
+              <th>L (m)</th>
+              <th>${T('Djup (m)','Depth (m)')}</th>
+              <th>${T('Jord m³','Soil m³')}</th>
+              <th>${T('Berg m³','Rock m³')}</th>
+              <th>${T('Bädd m³','Bed m³')}</th>
+              <th>${T('Kring m³','Surr m³')}</th>
+              <th style="color:${td.col}">${T('Kostnad','Cost')}</th>
+            </tr></thead>
+            <tbody>${td.segs.map(s=>`<tr onclick="go('${td.nav}')" style="cursor:pointer">
+              <td style="text-align:left;white-space:nowrap">${s.f} → ${s.t}</td>
+              <td class="num">${s.L.toFixed(1)}</td>
+              <td class="num">${s.ad.toFixed(2)}</td>
+              <td class="num">${s.jord.toFixed(2)}</td>
+              <td class="num">${s.berg.toFixed(2)}</td>
+              <td class="num">${s.bed.toFixed(2)}</td>
+              <td class="num">${s.sur.toFixed(2)}</td>
+              <td class="num" style="font-weight:700;color:${td.col}">${fmtSEK(td.cost(s))}</td>
+            </tr>`).join('')}</tbody>
+            <tfoot><tr>
+              <td colspan="3" style="text-align:left">${T('TOTALT','TOTAL')}</td>
+              <td class="num">${td.segs.reduce((sum,s)=>sum+s.jord,0).toFixed(2)}</td>
+              <td class="num">${td.segs.reduce((sum,s)=>sum+s.berg,0).toFixed(2)}</td>
+              <td class="num">${td.segs.reduce((sum,s)=>sum+s.bed,0).toFixed(2)}</td>
+              <td class="num">${td.segs.reduce((sum,s)=>sum+s.sur,0).toFixed(2)}</td>
+              <td class="num" style="font-weight:700;color:${td.col}">${fmtSEK(segTotal)}</td>
+            </tr></tfoot>
+          </table></div>
+        </div>`;
+      }).join('');
+    })()}
+  </div>
+
   <!-- ══ TIDSUPPFATTNING ══ -->
   <div class="cd bud-section">
     <div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Tidsuppfattning','Time estimation')}</div>
@@ -2239,6 +2294,7 @@ function renderCharts(){
     mkPie('ch-va-pie',[T('Jord','Soil'),T('Berg','Rock'),T('Bädd','Bed'),T('Kring','Surr'),T('Rest A','Rest A')],[tot.jord,tot.berg,tot.bed,tot.sur,tot.remA],['#06b6d4','#8b5cf6','#f59e0b','#10b981','#ec4899']);
     if(segs.length){
       mkLine('ch-va-depth',segs.map(s=>`${s.f}-${s.t}m`),[{label:T('Djup','Depth'),data:segs.map(s=>s.ad),borderColor:'#06b6d4',fill:true,backgroundColor:'rgba(6,182,212,.08)',tension:.3,pointRadius:4}]);
+      mkBar('ch-va-seg',segs.map(s=>`${s.f}-${s.t}`),[{label:T('Jord','Soil'),data:segs.map(s=>s.jord),backgroundColor:'#818cf8',borderRadius:3},{label:T('Kring','Surr.'),data:segs.map(s=>s.sur),backgroundColor:'#06b6d4',borderRadius:3},{label:T('Bädd','Bed'),data:segs.map(s=>s.bed),backgroundColor:'#f59e0b',borderRadius:3}]);
     }
   }else if(p==='fvspec'){
     const{segs,tot}=fvAll();
