@@ -281,54 +281,6 @@ a{color:inherit;text-decoration:none}
 .empty-state p{font-size:13px;line-height:1.6;max-width:340px;margin:0 auto 20px}
 .badge-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:var(--pl);color:var(--p);border:1px solid var(--ps)}
 [data-theme=dark] .badge-pill{background:#1a1e40;color:#a5b4fc;border-color:#252a5c}
-/* ═══ TODO PAGE ═══════════════════════════════════════════════ */
-.todo-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-bottom:14px}
-.todo-stat{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);padding:12px 14px;text-align:center;box-shadow:var(--sh)}
-.todo-stat .tsv{font-size:24px;font-weight:800;line-height:1;margin-bottom:2px}
-.todo-stat .tsl{font-size:10px;color:var(--tm);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
-.todo-add-form{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px;margin-bottom:14px;box-shadow:var(--sh)}
-.todo-add-row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
-.todo-add-row .fi{flex:1;min-width:180px}
-.todo-add-row .fi.sm{flex:0 0 130px}
-.todo-add-row .fi.xs{flex:0 0 110px}
-.todo-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
-.todo-filters span{font-size:10px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.5px;margin-right:4px}
-.tf-btn{padding:4px 12px;border-radius:20px;border:1.5px solid var(--bd);background:var(--sf);color:var(--ts);font-size:10px;font-weight:700;cursor:pointer;transition:var(--tr);font-family:inherit;letter-spacing:.2px}
-.tf-btn.a{border-color:var(--p);background:var(--pl);color:var(--p)}
-[data-theme=dark] .tf-btn.a{background:#1a1e40;color:#a5b4fc;border-color:#252a5c}
-.todo-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
-.todo-item{display:flex;align-items:flex-start;gap:10px;background:var(--sf);border:1.5px solid var(--bd);border-radius:var(--rs);padding:12px 14px;transition:var(--tr);position:relative}
-.todo-item:hover{border-color:var(--bds);box-shadow:var(--sh)}
-.todo-item.done{opacity:.55;border-style:dashed}
-.todo-item.done .ti-text{text-decoration:line-through;color:var(--tm)}
-.todo-cb{width:18px;height:18px;border-radius:5px;border:2px solid var(--bds);cursor:pointer;flex-shrink:0;margin-top:2px;appearance:none;-webkit-appearance:none;background:var(--sf);transition:var(--tr);position:relative}
-.todo-cb:checked{background:var(--s);border-color:var(--s)}
-.todo-cb:checked::after{content:'✓';position:absolute;color:#fff;font-size:11px;font-weight:800;top:50%;left:50%;transform:translate(-50%,-50%)}
-.todo-cb:hover{border-color:var(--p)}
-.ti-body{flex:1;min-width:0}
-.ti-text{font-size:13px;font-weight:500;color:var(--tx);line-height:1.4;margin-bottom:5px}
-.ti-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.ti-cat{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;border:1px solid transparent;letter-spacing:.3px}
-.ti-cat.bug{background:rgba(239,68,68,.1);color:#ef4444;border-color:rgba(239,68,68,.2)}
-.ti-cat.feature{background:rgba(79,70,229,.1);color:var(--p);border-color:rgba(79,70,229,.2)}
-.ti-cat.improvement{background:rgba(6,182,212,.1);color:var(--i);border-color:rgba(6,182,212,.2)}
-.ti-cat.infra{background:rgba(16,185,129,.1);color:var(--s);border-color:rgba(16,185,129,.2)}
-[data-theme=dark] .ti-cat.bug{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.3)}
-[data-theme=dark] .ti-cat.feature{background:rgba(79,70,229,.15);border-color:rgba(79,70,229,.3)}
-[data-theme=dark] .ti-cat.improvement{background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.3)}
-[data-theme=dark] .ti-cat.infra{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.3)}
-.ti-prio{font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px}
-.ti-prio.high{background:rgba(239,68,68,.12);color:#ef4444}
-.ti-prio.medium{background:rgba(245,158,11,.12);color:#f59e0b}
-.ti-prio.low{background:rgba(148,163,184,.15);color:var(--ts)}
-.ti-date{font-size:9px;color:var(--tm)}
-.todo-del{background:0;border:0;cursor:pointer;color:var(--tm);font-size:14px;padding:2px 4px;border-radius:4px;transition:var(--tr);flex-shrink:0;line-height:1;margin-top:1px}
-.todo-del:hover{color:var(--d);background:rgba(239,68,68,.1)}
-.todo-section{font-size:10px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.8px;padding:6px 0 4px;border-bottom:1px solid var(--bd);margin-bottom:8px}
-.todo-empty{text-align:center;padding:40px;color:var(--tm);font-size:13px}
-.todo-empty .ico{font-size:36px;margin-bottom:8px}
-.todo-progress{height:6px;background:var(--bd);border-radius:3px;overflow:hidden;margin:10px 0 4px}
-.todo-prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--s),#34d399);transition:width .6s ease}
 </style>
 </head>
 <body>
@@ -364,7 +316,7 @@ a{color:inherit;text-decoration:none}
    STATE
 ═══════════════════════════════════════════════════════════════ */
 const LS='ama_v6';
-let S={projects:{},cur:null,page:'projects',lang:'sv',dark:false,selSeg:0,todos:[]};
+let S={projects:{},cur:null,page:'projects',lang:'sv',dark:false,selSeg:0};
 let Charts={},modalMode='new';
 
 /* ═══════════════════════════════════════════════════════════════
@@ -473,17 +425,16 @@ function demoData(){
    STORAGE
 ═══════════════════════════════════════════════════════════════ */
 function save(){
-  try{localStorage.setItem(LS,JSON.stringify({projects:S.projects,cur:S.cur,lang:S.lang,dark:S.dark,todos:S.todos}));}catch(e){}
+  try{localStorage.setItem(LS,JSON.stringify({projects:S.projects,cur:S.cur,lang:S.lang,dark:S.dark}));}catch(e){}
 }
 function load(){
   try{
     const d=JSON.parse(localStorage.getItem(LS)||'null');
     if(d&&d.projects){
       S.projects=d.projects;S.cur=d.cur;
-      S.lang=d.lang||'sv';S.dark=!!d.dark;S.todos=d.todos||[];
+      S.lang=d.lang||'sv';S.dark=!!d.dark;
     }
   }catch(e){}
-  if(!S.todos.length)S.todos=defaultTodos();
   if(!Object.keys(S.projects).length){
     const demo={id:'demo',name:'Demo Projekt',desc:'Förifyllt med exempeldata från beräkningsbladet',created:new Date().toISOString(),modified:new Date().toISOString(),color:0,data:demoData()};
     S.projects.demo=demo;S.cur=null;
@@ -733,7 +684,6 @@ function renderSidebar(){
   const navSV=[
     {p:'projects',ico:'📁',sv:'Alla projekt',en:'All projects'},
     {p:'start',ico:'📚',sv:'Teori & Kalkyl',en:'Theory & Calc'},
-    {p:'todo',ico:'✅',sv:'Todo / Roadmap',en:'Todo / Roadmap'},
   ];
   let projNav='';
   if(proj){
@@ -778,7 +728,7 @@ function renderSidebar(){
     <button class="theme-btn" onclick="tgTheme()">${S.dark?'☀️':'🌙'} ${S.dark?T('Ljust läge','Light mode'):T('Mörkt läge','Dark mode')}</button>
   </div>`;
 }
-function navIco(p){return{dashboard:'🏠',projects:'📁',start:'📚',el:'⚡',fv:'🔥',fb:'🏗️',tr:'🔵',va:'💧',fvspec:'📋',rl:'📏',sm:'📊',todo:'✅'}[p]||'📄';}
+function navIco(p){return{dashboard:'🏠',projects:'📁',start:'📚',el:'⚡',fv:'🔥',fb:'🏗️',tr:'🔵',va:'💧',fvspec:'📋',rl:'📏',sm:'📊'}[p]||'📄';}
 
 /* ═══════════════════════════════════════════════════════════════
    BOTTOM NAV (mobile)
@@ -799,7 +749,7 @@ function go(p){
   renderSidebar();renderBNav();
   const m=document.getElementById('main');
   destroyCharts();
-  const pages={projects:renderProjects,start:renderStart,dashboard:renderDashboard,el:renderEL,fv:renderFV,fb:renderFB,tr:renderTR,va:renderVA,fvspec:renderFVSpec,rl:renderRL,sm:renderSM,todo:renderTodo};
+  const pages={projects:renderProjects,start:renderStart,dashboard:renderDashboard,el:renderEL,fv:renderFV,fb:renderFB,tr:renderTR,va:renderVA,fvspec:renderFVSpec,rl:renderRL,sm:renderSM};
   m.innerHTML=(pages[p]||renderProjects)();
   window.scrollTo(0,0);
   setTimeout(renderCharts,60);
@@ -1727,122 +1677,6 @@ function emptyProj(){
   return`<div class="empty-state"><div class="ico">📁</div><h3>${T('Inget projekt valt','No project selected')}</h3><p>${T('Välj ett projekt från menyn eller skapa ett nytt för att börja.','Select a project from the menu or create a new one to get started.')}</p><button class="btn bp" onclick="go('projects')">${T('Visa projekt','View projects')}</button></div>`;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   TODO / ROADMAP
-═══════════════════════════════════════════════════════════════ */
-let _todoFilter='all';
-const TODO_CATS={bug:{sv:'🐛 Bugg',en:'🐛 Bug'},feature:{sv:'🚀 Ny funktion',en:'🚀 Feature'},improvement:{sv:'✨ Förbättring',en:'✨ Improvement'},infra:{sv:'🔧 Infrastruktur',en:'🔧 Infrastructure'}};
-const TODO_PRIOS={high:{sv:'Hög',en:'High'},medium:{sv:'Medium',en:'Medium'},low:{sv:'Låg',en:'Low'}};
-
-function defaultTodos(){
-  const now=new Date().toISOString();
-  return[
-    {id:'td1',text:'PWA-installation — lägg till på hemskärmen (offline-stöd, service worker)',cat:'feature',prio:'high',done:false,created:now},
-    {id:'td2',text:'Webbhosting — driftsätta på Netlify / Vercel med automatisk deploy',cat:'infra',prio:'high',done:false,created:now},
-    {id:'td3',text:'GitHub Actions CI/CD — automatisera bygge, test och deploy vid push',cat:'infra',prio:'high',done:false,created:now},
-    {id:'td4',text:'Export till PDF — korrekt layout med logotyp, projektinfo och sidhuvud/-fot',cat:'improvement',prio:'high',done:false,created:now},
-    {id:'td5',text:'Desktop-app med Tauri — paketera som .exe/.msi (Windows) och .dmg (macOS)',cat:'feature',prio:'medium',done:false,created:now},
-    {id:'td6',text:'Stripe-integration — Pro 299 kr/mån, Team 799 kr/mån, desktop-licens 1 990 kr',cat:'feature',prio:'medium',done:false,created:now},
-    {id:'td7',text:'Supabase cloud sync — byt ut localStorage mot molnlagring för Pro-användare',cat:'feature',prio:'medium',done:false,created:now},
-    {id:'td8',text:'Mobil-app via Capacitor — publicera på Google Play Store och Apple App Store',cat:'feature',prio:'medium',done:false,created:now},
-    {id:'td9',text:'Förbättra engelska översättningar — granska alla T()-strängar med native speaker',cat:'improvement',prio:'medium',done:false,created:now},
-    {id:'td10',text:'Diagram i mörkt läge — kalibrera Chart.js-färger för bättre kontrast i dark mode',cat:'bug',prio:'medium',done:false,created:now},
-    {id:'td11',text:'Rörlängder: validera att sektioner inte överlappar varandra (from/to-kontroll)',cat:'bug',prio:'medium',done:false,created:now},
-    {id:'td12',text:'Budgetkalkyl per schakttyp — bryt ner VA-budgeten på EL/FV/FB/TRUMMA',cat:'improvement',prio:'medium',done:false,created:now},
-    {id:'td13',text:'API & BIM-integration — exportera kalkyldata till IFC/BIM-format (Fas 6)',cat:'feature',prio:'low',done:false,created:now},
-    {id:'td14',text:'Nordisk expansion — NO/DK/FI marknadslokalisering och prisomvandling',cat:'feature',prio:'low',done:false,created:now},
-    {id:'td15',text:'Spara enskild sida som PDF-rapport med sektion-för-sektion-layout',cat:'improvement',prio:'low',done:false,created:now},
-  ];
-}
-
-function addTodo(){
-  const txt=(document.getElementById('todo-new-text')||{}).value||'';
-  const cat=(document.getElementById('todo-new-cat')||{}).value||'feature';
-  const prio=(document.getElementById('todo-new-prio')||{}).value||'medium';
-  if(!txt.trim())return;
-  S.todos.push({id:'td'+Date.now(),text:txt.trim(),cat,prio,done:false,created:new Date().toISOString()});
-  save();go('todo');
-}
-function toggleTodo(id){
-  const t=S.todos.find(x=>x.id===id);if(t)t.done=!t.done;save();go('todo');
-}
-function deleteTodo(id){
-  S.todos=S.todos.filter(x=>x.id!==id);save();go('todo');
-}
-function setTodoFilter(f){_todoFilter=f;go('todo');}
-
-function fmtTodoDate(iso){
-  try{const d=new Date(iso);return d.toLocaleDateString(S.lang==='sv'?'sv-SE':'en-GB',{day:'numeric',month:'short'});}catch(e){return'';}
-}
-function todoItem(t){
-  const catLabel=(TODO_CATS[t.cat]||{})[S.lang==='sv'?'sv':'en']||t.cat;
-  const prioLabel=(TODO_PRIOS[t.prio]||{})[S.lang==='sv'?'sv':'en']||t.prio;
-  return`<div class="todo-item${t.done?' done':''}">
-  <input type="checkbox" class="todo-cb" ${t.done?'checked':''} onchange="toggleTodo('${t.id}')">
-  <div class="ti-body">
-    <div class="ti-text">${t.text}</div>
-    <div class="ti-meta">
-      <span class="ti-cat ${t.cat}">${catLabel}</span>
-      <span class="ti-prio ${t.prio}">${prioLabel}</span>
-      <span class="ti-date">${fmtTodoDate(t.created)}</span>
-    </div>
-  </div>
-  <button class="todo-del" onclick="deleteTodo('${t.id}')" title="${T('Ta bort','Delete')}">✕</button>
-</div>`;
-}
-
-function renderTodo(){
-  const all=S.todos;
-  const total=all.length,done=all.filter(x=>x.done).length,pct=total?Math.round(done/total*100):0;
-  const filtered=_todoFilter==='all'?all:_todoFilter==='done'?all.filter(x=>x.done):_todoFilter==='open'?all.filter(x=>!x.done):all.filter(x=>x.cat===_todoFilter);
-  const open=all.filter(x=>!x.done);
-  const hiPri=open.filter(x=>x.prio==='high').length;
-
-  const filterBtns=[
-    {k:'all',sv:'Alla',en:'All'},
-    {k:'open',sv:'Öppna',en:'Open'},
-    {k:'done',sv:'Klara',en:'Done'},
-    {k:'bug',sv:'🐛 Buggar',en:'🐛 Bugs'},
-    {k:'feature',sv:'🚀 Funktioner',en:'🚀 Features'},
-    {k:'improvement',sv:'✨ Förbättringar',en:'✨ Improvements'},
-    {k:'infra',sv:'🔧 Infrastruktur',en:'🔧 Infrastructure'},
-  ].map(f=>`<button class="tf-btn${_todoFilter===f.k?' a':''}" onclick="setTodoFilter('${f.k}')">${T(f.sv,f.en)}</button>`).join('');
-
-  const listHtml=filtered.length
-    ?filtered.map(todoItem).join('')
-    :`<div class="todo-empty"><div class="ico">🎉</div>${T('Inga uppgifter hittades för detta filter.','No tasks found for this filter.')}</div>`;
-
-  return`<div>
-  <div class="ph"><h2>✅ ${T('Todo & Roadmap','Todo & Roadmap')}</h2><div class="sub">${T('Förbättringar, buggar och planerade funktioner för AMA/MER Kalkyl Pro.','Improvements, bugs and planned features for AMA/MER Kalkyl Pro.')}</div></div>
-
-  <div class="todo-stats">
-    <div class="todo-stat"><div class="tsv" style="color:var(--p)">${total}</div><div class="tsl">${T('Totalt','Total')}</div></div>
-    <div class="todo-stat"><div class="tsv" style="color:var(--s)">${done}</div><div class="tsl">${T('Klara','Done')}</div></div>
-    <div class="todo-stat"><div class="tsv" style="color:var(--a)">${open.length}</div><div class="tsl">${T('Öppna','Open')}</div></div>
-    <div class="todo-stat"><div class="tsv" style="color:var(--d)">${hiPri}</div><div class="tsl">${T('Hög prio','High prio')}</div></div>
-    <div class="todo-stat" style="grid-column:span 2;text-align:left;padding:12px 14px">
-      <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:4px">
-        <span>${T('Framsteg','Progress')}</span><span style="color:var(--s)">${pct}%</span>
-      </div>
-      <div class="todo-progress"><div class="todo-prog-fill" style="width:${pct}%"></div></div>
-      <div style="font-size:10px;color:var(--tm)">${done} ${T('av','of')} ${total} ${T('uppgifter klara','tasks completed')}</div>
-    </div>
-  </div>
-
-  <div class="todo-add-form">
-    <div class="ct" style="margin-bottom:12px"><span class="dot" style="background:var(--p)"></span>${T('Lägg till uppgift','Add task')}</div>
-    <div class="todo-add-row">
-      <div class="fi"><label>${T('Beskrivning','Description')}</label><input id="todo-new-text" type="text" placeholder="${T('Vad behöver göras?','What needs to be done?')}" onkeydown="if(event.key==='Enter')addTodo()"></div>
-      <div class="fi sm"><label>${T('Kategori','Category')}</label><select id="todo-new-cat">${Object.entries(TODO_CATS).map(([k,v])=>`<option value="${k}">${v[S.lang==='sv'?'sv':'en']}</option>`).join('')}</select></div>
-      <div class="fi xs"><label>${T('Prioritet','Priority')}</label><select id="todo-new-prio">${Object.entries(TODO_PRIOS).map(([k,v])=>`<option value="${k}">${v[S.lang==='sv'?'sv':'en']}</option>`).join('')}</select></div>
-      <button class="btn bp" onclick="addTodo()" style="margin-bottom:0;align-self:flex-end">+ ${T('Lägg till','Add')}</button>
-    </div>
-  </div>
-
-  <div class="todo-filters"><span>${T('Filtrera:','Filter:')}</span>${filterBtns}</div>
-  <div class="todo-list">${listHtml}</div>
-</div>`;
-}
 
 /* ═══════════════════════════════════════════════════════════════
    CHARTS
