@@ -977,7 +977,6 @@ function renderDashboard(){
     ${mc(totBerg.toFixed(0),T('Bergschakt','Rock exc.'),'m³','c2',pct(totBerg,totExc))}
     ${mc((elT.bed+fvT.bed+fbT.bed+trT.bed+vaT.bed).toFixed(1),T('Ledningsbädd','Bedding'),'m³','c3',30)}
     ${mc((elT.sur+fvT.sur+fbT.sur+trT.sur+vaT.sur).toFixed(1),T('Kringfyllning','Surr.fill'),'m³','c3',30)}
-    ${mc(fmtSEK(vaT.cost),T('VA Kostnad','VA Cost'),'','c6',50)}
   </div>
 
   <div class="cg2">
@@ -1074,7 +1073,7 @@ function renderStart(){
         {ico:'🔥',title:T('Fjärrvärme','District Heating'),desc:T('Isolerade parledningar för fjärrvärme. Bottenbredd = rördim 1 + rördim 2 + 20cm. Noggrann kringfyllning skyddar isoleringen.','Insulated twin pipes for district heating. Bottom width = pipe 1 + pipe 2 + 20cm. Careful surround fill protects insulation.')},
         {ico:'🏗️',title:T('Fyllnad mot byggnad','Fill against building'),desc:T('Schakt och fyllning längs husgrunder. Slänter anpassas mot befintlig konstruktion. BW = rördim C + D + 20cm.','Excavation along building foundations. Slopes adapted toward existing structure. BW = pipe dim C + D + 20cm.')},
         {ico:'🔵',title:T('Trumma','Culvert'),desc:T('Vägtrummor och stora ledningar DN200–400. Bädd och kringfyllning av godkänt krossgrus. BW = rördim C + D + 10cm.','Road culverts and large pipes DN200–400. Bedding and surrounding fill of approved crushed aggregate.')},
-        {ico:'💧',title:T('Vatten och Avlopp','Water & Sewer'),desc:T('Vatten- och avloppsledningar med fullständig kostnadskalkyl. Flera rördiametrar. Budget och prissättning per m³.','Water and sewer pipes with full cost calculation. Multiple pipe diameters. Budget and pricing per m³.')},
+        {ico:'💧',title:T('Vatten och Avlopp','Water & Sewer'),desc:T('Vatten- och avloppsledningar med flera rördiametrar. Volymsberäkning per segment.','Water and sewer pipes with multiple pipe diameters. Volume calculation per segment.')},
       ].map(({ico,title,desc})=>`<div class="type-summary" style="cursor:default">
         <div class="ts-head"><span class="ts-ico">${ico}</span><span class="ts-name" style="font-size:13px">${title}</span></div>
         <p style="font-size:11.5px;color:var(--ts);line-height:1.6;margin-top:4px">${desc}</p>
@@ -1496,7 +1495,7 @@ function renderVA(){
   const seg=segs[S.selSeg]||segs[0];
   return`<div>
   <div class="ph"><h2>💧 ${T('Vatten och Avlopp','Water & Sewer')}</h2>
-  <div class="sub">${T('Vatten- och avloppsledningar med fullständig volyms- och kostnadskalkyl.','Water and sewer pipes with full volume and cost calculation.')}</div></div>
+  <div class="sub">${T('Vatten- och avloppsledningar med fullständig volymsberäkning.','Water and sewer pipes with full volume calculation.')}</div></div>
   <!-- ══ RÖR & KONFIGURATION ══ -->
   <div class="cd">
   <div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Rör & konfiguration','Pipes & configuration')}</div>
@@ -1592,51 +1591,48 @@ function renderVA(){
     ${mc(tot.l,T('Längd','Length'),'m','',100)}${mc(tot.exc,T('Schakt tot','Exc. total'),'m³','',100)}
     ${mc(tot.jord,T('Jordschakt','Soil exc.'),'m³','c2',pct(tot.jord,mx))}${mc(tot.berg,T('Bergschakt','Rock exc.'),'m³','c2',pct(tot.berg,mx))}
     ${mc(tot.bed,T('Ledningsbädd','Bedding'),'m³','c3',pct(tot.bed,mx))}${mc(tot.sur,T('Kringfyllning','Surr.fill'),'m³','c3',pct(tot.sur,mx))}
-    ${mc(tot.remA,T('Restfyll A','Rest A'),'m³','c4',pct(tot.remA,mx))}${mc(fmtSEK(tot.cost),T('Kostnad','Cost'),'','c6',50)}
+    ${mc(tot.remA,T('Restfyll A','Rest A'),'m³','c4',pct(tot.remA,mx))}
   </div>
   <div class="cg2">
     <div class="cd"><div class="ct"><span class="dot" style="background:#06b6d4"></span>${T('Tvärsnitt','Cross-section')} ${S.selSeg+1}</div>
       <div class="svg-box" id="va-svg">${seg?svgSection(seg.ab,seg.tw,seg.ad,VA.cfg.pipes,'VA'):T('–','–')}</div></div>
-    <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Volym & kostnad','Volume & cost')}</div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Volymfördelning','Volume split')}</div>
       <div class="ch-wrap"><canvas id="ch-va-pie"></canvas></div></div>
   </div>
   <div class="cg2">
     <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Djupprofil','Depth profile')}</div>
       <div class="ch-wrap"><canvas id="ch-va-depth"></canvas></div></div>
-    <div class="cd"><div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Kostnad per segment','Cost per segment')}</div>
-      <div class="ch-wrap"><canvas id="ch-va-cost"></canvas></div></div>
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Profilpunkter','Profile points')}
     <span style="margin-left:auto;font-size:9px;font-weight:400;text-transform:none;color:var(--ts)">${T('Klicka rad = visa tvärsnitt','Click row = show section')}</span>
   </div>
   <div class="tbl-wrap"><table class="dt">
-    <thead><tr><th>N(m)</th><th>R(dj)</th><th>C(berg)</th><th>BW</th><th>A(kring)</th><th>${T('Jord','Soil')} m³</th><th>${T('Berg','Rock')} m³</th><th>${T('Bädd','Bed')} m³</th><th>${T('Kring','Surr')} m³</th><th>${T('Kostnad','Cost')} kr</th><th>✓</th><th></th></tr></thead>
+    <thead><tr><th>N(m)</th><th>R(dj)</th><th>C(berg)</th><th>BW</th><th>A(kring)</th><th>${T('Jord','Soil')} m³</th><th>${T('Berg','Rock')} m³</th><th>${T('Bädd','Bed')} m³</th><th>${T('Kring','Surr')} m³</th><th>✓</th><th></th></tr></thead>
     <tbody>${VA.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.n}" step="5" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].n=+this.value;touchProj();save();go('va')"></td>
       <td><input type="number" value="${p.r}" step=".1" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].r=+this.value;touchProj();save();go('va')"></td>
       <td><input type="number" value="${p.c}" step=".1" min="0" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].c=+this.value;touchProj();save();go('va')"></td>
       <td><input type="number" value="${p.bw}" step=".05" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].bw=+this.value;touchProj();save();go('va')"></td>
       <td><input type="number" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].a=+this.value;touchProj();save();go('va')"></td>
-      ${segs[i]?`<td class="num">${segs[i].jord.toFixed(1)}</td><td class="num">${segs[i].berg.toFixed(1)}</td><td class="num">${segs[i].bed.toFixed(1)}</td><td class="num">${segs[i].sur.toFixed(1)}</td><td class="num">${Math.round(segs[i].cost).toLocaleString('sv-SE')}</td>`:'<td colspan="5">–</td>'}
+      ${segs[i]?`<td class="num">${segs[i].jord.toFixed(1)}</td><td class="num">${segs[i].berg.toFixed(1)}</td><td class="num">${segs[i].bed.toFixed(1)}</td><td class="num">${segs[i].sur.toFixed(1)}</td>`:'<td colspan="4">–</td>'}
       <td><input type="checkbox" ${p.done?'checked':''} onclick="event.stopPropagation()" onchange="D('VA').pts[${i}].done=this.checked?1:0;touchProj();save();go('va')"></td>
       <td>${VA.pts.length>2?`<button class="bd-btn" onclick="event.stopPropagation();D('VA').pts.splice(${i},1);touchProj();save();go('va')">✕</button>`:''}</td>
     </tr>`).join('')}
     </tbody>
-    <tfoot><tr><td colspan="5">${T('TOTALT','TOTAL')}</td><td class="num">${tot.jord.toFixed(1)}</td><td class="num">${tot.berg.toFixed(1)}</td><td class="num">${tot.bed.toFixed(1)}</td><td class="num">${tot.sur.toFixed(1)}</td><td class="num">${Math.round(tot.cost).toLocaleString('sv-SE')}</td><td colspan="2"></td></tr></tfoot>
+    <tfoot><tr><td colspan="5">${T('TOTALT','TOTAL')}</td><td class="num">${tot.jord.toFixed(1)}</td><td class="num">${tot.berg.toFixed(1)}</td><td class="num">${tot.bed.toFixed(1)}</td><td class="num">${tot.sur.toFixed(1)}</td><td colspan="2"></td></tr></tfoot>
   </table></div>
   <div class="btn-row"><button class="btn bp" onclick="const l=D('VA').pts;l.push({...l[l.length-1],n:l[l.length-1].n+15,done:0,doneR:0});touchProj();save();go('va')">+ ${T('Punkt','Point')}</button></div></div>
   ${segs.length?`<div class="cd"><div class="ct"><span class="dot" style="background:#8b5cf6"></span>${T('Segmentdetaljer','Segment details')}</div>
   <div class="tbl-wrap"><table class="dt">
-    <thead><tr><th>${T('Från','From')}</th><th>${T('Till','To')}</th><th>L(m)</th><th>${T('Medeldjup','Avg depth')}</th><th>BW</th><th>TW</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th><th>${T('Kostnad kr','Cost SEK')}</th><th>${T('Balans','Balance')}</th></tr></thead>
+    <thead><tr><th>${T('Från','From')}</th><th>${T('Till','To')}</th><th>L(m)</th><th>${T('Medeldjup','Avg depth')}</th><th>BW</th><th>TW</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th><th>${T('Balans','Balance')}</th></tr></thead>
     <tbody>${segs.map((s,i)=>`<tr class="${s.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td>${s.f}</td><td>${s.t}</td><td>${s.L.toFixed(1)}</td><td>${s.ad.toFixed(2)}</td>
       <td>${s.ab.toFixed(2)}</td><td>${s.at.toFixed(2)}</td>
       <td class="num">${s.jord.toFixed(2)}</td><td class="num">${s.berg.toFixed(2)}</td>
       <td class="num">${s.bed.toFixed(2)}</td><td class="num">${s.sur.toFixed(2)}</td>
-      <td class="num">${Math.round(s.cost).toLocaleString('sv-SE')}</td>
       <td class="num ${s.bal<0?'bad':''}">${s.bal.toFixed(2)}</td>
     </tr>`).join('')}</tbody>
-    <tfoot><tr><td colspan="6">${T('TOTALT','TOTAL')}</td><td class="num">${tot.jord.toFixed(2)}</td><td class="num">${tot.berg.toFixed(2)}</td><td class="num">${tot.bed.toFixed(2)}</td><td class="num">${tot.sur.toFixed(2)}</td><td class="num">${Math.round(tot.cost).toLocaleString('sv-SE')}</td><td class="num ${tot.bal<0?'bad':''}">${tot.bal.toFixed(2)}</td></tr></tfoot>
+    <tfoot><tr><td colspan="6">${T('TOTALT','TOTAL')}</td><td class="num">${tot.jord.toFixed(2)}</td><td class="num">${tot.berg.toFixed(2)}</td><td class="num">${tot.bed.toFixed(2)}</td><td class="num">${tot.sur.toFixed(2)}</td><td class="num ${tot.bal<0?'bad':''}">${tot.bal.toFixed(2)}</td></tr></tfoot>
   </table></div></div>`:''}
   </div>`;
 }
@@ -1796,7 +1792,6 @@ function renderSM(){
     ${mc(totSur.toFixed(1),T('Kring tot','Total surr.'),'m³','c3',pct(totSur,totExc))}
     ${mc(totRem.toFixed(1),T('Rest tot','Total rest'),'m³','c4',pct(totRem,totExc))}
     ${mc(totGeo.toFixed(0),T('Geotextil tot','Total geo'),'m²','c4',70)}
-    ${mc(fmtSEK(va.cost),T('VA Kostnad','VA Cost'),'','c6',50)}
     ${mc(totBal.toFixed(0),T('Balans tot','Total balance'),'m³',totBal<0?'c2':'c4',50)}
   </div>
   ${totBal!==0?`<div class="infobox" style="background:${totBal>0?'rgba(239,68,68,.07)':'rgba(16,185,129,.07)'};border-color:${totBal>0?'var(--d)':'var(--s)'}">
@@ -2244,7 +2239,6 @@ function renderCharts(){
     mkPie('ch-va-pie',[T('Jord','Soil'),T('Berg','Rock'),T('Bädd','Bed'),T('Kring','Surr'),T('Rest A','Rest A')],[tot.jord,tot.berg,tot.bed,tot.sur,tot.remA],['#06b6d4','#8b5cf6','#f59e0b','#10b981','#ec4899']);
     if(segs.length){
       mkLine('ch-va-depth',segs.map(s=>`${s.f}-${s.t}m`),[{label:T('Djup','Depth'),data:segs.map(s=>s.ad),borderColor:'#06b6d4',fill:true,backgroundColor:'rgba(6,182,212,.08)',tension:.3,pointRadius:4}]);
-      mkBar('ch-va-cost',segs.map(s=>`${s.f}-${s.t}`),[{label:T('Kostnad kr','Cost SEK'),data:segs.map(s=>Math.round(s.cost)),backgroundColor:'#6366f1',borderRadius:4}]);
     }
   }else if(p==='fvspec'){
     const{segs,tot}=fvAll();
@@ -2306,7 +2300,6 @@ function xPDF(){
   <div class="sub">${proj.name} · ${proj.desc||''} · Genererad: ${new Date().toLocaleDateString('sv-SE')} · AMA/MER Kalkyl Pro v6</div>
   <div class="m"><div class="v">${(el.exc+fv.exc+va.exc).toFixed(0)}</div><div class="l">Total schakt m³</div></div>
   <div class="m"><div class="v">${(el.jord+fv.jord+va.jord).toFixed(0)}</div><div class="l">Jordschakt m³</div></div>
-  <div class="m"><div class="v">${fmtSEK(va.cost)}</div><div class="l">VA Kostnad</div></div>
   <table><tr><th>Typ</th><th>Längd</th><th>Schakt m³</th><th>Jord m³</th><th>Berg m³</th><th>Bädd m³</th><th>Kring m³</th></tr>
   ${[['EL kanalisation',el],['Fjärrvärme',fv],['Vatten & Avlopp',va]].map(([n,t])=>`<tr><td>${n}</td><td>${t.l?.toFixed(1)||0}m</td><td>${t.exc.toFixed(1)}</td><td>${t.jord.toFixed(1)}</td><td>${t.berg.toFixed(1)}</td><td>${t.bed.toFixed(1)}</td><td>${t.sur.toFixed(1)}</td></tr>`).join('')}
   </table>
