@@ -397,12 +397,12 @@ const CFG_BUD={
   mask:[{n:'Grävmaskin 20t',r:1800,h:0},{n:'Hjullastare',r:1200,h:0},{n:'Lastbil (schakttransport)',r:900,h:0}],
   arb:[{n:'Maskinist',r:420,h:0},{n:'Grovarbetare',r:340,h:0},{n:'Arbetsledare',r:580,h:0}],
   mat:0,etab:0,
-  jord_r:80,berg_r:650,dep_r:65,
+  dep_r:65,
   prod:120,f_berg:5.0,
   risk:10,oh:12,vinst:8,ofor:5,
   rot:0,rot_pers:1,rot_max:50000
 };
-const PRC_VA={asfalt:100,veg:90,jord:0,berg:0,rustbadd:0,ytaLt:0,ytaGt:0,avtatn:25,badd:540,kring:490,restA:350,restB:0,spont:0,bergAvt:25,tatsom:120,geo:0};
+const PRC_GLOBAL={asfalt:100,veg:90,jord:0,berg:0,rustbadd:0,ytaLt:0,ytaGt:0,avtatn:25,badd:540,kring:490,restA:350,restB:0,spont:0,tatsom:120,geo:0};
 const VPIPES=['400mm','200mm','160mm','110mm','90mm','75mm','63mm','50mm','40mm','32mm'];
 const DPIPES=['630mm','400mm','315mm','250mm','200mm','160mm','110mm'];
 const SPIPES=['315mm','160mm','110mm'];
@@ -413,9 +413,9 @@ function emptyData(){
     FV:{cfg:{...CFG_FV},pts:[{i:0,e:2,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0},{i:50,e:2,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0}]},
     FB:{cfg:{...CFG_FB},pts:[{i:0,e:1.5,f:.15,g:.5,a:.5,c:.2,d:.1,k:1,b:10,done:0},{i:50,e:2,f:.15,g:.5,a:.5,c:.35,d:.2,k:1,b:10,done:0}]},
     TR:{cfg:{...CFG_TR},pts:[{i:0,e:3,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},{i:50,e:3,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0}]},
-    VA:{cfg:{...CFG_VA},prices:{...PRC_VA},pts:[{n:0,p:0,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0},{n:50,p:50,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0}]},
+    VA:{cfg:{...CFG_VA},prices:{...PRC_GLOBAL},pts:[{n:0,p:0,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0},{n:50,p:50,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0}]},
     RL:{vatten:{pipes:[...VPIPES],sections:[]},avlopp:{dagPipes:[...DPIPES],spillPipes:[...SPIPES],dagSections:[]},totUtfort:0,kontrollUtfort:0},
-    BUD:{cfg:{mask:[...CFG_BUD.mask.map(m=>({...m}))],arb:[...CFG_BUD.arb.map(a=>({...a}))],mat:0,etab:0,jord_r:80,berg_r:650,dep_r:65,prod:120,f_berg:5.0,risk:10,oh:12,vinst:8,ofor:5,rot:0,rot_pers:1,rot_max:50000}}
+    BUD:{cfg:{mask:[...CFG_BUD.mask.map(m=>({...m}))],arb:[...CFG_BUD.arb.map(a=>({...a}))],mat:0,etab:0,dep_r:65,prod:120,f_berg:5.0,risk:10,oh:12,vinst:8,ofor:5,rot:0,rot_pers:1,rot_max:50000},prices:{...PRC_GLOBAL}}
   };
 }
 
@@ -462,7 +462,7 @@ function demoData(){
       {i:100,e:2.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0}
     ]},
     VA:{cfg:{slopeV:.25,slopeH:.2,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,pipes:[.3,.16,.35,.25,.35,.315,.2]},
-      prices:{...PRC_VA},
+      prices:{...PRC_GLOBAL},
       pts:[
         {n:0, p:0, r:1.8,c:0, d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.7, bw:1.6,done:0,doneR:0},
         {n:15,p:15,r:1.8,c:0, d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0},
@@ -497,12 +497,11 @@ function demoData(){
     BUD:{cfg:{
       mask:[{n:'Grävmaskin 20t',r:1800,h:180},{n:'Hjullastare',r:1200,h:80},{n:'Lastbil (schakttransport)',r:900,h:240}],
       arb:[{n:'Maskinist',r:420,h:180},{n:'Grovarbetare',r:340,h:360},{n:'Arbetsledare',r:580,h:60}],
-      mat:850000,etab:145000,
-      jord_r:80,berg_r:650,dep_r:65,
+      mat:850000,etab:145000,dep_r:65,
       prod:120,f_berg:5.0,
       risk:10,oh:12,vinst:8,ofor:5,
       rot:0,rot_pers:2,rot_max:50000
-    }}
+    },prices:{...PRC_GLOBAL,asfalt:100,veg:90,jord:85,berg:680,avtatn:25,badd:540,kring:490,restA:350,spont:0,geo:0,tatsom:120,rustbadd:0,restB:0,ytaLt:0,ytaGt:0}}
   };
 }
 
@@ -692,7 +691,7 @@ function fbAll(){const FB=D('FB');if(!FB)return{segs:[],tot:zFV()};return calcSe
 function trAll(){const TR=D('TR');if(!TR)return{segs:[],tot:zFV()};return calcSections(TR.pts,TR.cfg,(pt)=>pt.c+pt.d+.1);}
 function vaAll(){
   const VA=D('VA');if(!VA)return{segs:[],tot:zVA()};
-  const c=VA.cfg,pr=VA.prices,segs=[];
+  const c=VA.cfg,pr=D('BUD')?.prices||PRC_GLOBAL,segs=[];
   for(let i=0;i<VA.pts.length-1;i++){
     const p1=VA.pts[i],p2=VA.pts[i+1],L=Math.abs(p2.n-p1.n);
     if(L<=0)continue;
@@ -1826,11 +1825,19 @@ function renderBudget(){
   if(!D('BUD')){
     S.projects[S.cur].data.BUD={cfg:{
       mask:[...CFG_BUD.mask.map(m=>({...m}))],arb:[...CFG_BUD.arb.map(a=>({...a}))],
-      mat:0,etab:0,jord_r:80,berg_r:650,dep_r:65,prod:120,f_berg:5.0,
+      mat:0,etab:0,dep_r:65,prod:120,f_berg:5.0,
       risk:10,oh:12,vinst:8,ofor:5,rot:0,rot_pers:1,rot_max:50000
-    }};
+    },prices:{...PRC_GLOBAL}};
     save();
   }
+  // Migrate prices from VA.prices to BUD.prices (one-time)
+  if(!D('BUD').prices){
+    const _vap=D('VA')?.prices;
+    D('BUD').prices=_vap?{...PRC_GLOBAL,..._vap}:{...PRC_GLOBAL};
+    save();
+  }
+  // Remove legacy jord_r/berg_r from cfg if present (no longer used)
+  if(D('BUD').cfg.jord_r!==undefined){delete D('BUD').cfg.jord_r;delete D('BUD').cfg.berg_r;save();}
   const cfg=D('BUD').cfg;
 
   // ── Auto-pull volumes from all calc types ──────────────────
@@ -1841,13 +1848,16 @@ function renderBudget(){
   const overskott = Math.max(0, totBal);
 
   // ── Cost calculations ──────────────────────────────────────
+  const pr=D('BUD').prices;
   const maskCost = cfg.mask.reduce((s,m)=>s+m.r*m.h, 0);
   const arbCost  = cfg.arb.reduce((s,a)=>s+a.r*a.h, 0);
-  const bergLoss = totBerg * cfg.berg_r;
-  const jordMass = totJord * cfg.jord_r;
   const depCost  = overskott * cfg.dep_r;
-  const massCost = jordMass + bergLoss + depCost;
-  const direktCost = maskCost + arbCost + cfg.mat + cfg.etab + massCost;
+  const massCost = depCost;
+  // Per-tab schakt costs from unit prices × volumes
+  const calcTab=(t)=>(t.jord||0)*(pr.jord||0)+(t.berg||0)*(pr.berg||0)+(t.bed||0)*(pr.badd||0)+(t.sur||0)*(pr.kring||0)+((t.remA||t.rem)||0)*(pr.restA||0)+(t.aa||0)*(pr.asfalt||0)+(t.va||0)*(pr.veg||0)+(t.bergAvt||0)*(pr.avtatn||0)+(t.sp||0)*(pr.spont||0)+(t.geo||0)*(pr.geo||0);
+  const elCost=calcTab(el),fvCost=calcTab(fv),fbCost=calcTab(fb),trCost=calcTab(tr),vaCost=va.cost;
+  const schaktTotal=elCost+fvCost+fbCost+trCost+vaCost;
+  const direktCost = maskCost + arbCost + cfg.mat + cfg.etab + massCost + schaktTotal;
 
   // ── Påslag ─────────────────────────────────────────────────
   const riskAmt  = direktCost * cfg.risk / 100;
@@ -1856,7 +1866,7 @@ function renderBudget(){
   const oforAmt  = direktCost * cfg.ofor / 100;
   const pAslagTot= riskAmt + ohAmt + vinAmt + oforAmt;
 
-  const totalExMoms  = direktCost + va.cost + pAslagTot;
+  const totalExMoms  = direktCost + pAslagTot;
   const moms         = totalExMoms * 0.25;
   const totalInkMoms = totalExMoms + moms;
 
@@ -1945,55 +1955,70 @@ function renderBudget(){
     </div>
   </div>
 
-  <!-- ══ MASSKOSTNADER ══ -->
+  <!-- ══ DEPONERING ══ -->
   <div class="cd bud-section">
-    <div class="ct"><span class="dot" style="background:var(--o)"></span>${T('Masskostnader','Mass/earthwork costs')} <span style="margin-left:auto;font-weight:800;font-size:12px;color:var(--o)">${fmtSEK(massCost)}</span></div>
+    <div class="ct"><span class="dot" style="background:var(--o)"></span>${T('Deponering överskottsmassor','Surplus disposal')} <span style="margin-left:auto;font-weight:800;font-size:12px;color:var(--o)">${fmtSEK(depCost)}</span></div>
     <div class="fg" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));margin-bottom:10px">
-      <div class="fi"><label>${T('Jordschakt (kr/m³)','Soil excavation (SEK/m³)')}</label>
-        <input type="number" value="${cfg.jord_r}" step="5" oninput="D('BUD').cfg.jord_r=+this.value;budSave()"></div>
-      <div class="fi"><label>${T('Losshållning berg (kr/m³)','Rock loosening (SEK/m³)')}<span title="${T('Inkl. borrning, sprängning, lastning & transport. Typvärde 500–800 kr/m³.','Incl. drilling, blasting, loading & haul. Typical 500–800 SEK/m³.')}" style="cursor:help;margin-left:4px;opacity:.6">ℹ️</span></label>
-        <input type="number" value="${cfg.berg_r}" step="25" oninput="D('BUD').cfg.berg_r=+this.value;budSave()"></div>
       <div class="fi"><label>${T('Deponering överskott (kr/m³)','Surplus disposal (SEK/m³)')}</label>
         <input type="number" value="${cfg.dep_r}" step="5" oninput="D('BUD').cfg.dep_r=+this.value;budSave()"></div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:11px;padding:8px 10px;background:var(--sa);border-radius:var(--rss);border:1px solid var(--bd)">
-      <div><span style="color:var(--tm)">${T('Jordschakt:','Soil:')}</span> <strong>${totJord.toFixed(0)} m³ × ${cfg.jord_r} = ${fmtSEK(jordMass)}</strong></div>
-      <div><span style="color:var(--tm)">${T('Berglosshållning:','Rock loss.:')}</span> <strong>${totBerg.toFixed(0)} m³ × ${cfg.berg_r} = ${fmtSEK(bergLoss)}</strong></div>
-      <div><span style="color:var(--tm)">${T('Deponering:','Disposal:')}</span> <strong>${overskott.toFixed(0)} m³ × ${cfg.dep_r} = ${fmtSEK(depCost)}</strong></div>
+    <div style="font-size:11px;padding:8px 10px;background:var(--sa);border-radius:var(--rss);border:1px solid var(--bd)">
+      <span style="color:var(--tm)">${T('Deponering:','Disposal:')}</span> <strong>${overskott.toFixed(0)} m³ × ${cfg.dep_r} = ${fmtSEK(depCost)}</strong>
+      <span style="margin-left:16px;opacity:.6;font-size:10px">${T('Jordschakt + bergschakt ingår i Prissättning nedan','Soil + rock excavation costs are in Pricing below')}</span>
     </div>
   </div>
 
-  <!-- ══ PRISSÄTTNING VA ══ -->
+  <!-- ══ PRISSÄTTNING ══ -->
   <div class="cd bud-section">
-    <div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Prissättning — Vatten & Avlopp (kr/enhet)','Pricing — Water & Sewer (SEK/unit)')}
-      <span style="margin-left:auto;font-weight:800;font-size:12px;color:var(--s)">${fmtSEK(va.cost)}</span></div>
-    <p style="font-size:11px;color:var(--ts);margin-bottom:10px;padding:0 2px">${T('Enhetspriser används för att beräkna kostnad per segment i Vatten & Avlopp. Kostnad = volym × pris.','Unit prices calculate cost per segment in Water & Sewer. Cost = volume × price.')}</p>
+    <div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Prissättning (kr/enhet) — alla schakttyper','Unit pricing (SEK/unit) — all excavation types')}
+      <span style="margin-left:auto;font-weight:800;font-size:12px;color:var(--s)">${fmtSEK(schaktTotal)}</span></div>
+    <p style="font-size:11px;color:var(--ts);margin-bottom:12px;padding:0 2px">${T('Enhetspriser gäller för alla schakttyper (EL, Fjärrvärme, Fyllnad, Trumma, Vatten & Avlopp). Kostnad = volym × pris.','Unit prices apply to all excavation types (EL, District Heating, Fill, Culvert, Water & Sewer). Cost = volume × price.')}</p>
+
+    <div class="va-cfg-group-title" style="margin-bottom:8px">⛏️ ${T('Schaktarbeten — alla typer','Excavation work — all types')}</div>
+    <div class="fg" style="margin-bottom:16px">${[
+      ['jord',   T('Jordschakt (kr/m³)',      'Soil excavation (SEK/m³)')],
+      ['berg',   T('Bergschakt (kr/m³)',      'Rock excavation (SEK/m³)')],
+      ['avtatn', T('Avtagning berg (kr/m²)',  'Rock stripping (SEK/m²)')],
+    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" oninput="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
+
+    <div class="va-cfg-group-title" style="margin-bottom:8px">🏗️ ${T('Ytbeläggning — alla typer','Surface restoration — all types')}</div>
+    <div class="fg" style="margin-bottom:16px">${[
+      ['asfalt', T('Asfalt (kr/m²)',          'Asphalt (SEK/m²)')],
+      ['veg',    T('Vegetation (kr/m²)',       'Vegetation (SEK/m²)')],
+    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" oninput="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
+
+    <div class="va-cfg-group-title" style="margin-bottom:8px">📦 ${T('Fyllning — alla typer','Fill & bedding — all types')}</div>
+    <div class="fg" style="margin-bottom:16px">${[
+      ['badd',     T('Ledningsbädd (kr/m³)',     'Pipe bedding (SEK/m³)')],
+      ['kring',    T('Kringfyllning (kr/m³)',     'Surround fill (SEK/m³)')],
+      ['restA',    T('Restfyllning A (kr/m³)',    'Remaining fill A (SEK/m³)')],
+      ['restB',    T('Restfyllning B (kr/m³)',    'Remaining fill B (SEK/m³)')],
+      ['rustbadd', T('Rustbädd (kr/m³)',          'Foundation bed (SEK/m³)')],
+    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" oninput="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
+
+    <div class="va-cfg-group-title" style="margin-bottom:8px">🔧 ${T('Specialarbeten — där tillämpligt','Special works — where applicable')}</div>
+    <div class="fg" style="margin-bottom:16px">${[
+      ['spont',  T('Spontning (kr/m²)',          'Sheet piling (SEK/m²)')],
+      ['geo',    T('Geotextil (kr/m²)',           'Geotextile (SEK/m²)')],
+    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" oninput="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
+
+    <div class="va-cfg-group-title" style="margin-bottom:8px">💧 ${T('VA-specifikt — Vatten & Avlopp','VA-specific — Water & Sewer only')}</div>
     <div class="fg">${[
-      ['asfalt',T('Asfalt (kr/m²)','Asphalt (SEK/m²)')],
-      ['veg',T('Vegetation (kr/m²)','Vegetation (SEK/m²)')],
-      ['jord',T('Jordschakt (kr/m³)','Soil exc. (SEK/m³)')],
-      ['berg',T('Bergschakt (kr/m³)','Rock exc. (SEK/m³)')],
-      ['rustbadd',T('Rustbädd (kr/m³)','Foundation bed (SEK/m³)')],
-      ['ytaLt',T('Yta <1m djup (kr/m³)','Area <1m deep (SEK/m³)')],
-      ['ytaGt',T('Yta >1m djup (kr/m³)','Area >1m deep (SEK/m³)')],
-      ['avtatn',T('Avtagning berg (kr/m²)','Rock stripping (SEK/m²)')],
-      ['badd',T('Ledningsbädd (kr/m³)','Pipe bedding (SEK/m³)')],
-      ['kring',T('Kringfyllning (kr/m³)','Surr. fill (SEK/m³)')],
-      ['restA',T('Restfyllning A (kr/m³)','Remaining fill A (SEK/m³)')],
-      ['restB',T('Restfyllning B (kr/m³)','Remaining fill B (SEK/m³)')],
-      ['spont',T('Spontning (kr/m²)','Sheet piling (SEK/m²)')],
-      ['bergAvt',T('Bergavtagning (kr/m³)','Rock removal (SEK/m³)')],
-      ['tatsom',T('Tätskikt/muff (kr/m)','Seal/coupling (SEK/m)')],
-      ['geo',T('Geotextil (kr/m²)','Geotextile (SEK/m²)')],
-    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${D('VA')?.prices?.[k]||0}" step="5" oninput="D('VA').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}
-    </div>
+      ['tatsom', T('Tätskikt/muff (kr/m)',       'Seal/coupling (SEK/m)')],
+    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" oninput="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
+
+    <div class="va-cfg-group-title" style="margin-bottom:8px;margin-top:16px">🔥 ${T('FV-specifikt — Fjärrvärme (djupklass)','FV-specific — District Heating (depth class)')}</div>
+    <div class="fg">${[
+      ['ytaLt', T('Yta <1m djup (kr/m³)',        'Area <1m deep (SEK/m³)')],
+      ['ytaGt', T('Yta >1m djup (kr/m³)',        'Area >1m deep (SEK/m³)')],
+    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" oninput="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
   </div>
 
   <!-- ══ SCHAKTKOSTNAD PER TYP ══ -->
   <div class="cd bud-section">
     <div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Schaktkostnad per typ','Excavation cost per type')}
-      <span style="margin-left:auto;font-weight:800;font-size:12px;color:var(--i)">${fmtSEK(va.cost)}</span></div>
-    <p style="font-size:11px;color:var(--ts);margin-bottom:10px;padding:0 2px">${T('Kostnad beräknad från enhetspriser × volymer per schakttyp. EL / Fjärrvärme / Fyllnad / Trumma prissätts i Påslag & Masskostnader ovan.','Cost calculated from unit prices × volumes per excavation type. EL / District Heating / Fill / Culvert are priced via Markups & Mass Costs above.')}</p>
+      <span style="margin-left:auto;font-weight:800;font-size:12px;color:var(--i)">${fmtSEK(schaktTotal)}</span></div>
+    <p style="font-size:11px;color:var(--ts);margin-bottom:10px;padding:0 2px">${T('Kostnad beräknad från enhetspriser × volymer. Klicka på rad för att gå till respektive schakttyp.','Cost from unit prices × volumes. Click a row to navigate to that excavation type.')}</p>
     <div class="tbl-wrap"><table class="dt" style="font-size:12px">
       <thead><tr>
         <th style="text-align:left">${T('Typ','Type')}</th>
@@ -2006,27 +2031,27 @@ function renderBudget(){
         <tr onclick="go('el')" style="cursor:pointer">
           <td style="text-align:left;font-weight:700">⚡ ${T('EL kanalisation','EL Canalisation')}</td>
           <td class="num">${el.jord.toFixed(1)}</td><td class="num">${el.berg.toFixed(1)}</td><td class="num">${el.l.toFixed(0)}</td>
-          <td class="num" style="color:var(--ts)">${T('Se Masskostnader','See Mass costs')}</td>
+          <td class="num" style="font-weight:600;color:var(--p)">${fmtSEK(elCost)}</td>
         </tr>
         <tr onclick="go('fv')" style="cursor:pointer">
           <td style="text-align:left;font-weight:700">🔥 ${T('Fjärrvärme','District Heating')}</td>
           <td class="num">${fv.jord.toFixed(1)}</td><td class="num">${fv.berg.toFixed(1)}</td><td class="num">${fv.l.toFixed(0)}</td>
-          <td class="num" style="color:var(--ts)">${T('Se Masskostnader','See Mass costs')}</td>
+          <td class="num" style="font-weight:600;color:var(--p)">${fmtSEK(fvCost)}</td>
         </tr>
         <tr onclick="go('fb')" style="cursor:pointer">
           <td style="text-align:left;font-weight:700">🏗️ ${T('Fyllnad mot byggnad','Fill against building')}</td>
           <td class="num">${fb.jord.toFixed(1)}</td><td class="num">${fb.berg.toFixed(1)}</td><td class="num">${fb.l.toFixed(0)}</td>
-          <td class="num" style="color:var(--ts)">${T('Se Masskostnader','See Mass costs')}</td>
+          <td class="num" style="font-weight:600;color:var(--p)">${fmtSEK(fbCost)}</td>
         </tr>
         <tr onclick="go('tr')" style="cursor:pointer">
           <td style="text-align:left;font-weight:700">🔵 ${T('Trumma','Culvert')}</td>
           <td class="num">${tr.jord.toFixed(1)}</td><td class="num">${tr.berg.toFixed(1)}</td><td class="num">${tr.l.toFixed(0)}</td>
-          <td class="num" style="color:var(--ts)">${T('Se Masskostnader','See Mass costs')}</td>
+          <td class="num" style="font-weight:600;color:var(--p)">${fmtSEK(trCost)}</td>
         </tr>
-        <tr onclick="go('va')" style="cursor:pointer" style="background:rgba(16,185,129,.04)">
+        <tr onclick="go('va')" style="cursor:pointer">
           <td style="text-align:left;font-weight:700">💧 ${T('Vatten & Avlopp','Water & Sewer')}</td>
           <td class="num">${va.jord.toFixed(1)}</td><td class="num">${va.berg.toFixed(1)}</td><td class="num">${va.l.toFixed(0)}</td>
-          <td class="num" style="font-weight:700;color:var(--s)">${fmtSEK(va.cost)}</td>
+          <td class="num" style="font-weight:700;color:var(--s)">${fmtSEK(vaCost)}</td>
         </tr>
       </tbody>
       <tfoot><tr>
@@ -2034,7 +2059,7 @@ function renderBudget(){
         <td class="num">${(el.jord+fv.jord+fb.jord+tr.jord+va.jord).toFixed(1)}</td>
         <td class="num">${(el.berg+fv.berg+fb.berg+tr.berg+va.berg).toFixed(1)}</td>
         <td class="num">${(el.l+fv.l+fb.l+tr.l+va.l).toFixed(0)}</td>
-        <td class="num" style="font-weight:700">${fmtSEK(va.cost)}</td>
+        <td class="num" style="font-weight:700">${fmtSEK(schaktTotal)}</td>
       </tfoot>
     </table></div>
   </div>
@@ -2109,9 +2134,9 @@ function renderBudget(){
       <div class="bud-sum-row"><span class="k">👷 ${T('Arbetskostnader','Labour costs')}</span><span class="v">${fmtSEK(arbCost)}</span></div>
       <div class="bud-sum-row"><span class="k">📦 ${T('Materialkostnader','Material costs')}</span><span class="v">${fmtSEK(cfg.mat)}</span></div>
       <div class="bud-sum-row"><span class="k">🏕️ ${T('Etableringskostnader','Establishment costs')}</span><span class="v">${fmtSEK(cfg.etab)}</span></div>
-      <div class="bud-sum-row"><span class="k">🪨 ${T('Masskostnader (jord+berg+dep.)','Mass costs (soil+rock+disposal)')}</span><span class="v">${fmtSEK(massCost)}</span></div>
-      <div class="bud-sum-row"><span class="k">💧 ${T('Schaktkostnad VA (enhetspriser)','VA excavation cost (unit prices)')}</span><span class="v">${fmtSEK(va.cost)}</span></div>
-      <div class="bud-sum-row sep"><span class="k">${T('Delsumma','Subtotal')}</span><span class="v">${fmtSEK(direktCost+va.cost)}</span></div>
+      <div class="bud-sum-row"><span class="k">🗑️ ${T('Deponering överskottsmassor','Surplus disposal')}</span><span class="v">${fmtSEK(massCost)}</span></div>
+      <div class="bud-sum-row"><span class="k">🏗️ ${T('Schaktkostnad alla typer','Excavation cost all types')}</span><span class="v">${fmtSEK(schaktTotal)}</span></div>
+      <div class="bud-sum-row sep"><span class="k">${T('Delsumma','Subtotal')}</span><span class="v">${fmtSEK(direktCost)}</span></div>
       <div class="bud-sum-row"><span class="k">📈 ${T('Påslag (risk + OH + vinst + oföruts.)','Markups (risk + OH + profit + unforeseen)')}</span><span class="v">+ ${fmtSEK(pAslagTot)}</span></div>
       <div class="bud-sum-row total"><span class="k">${T('Totalt exkl. moms','Total excl. VAT')}</span><span class="v">${fmtSEK(totalExMoms)}</span></div>
       <div class="bud-sum-row"><span class="k" style="opacity:.6">${T('Moms 25%','VAT 25%')}</span><span class="v" style="opacity:.7">+ ${fmtSEK(moms)}</span></div>
