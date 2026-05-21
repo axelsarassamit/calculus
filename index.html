@@ -776,11 +776,11 @@ function renderSidebar(){
     <div class="proj-divider"></div>
     <div class="nav-sec">${proj.name}</div>
     <div class="ni ${S.page==='dashboard'?'a':''}" onclick="go('dashboard')">${navIco('dashboard')} ${T('Översikt','Dashboard')}</div>
-    <div class="ni ${S.page==='el'?'a':''}" onclick="go('el')">⚡ EL-2018<span class="badge">Kabel</span></div>
-    <div class="ni ${S.page==='fv'?'a':''}" onclick="go('fv')">🔥 ${T('FV Fjärrvärme','FV District H.')}</div>
-    <div class="ni ${S.page==='fb'?'a':''}" onclick="go('fb')">🏗️ ${T('Fylln mot byggnad','Fill by building')}</div>
-    <div class="ni ${S.page==='tr'?'a':''}" onclick="go('tr')">🔵 TRUMMA</div>
-    <div class="ni ${S.page==='va'?'a':''}" onclick="go('va')">💧 VA 2026</div>
+    <div class="ni ${S.page==='el'?'a':''}" onclick="go('el')">⚡ EL kanalisation</div>
+    <div class="ni ${S.page==='fv'?'a':''}" onclick="go('fv')">🔥 ${T('Fjärrvärme','District Heating')}</div>
+    <div class="ni ${S.page==='fb'?'a':''}" onclick="go('fb')">🏗️ ${T('Fyllnad mot byggnad','Fill against building')}</div>
+    <div class="ni ${S.page==='tr'?'a':''}" onclick="go('tr')">🔵 ${T('Trumma','Culvert')}</div>
+    <div class="ni ${S.page==='va'?'a':''}" onclick="go('va')">💧 ${T('Vatten och Avlopp','Water & Sewer')}</div>
     <div class="proj-divider"></div>
     <div class="nav-sec">${T('Spec','Spec')}</div>
     <div class="ni ${S.page==='fvspec'?'a':''}" onclick="go('fvspec')">📋 FV-spec</div>
@@ -822,7 +822,7 @@ function navIco(p){return{dashboard:'🏠',projects:'📁',start:'📚',el:'⚡'
 function renderBNav(){
   const proj=curProj();
   const items=proj
-    ?[{p:'dashboard',ico:'🏠',lbl:'Start'},{p:'el',ico:'⚡',lbl:'EL'},{p:'fv',ico:'🔥',lbl:'FV'},{p:'va',ico:'💧',lbl:'VA'},{p:'sm',ico:'📊',lbl:'Sum'}]
+    ?[{p:'dashboard',ico:'🏠',lbl:'Start'},{p:'el',ico:'⚡',lbl:'EL'},{p:'fv',ico:'🔥',lbl:'Fjärrvärme'},{p:'va',ico:'💧',lbl:'VA'},{p:'sm',ico:'📊',lbl:'Sum'}]
     :[{p:'projects',ico:'📁',lbl:T('Projekt','Projects')},{p:'start',ico:'📚',lbl:T('Teori','Theory')}];
   document.getElementById('bnav-items').innerHTML=items.map(it=>`<div class="bnav-item ${S.page===it.p?'a':''}" onclick="go('${it.p}')"><span class="ico">${it.ico}</span>${it.lbl}</div>`).join('');
 }
@@ -917,7 +917,7 @@ function renderProjects(){
     const {el,fv,fb,tr,va}=projSummary(p);
     const totalExc=el+fv+fb+tr+va;
     const types=[];
-    if(el>0)types.push('EL');if(fv>0)types.push('FV');if(fb>0)types.push('FB');if(tr>0)types.push('TR');if(va>0)types.push('VA');
+    if(el>0)types.push('EL');if(fv>0)types.push('Fjärrvärme');if(fb>0)types.push('FB');if(tr>0)types.push('TR');if(va>0)types.push('VA');
     return`<div class="proj-card color-${p.color%5}" onclick="openProject('${p.id}')">
       <div class="proj-types">${types.map(t=>`<span class="type-tag">${t}</span>`).join('')||`<span class="type-tag" style="opacity:.5">${T('Tom','Empty')}</span>`}</div>
       <h3>${p.name}</h3>
@@ -937,7 +937,7 @@ function renderProjects(){
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--p)"></span>${T('Hur projekt fungerar','How projects work')}</div>
     <div style="font-size:13px;color:var(--ts);line-height:1.8;max-width:600px">
-      <p>Varje projekt lagrar egna beräkningsdata för EL-2018, FV, Fylln mot byggnad, TRUMMA, VA 2026 och Rörlängder. Data sparas automatiskt i webbläsaren och är separat per projekt.</p>
+      <p>Varje projekt lagrar egna beräkningsdata för EL kanalisation, Fjärrvärme, Fyllnad mot byggnad, Trumma, Vatten och Avlopp och Rörlängder. Data sparas automatiskt i webbläsaren och är separat per projekt.</p>
       <p style="margin-top:8px">Klicka på <strong>Demo Projekt</strong> för att se ett komplett exempel med förifylld data från kalkylbladet.</p>
     </div>
   </div></div>`;
@@ -990,11 +990,11 @@ function renderDashboard(){
 
   <div class="type-grid">
     ${[
-      {n:'EL-2018',ico:'⚡',p:'el',t:elT,c:'var(--p)'},
-      {n:'FV',ico:'🔥',p:'fv',t:fvT,c:'var(--d)'},
-      {n:'Fylln',ico:'🏗️',p:'fb',t:fbT,c:'var(--a)'},
-      {n:'TRUMMA',ico:'🔵',p:'tr',t:trT,c:'var(--i)'},
-      {n:'VA 2026',ico:'💧',p:'va',t:vaT,c:'var(--s)'},
+      {n:'EL kanalisation',ico:'⚡',p:'el',t:elT,c:'var(--p)'},
+      {n:'Fjärrvärme',ico:'🔥',p:'fv',t:fvT,c:'var(--d)'},
+      {n:'Fyllnad',ico:'🏗️',p:'fb',t:fbT,c:'var(--a)'},
+      {n:'Trumma',ico:'🔵',p:'tr',t:trT,c:'var(--i)'},
+      {n:T('Vatten & Avlopp','Water & Sewer'),ico:'💧',p:'va',t:vaT,c:'var(--s)'},
     ].map(({n,ico,p,t,c})=>`
       <div class="type-summary" onclick="go('${p}')">
         <div class="ts-head"><span class="ts-ico">${ico}</span><span class="ts-name">${n}</span><span style="margin-left:auto;font-size:10px;color:var(--tm)">${t.l>0?t.l.toFixed(0)+'m':'–'}</span></div>
@@ -1071,11 +1071,11 @@ function renderStart(){
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Schakttyper i detta system','Excavation types in this system')}</div>
     <div class="type-grid" style="margin-bottom:0">
       ${[
-        {ico:'⚡',title:'EL-2018',desc:T('Kabelschakt för el- och telekabel. Bottenbredd beräknas automatiskt från rörantal och dimensioner (50/110/160mm).','Cable trench for power and telecom cables. Bottom width auto-calculated from pipe count and dimensions.')},
-        {ico:'🔥',title:T('FV Fjärrvärme','FV District Heating'),desc:T('Isolerade parledningar för fjärrvärme. Bottenbredd = rördim 1 + rördim 2 + 20cm. Noggrann kringfyllning skyddar isoleringen.','Insulated twin pipes for district heating. Bottom width = pipe 1 + pipe 2 + 20cm. Careful surround fill protects insulation.')},
-        {ico:'🏗️',title:T('Fylln mot byggnad','Fill by building'),desc:T('Schakt och fyllning längs husgrunder. Slänter anpassas mot befintlig konstruktion. BW = rördim C + D + 20cm.','Excavation along building foundations. Slopes adapted toward existing structure. BW = pipe dim C + D + 20cm.')},
-        {ico:'🔵',title:'TRUMMA',desc:T('Vägtrummor och stora ledningar DN200–400. Bädd och kringfyllning av godkänt krossgrus. BW = rördim C + D + 10cm.','Road culverts and large pipes DN200–400. Bedding and surrounding fill of approved crushed aggregate.')},
-        {ico:'💧',title:'VA 2026',desc:T('Vatten- och avloppsledningar med fullständig kostnadskalkyl. Flera rördiametrar. Budget och prissättning per m³.','Water and sewer pipes with full cost calculation. Multiple pipe diameters. Budget and pricing per m³.')},
+        {ico:'⚡',title:'EL kanalisation',desc:T('Kabelschakt för el- och telekabel. Bottenbredd beräknas automatiskt från rörantal och dimensioner (50/110/160mm).','Cable trench for power and telecom cables. Bottom width auto-calculated from pipe count and dimensions.')},
+        {ico:'🔥',title:T('Fjärrvärme','District Heating'),desc:T('Isolerade parledningar för fjärrvärme. Bottenbredd = rördim 1 + rördim 2 + 20cm. Noggrann kringfyllning skyddar isoleringen.','Insulated twin pipes for district heating. Bottom width = pipe 1 + pipe 2 + 20cm. Careful surround fill protects insulation.')},
+        {ico:'🏗️',title:T('Fyllnad mot byggnad','Fill against building'),desc:T('Schakt och fyllning längs husgrunder. Slänter anpassas mot befintlig konstruktion. BW = rördim C + D + 20cm.','Excavation along building foundations. Slopes adapted toward existing structure. BW = pipe dim C + D + 20cm.')},
+        {ico:'🔵',title:T('Trumma','Culvert'),desc:T('Vägtrummor och stora ledningar DN200–400. Bädd och kringfyllning av godkänt krossgrus. BW = rördim C + D + 10cm.','Road culverts and large pipes DN200–400. Bedding and surrounding fill of approved crushed aggregate.')},
+        {ico:'💧',title:T('Vatten och Avlopp','Water & Sewer'),desc:T('Vatten- och avloppsledningar med fullständig kostnadskalkyl. Flera rördiametrar. Budget och prissättning per m³.','Water and sewer pipes with full cost calculation. Multiple pipe diameters. Budget and pricing per m³.')},
       ].map(({ico,title,desc})=>`<div class="type-summary" style="cursor:default">
         <div class="ts-head"><span class="ts-ico">${ico}</span><span class="ts-name" style="font-size:13px">${title}</span></div>
         <p style="font-size:11.5px;color:var(--ts);line-height:1.6;margin-top:4px">${desc}</p>
@@ -1121,7 +1121,7 @@ function calcSchakt(){
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   RENDER: EL-2018
+   RENDER: EL kanalisation
 ═══════════════════════════════════════════════════════════════ */
 function renderEL(){
   if(!curProj())return emptyProj();
@@ -1137,9 +1137,9 @@ function renderEL(){
     return arr;
   })():[];
   return`<div>
-  <div class="ph"><h2>⚡ EL-2018 — ${T('Kabelschakt','Cable Trench')}</h2>
+  <div class="ph"><h2>⚡ EL kanalisation — ${T('Kabelschakt','Cable Trench')}</h2>
   <div class="sub">${T('Bottenbredd beräknas automatiskt från rörmix 50/110/160mm. Klicka en rad för att se tvärsnittet.','Bottom width calculated auto from pipe mix. Click a row to preview its cross-section.')}</div></div>
-  <div class="infobox"><h4>ℹ️ ${T('Beräkningsprincip EL-2018','EL-2018 Calculation Principle')}</h4>
+  <div class="infobox"><h4>ℹ️ ${T('Beräkningsprincip EL kanalisation','EL Canalisation Calculation Principle')}</h4>
     <p>${T('EL-kabelschakt beräknas enligt AMA EL 2018. Bottenbredden styrs av rörmixen och konfigurerbara avstånd.','EL cable trench is calculated per AMA EL 2018. Bottom width is determined by the pipe mix and configurable spacings.')}</p>
     <ul style="margin-top:6px">
       <li><strong>BW</strong> = ${T('∑(dia × antal rör) + avst.inre × (n−1) + avst.yttre × 2','∑(dia × pipe count) + inner spacing × (n−1) + outer spacing × 2')}</li>
@@ -1258,7 +1258,7 @@ function renderFV(){
   const mx=Math.max(tot.exc,1);
   const seg=segs[S.selSeg]||segs[0];
   return`<div>
-  <div class="ph"><h2>🔥 FV — ${T('Fjärrvärme','District Heating')}</h2>
+  <div class="ph"><h2>🔥 ${T('Fjärrvärme','District Heating')}</h2>
   <div class="sub">${T('Isolerade parledningar. Bottenbredd beräknas automatiskt. Klicka rad för tvärsnitt.','Insulated twin pipes. Bottom width auto-calculated. Click row to preview.')}</div></div>
   <div class="infobox"><h4>ℹ️ ${T('Fjärrvärme-schakt AMA','District heating trench AMA')}</h4>
     <p>${T('FV-rör levereras i par (tilledning + retur). Bottenbredden beräknas automatiskt från rördimensionerna + 20cm. Schaktet kräver noggrann kringfyllning för att skydda isoleringen mot mekanisk skada.','FV pipes come in pairs (supply + return). Bottom width is auto-calculated from pipe diameters + 20cm. Careful surrounding fill protects insulation from mechanical damage.')}</p>
@@ -1323,10 +1323,10 @@ function renderFB(){
   const{segs,tot}=fbAll();const FB=D('FB');const mx=Math.max(tot.exc,1);
   const seg=segs[S.selSeg]||segs[0];
   return`<div>
-  <div class="ph"><h2>🏗️ ${T('Fylln mot byggnad','Fill by building')}</h2>
+  <div class="ph"><h2>🏗️ ${T('Fyllnad mot byggnad','Fill against building')}</h2>
   <div class="sub">${T('Schakt längs husgrunder och källarmurar. Bottenbredd beräknas automatiskt från rördimensioner.','Excavation along building foundations and basement walls. Bottom width auto-calculated.')}</div></div>
-  <div class="infobox"><h4>ℹ️ ${T('Vad är Fylln mot byggnad?','What is Fill by building?')}</h4>
-    <p>${T('Fylln mot byggnad avser schakt och fyllning utmed husgrunder och källarmurar. Arbetet utförs med försiktighet för att inte skada befintlig konstruktion. Bottenbredden styrs av rörledningarnas yttermått plus säkerhetsavstånd.','Fill by building refers to excavation and fill alongside building foundations and basement walls. Work is done carefully to avoid damaging existing structures. Bottom width is controlled by pipe outer dimensions plus safety margins.')}</p>
+  <div class="infobox"><h4>ℹ️ ${T('Vad är Fyllnad mot byggnad?','What is Fill against building?')}</h4>
+    <p>${T('Fyllnad mot byggnad avser schakt och fyllning utmed husgrunder och källarmurar. Arbetet utförs med försiktighet för att inte skada befintlig konstruktion. Bottenbredden styrs av rörledningarnas yttermått plus säkerhetsavstånd.','Fill against building refers to excavation and fill alongside building foundations and basement walls. Work is done carefully to avoid damaging existing structures. Bottom width is controlled by pipe outer dimensions plus safety margins.')}</p>
     <ul style="margin-top:6px">
       <li>${T('BW = ytterdia tilledning (C) + ytterdia retur (D) + 0.20m','BW = outer dia supply pipe (C) + outer dia return pipe (D) + 0.20m')}</li>
       <li>${T('Slänter är normalt flackare (0.1:1) pga risk för ras mot byggnaden','Slopes are normally shallower (0.1:1) due to collapse risk against the building')}</li>
@@ -1341,7 +1341,7 @@ function renderFB(){
     <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select oninput="D('FB').cfg.geoType=+this.value;touchProj();save();go('fb')">${[0,1,2,3].map(v=>`<option value="${v}" ${FB.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
     <div class="fi"><label>${T('Spontning','Sheet piling')}</label><select oninput="D('FB').cfg.spont=+this.value;touchProj();save();go('fb')">${[0,1,2].map(v=>`<option value="${v}" ${FB.cfg.spont===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
   </div></div>
-  ${pcBar(tot.done,tot.total,T('Utfört Fylln-schakt','FB completed'))}
+  ${pcBar(tot.done,tot.total,T('Utfört Fyllnad-schakt','Fyllnad completed'))}
   <div class="mg">
     ${mc(tot.l,T('Längd','Length'),'m','',100)}${mc(tot.exc,T('Schakt tot','Exc. total'),'m³','',100)}
     ${mc(tot.jord,T('Jordschakt','Soil exc.'),'m³','c2',pct(tot.jord,mx))}${mc(tot.berg,T('Bergschakt','Rock exc.'),'m³','c2',pct(tot.berg,mx))}
@@ -1395,7 +1395,7 @@ function renderFB(){
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   RENDER: TRUMMA
+   RENDER: Trumma
 ═══════════════════════════════════════════════════════════════ */
 function renderTR(){
   if(!curProj())return emptyProj();
@@ -1403,10 +1403,10 @@ function renderTR(){
   const seg=segs[S.selSeg]||segs[0];
   const trPipe1=TR.pts[S.selSeg]?.c||.315,trPipe2=TR.pts[S.selSeg]?.d||.315;
   return`<div>
-  <div class="ph"><h2>🔵 TRUMMA — ${T('Ledningsschakt stora rör','Large pipe trench')}</h2>
+  <div class="ph"><h2>🔵 ${T('Trumma','Culvert')} — ${T('Ledningsschakt stora rör','Large pipe trench')}</h2>
   <div class="sub">${T('Betong- och plasttrummor DN200–DN400. Djupa schakt med breda bottnar och extra stabila bäddar.','Concrete and plastic culverts DN200–DN400. Deep trenches with wide bottoms and extra stable bedding.')}</div></div>
-  <div class="infobox"><h4>ℹ️ ${T('Beräkningsprincip TRUMMA','TRUMMA calculation principle')}</h4>
-    <p>${T('TRUMMA-schakt avser vägtrummor och stora ledningar (DN200–DN400). Bottenbredden beräknas som ytterdiameter rör 1 + ytterdiameter rör 2 + 10cm. Schaktet kräver noggrant anpassad bädd och kringfyllning av godkänt material.','TRUMMA trench refers to road culverts and large pipes (DN200–DN400). Bottom width = outer diameter pipe 1 + outer diameter pipe 2 + 10cm. Trench requires carefully adapted bedding and surrounding fill of approved material.')}</p>
+  <div class="infobox"><h4>ℹ️ ${T('Beräkningsprincip Trumma','Culvert calculation principle')}</h4>
+    <p>${T('Trumma-schakt avser vägtrummor och stora ledningar (DN200–DN400). Bottenbredden beräknas som ytterdiameter rör 1 + ytterdiameter rör 2 + 10cm. Schaktet kräver noggrant anpassad bädd och kringfyllning av godkänt material.','Culvert trench refers to road culverts and large pipes (DN200–DN400). Bottom width = outer diameter pipe 1 + outer diameter pipe 2 + 10cm. Trench requires carefully adapted bedding and surrounding fill of approved material.')}</p>
     <ul style="margin-top:6px">
       <li>${T('BW = C (dia rör 1) + D (dia rör 2) + 0.10m','BW = C (dia pipe 1) + D (dia pipe 2) + 0.10m')}</li>
       <li>${T('Slant standard 1:1 — kontrollera markförhållanden','Standard slope 1:1 — check ground conditions')}</li>
@@ -1422,7 +1422,7 @@ function renderTR(){
     <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select oninput="D('TR').cfg.geoType=+this.value;touchProj();save();go('tr')">${[0,1,2,3].map(v=>`<option value="${v}" ${TR.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
     <div class="fi"><label>${T('Spontning','Sheet piling')}</label><select oninput="D('TR').cfg.spont=+this.value;touchProj();save();go('tr')">${[0,1,2].map(v=>`<option value="${v}" ${TR.cfg.spont===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
   </div></div>
-  ${pcBar(tot.done,tot.total,T('Utfört TRUMMA-schakt','TRUMMA completed'))}
+  ${pcBar(tot.done,tot.total,T('Utfört Trumma-schakt','Culvert completed'))}
   <div class="mg">
     ${mc(tot.l,T('Längd','Length'),'m','',100)}${mc(tot.exc,T('Schakt tot','Exc. total'),'m³','',100)}
     ${mc(tot.jord,T('Jordschakt','Soil exc.'),'m³','c2',pct(tot.jord,mx))}${mc(tot.berg,T('Bergschakt','Rock exc.'),'m³','c2',pct(tot.berg,mx))}
@@ -1431,7 +1431,7 @@ function renderTR(){
   </div>
   <div class="cg2">
     <div class="cd"><div class="ct"><span class="dot" style="background:#06b6d4"></span>${T('Tvärsnitt — segment','Cross-section — segment')} ${S.selSeg+1}</div>
-      <div class="svg-box" id="tr-svg">${seg?svgSection(seg.bw1,seg.tw1,seg.ad,[trPipe1,trPipe2],'TRUMMA DN'+Math.round(trPipe1*1000)):T('–','–')}</div></div>
+      <div class="svg-box" id="tr-svg">${seg?svgSection(seg.bw1,seg.tw1,seg.ad,[trPipe1,trPipe2],'Trumma DN'+Math.round(trPipe1*1000)):T('–','–')}</div></div>
     <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Volymfördelning','Volume split')}</div>
       <div class="ch-wrap"><canvas id="ch-tr-pie"></canvas></div></div>
   </div>
@@ -1476,14 +1476,14 @@ function renderTR(){
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   RENDER: VA 2026
+   RENDER: Vatten och Avlopp
 ═══════════════════════════════════════════════════════════════ */
 function renderVA(){
   if(!curProj())return emptyProj();
   const{segs,tot}=vaAll();const VA=D('VA');const mx=Math.max(tot.exc,1);
   const seg=segs[S.selSeg]||segs[0];
   return`<div>
-  <div class="ph"><h2>💧 VA 2026 — ${T('VA-ledningar','Water & Sewer')}</h2>
+  <div class="ph"><h2>💧 ${T('Vatten och Avlopp','Water & Sewer')}</h2>
   <div class="sub">${T('Vatten- och avloppsledningar med fullständig volyms- och kostnadskalkyl.','Water and sewer pipes with full volume and cost calculation.')}</div></div>
   <div class="infobox" style="margin-bottom:14px">
     <h4>🔵 ${T('Rör & konfiguration','Pipes & configuration')}</h4>
@@ -1721,11 +1721,11 @@ function renderSM(){
   <div class="tbl-wrap"><table class="dt">
     <thead><tr><th>${T('Schakttyp','Excavation type')}</th><th>${T('Längd m','Length m')}</th><th>${T('Schakt m³','Exc m³')}</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th><th>${T('Rest m³','Rest m³')}</th><th>${T('Geo m²','Geo m²')}</th><th>${T('Balans m³','Balance m³')}</th></tr></thead>
     <tbody>
-      <tr onclick="go('el')" style="cursor:pointer"><td style="text-align:left;font-weight:700">⚡ EL-2018</td><td>${el.l.toFixed(1)}</td><td class="num">${el.exc.toFixed(1)}</td><td class="num">${el.jord.toFixed(1)}</td><td class="num">${el.berg.toFixed(1)}</td><td class="num">${el.bed.toFixed(1)}</td><td class="num">${el.sur.toFixed(1)}</td><td class="num">${el.remA.toFixed(1)}</td><td class="num">${el.geo.toFixed(1)}</td><td class="num ${el.bal<0?'bad':''}">${el.bal.toFixed(1)}</td></tr>
-      <tr onclick="go('fv')" style="cursor:pointer"><td style="text-align:left;font-weight:700">🔥 FV</td><td>${fv.l.toFixed(1)}</td><td class="num">${fv.exc.toFixed(1)}</td><td class="num">${fv.jord.toFixed(1)}</td><td class="num">${fv.berg.toFixed(1)}</td><td class="num">${fv.bed.toFixed(1)}</td><td class="num">${fv.sur.toFixed(1)}</td><td class="num">${fv.rem.toFixed(1)}</td><td class="num">${fv.geo.toFixed(1)}</td><td class="num ${fv.bal<0?'bad':''}">${fv.bal.toFixed(1)}</td></tr>
-      <tr onclick="go('fb')" style="cursor:pointer"><td style="text-align:left;font-weight:700">🏗️ Fylln</td><td>${fb.l.toFixed(1)}</td><td class="num">${fb.exc.toFixed(1)}</td><td class="num">${fb.jord.toFixed(1)}</td><td class="num">${fb.berg.toFixed(1)}</td><td class="num">${fb.bed.toFixed(1)}</td><td class="num">${fb.sur.toFixed(1)}</td><td class="num">${fb.rem.toFixed(1)}</td><td class="num">${fb.geo.toFixed(1)}</td><td class="num ${fb.bal<0?'bad':''}">${fb.bal.toFixed(1)}</td></tr>
-      <tr onclick="go('tr')" style="cursor:pointer"><td style="text-align:left;font-weight:700">🔵 TRUMMA</td><td>${tr.l.toFixed(1)}</td><td class="num">${tr.exc.toFixed(1)}</td><td class="num">${tr.jord.toFixed(1)}</td><td class="num">${tr.berg.toFixed(1)}</td><td class="num">${tr.bed.toFixed(1)}</td><td class="num">${tr.sur.toFixed(1)}</td><td class="num">${tr.rem.toFixed(1)}</td><td class="num">${tr.geo.toFixed(1)}</td><td class="num ${tr.bal<0?'bad':''}">${tr.bal.toFixed(1)}</td></tr>
-      <tr onclick="go('va')" style="cursor:pointer"><td style="text-align:left;font-weight:700">💧 VA 2026</td><td>${va.l.toFixed(1)}</td><td class="num">${va.exc.toFixed(1)}</td><td class="num">${va.jord.toFixed(1)}</td><td class="num">${va.berg.toFixed(1)}</td><td class="num">${va.bed.toFixed(1)}</td><td class="num">${va.sur.toFixed(1)}</td><td class="num">${va.remA.toFixed(1)}</td><td class="num">${va.geo.toFixed(1)}</td><td class="num ${va.bal<0?'bad':''}">${va.bal.toFixed(1)}</td></tr>
+      <tr onclick="go('el')" style="cursor:pointer"><td style="text-align:left;font-weight:700">⚡ EL kanalisation</td><td>${el.l.toFixed(1)}</td><td class="num">${el.exc.toFixed(1)}</td><td class="num">${el.jord.toFixed(1)}</td><td class="num">${el.berg.toFixed(1)}</td><td class="num">${el.bed.toFixed(1)}</td><td class="num">${el.sur.toFixed(1)}</td><td class="num">${el.remA.toFixed(1)}</td><td class="num">${el.geo.toFixed(1)}</td><td class="num ${el.bal<0?'bad':''}">${el.bal.toFixed(1)}</td></tr>
+      <tr onclick="go('fv')" style="cursor:pointer"><td style="text-align:left;font-weight:700">🔥 Fjärrvärme</td><td>${fv.l.toFixed(1)}</td><td class="num">${fv.exc.toFixed(1)}</td><td class="num">${fv.jord.toFixed(1)}</td><td class="num">${fv.berg.toFixed(1)}</td><td class="num">${fv.bed.toFixed(1)}</td><td class="num">${fv.sur.toFixed(1)}</td><td class="num">${fv.rem.toFixed(1)}</td><td class="num">${fv.geo.toFixed(1)}</td><td class="num ${fv.bal<0?'bad':''}">${fv.bal.toFixed(1)}</td></tr>
+      <tr onclick="go('fb')" style="cursor:pointer"><td style="text-align:left;font-weight:700">🏗️ Fyllnad</td><td>${fb.l.toFixed(1)}</td><td class="num">${fb.exc.toFixed(1)}</td><td class="num">${fb.jord.toFixed(1)}</td><td class="num">${fb.berg.toFixed(1)}</td><td class="num">${fb.bed.toFixed(1)}</td><td class="num">${fb.sur.toFixed(1)}</td><td class="num">${fb.rem.toFixed(1)}</td><td class="num">${fb.geo.toFixed(1)}</td><td class="num ${fb.bal<0?'bad':''}">${fb.bal.toFixed(1)}</td></tr>
+      <tr onclick="go('tr')" style="cursor:pointer"><td style="text-align:left;font-weight:700">🔵 Trumma</td><td>${tr.l.toFixed(1)}</td><td class="num">${tr.exc.toFixed(1)}</td><td class="num">${tr.jord.toFixed(1)}</td><td class="num">${tr.berg.toFixed(1)}</td><td class="num">${tr.bed.toFixed(1)}</td><td class="num">${tr.sur.toFixed(1)}</td><td class="num">${tr.rem.toFixed(1)}</td><td class="num">${tr.geo.toFixed(1)}</td><td class="num ${tr.bal<0?'bad':''}">${tr.bal.toFixed(1)}</td></tr>
+      <tr onclick="go('va')" style="cursor:pointer"><td style="text-align:left;font-weight:700">💧 ${T('Vatten & Avlopp','Water & Sewer')}</td><td>${va.l.toFixed(1)}</td><td class="num">${va.exc.toFixed(1)}</td><td class="num">${va.jord.toFixed(1)}</td><td class="num">${va.berg.toFixed(1)}</td><td class="num">${va.bed.toFixed(1)}</td><td class="num">${va.sur.toFixed(1)}</td><td class="num">${va.remA.toFixed(1)}</td><td class="num">${va.geo.toFixed(1)}</td><td class="num ${va.bal<0?'bad':''}">${va.bal.toFixed(1)}</td></tr>
     </tbody>
     <tfoot><tr><td style="text-align:left">${T('TOTALT','TOTAL')}</td><td>${totL.toFixed(1)}</td><td>${totExc.toFixed(1)}</td><td>${totJord.toFixed(1)}</td><td>${totBerg.toFixed(1)}</td><td>${totBed.toFixed(1)}</td><td>${totSur.toFixed(1)}</td><td>${totRem.toFixed(1)}</td><td>${totGeo.toFixed(1)}</td><td class="${totBal<0?'bad':''}">${totBal.toFixed(1)}</td></tr></tfoot>
   </table></div></div>
@@ -1843,14 +1843,14 @@ function renderBudget(){
       <span>🟤 ${T('Jordschakt','Soil exc.')}: <strong>${totJord.toFixed(0)} m³</strong></span>
       <span>🪨 ${T('Bergschakt','Rock exc.')}: <strong>${totBerg.toFixed(0)} m³</strong></span>
       <span>♻️ ${T('Överskottsmassor','Surplus masses')}: <strong>${overskott.toFixed(0)} m³</strong></span>
-      <span style="margin-left:auto;opacity:.7;font-size:11px">${T('Uppdateras från EL / FV / FB / TRUMMA / VA','Auto-updated from EL / FV / FB / TRUMMA / VA')}</span>
+      <span style="margin-left:auto;opacity:.7;font-size:11px">${T('Uppdateras automatiskt från alla schakttyper','Auto-updated from all excavation types')}</span>
     </div>
   </div>
 
 
   <!-- ══ RÖR & KONFIGURATION (VA) ══ -->
   <div class="cd bud-section">
-  <div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Rör & konfiguration (VA 2026)','Pipes & configuration (VA 2026)')}</div>
+  <div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Rör & konfiguration (Vatten & Avlopp)','Pipes & configuration (Water & Sewer)')}</div>
 
   ${(()=>{
     const VA2=D('VA');if(!VA2||!VA2.cfg)return'';
@@ -2080,7 +2080,7 @@ function renderCharts(){
   const p=S.page;
   if(p==='dashboard'&&curProj()){
     const el=elAll().tot,fv=fvAll().tot,fb=fbAll().tot,tr=trAll().tot,va=vaAll().tot;
-    mkBar('ch-dash-bar',['EL-2018','FV','Fylln','TRUMMA','VA 2026'],[
+    mkBar('ch-dash-bar',['EL kanalisation','Fjärrvärme','Fyllnad','Trumma','Vatten & Avlopp'],[
       {label:T('Jordschakt','Soil exc.'),data:[el.jord,fv.jord,fb.jord,tr.jord,va.jord],backgroundColor:'#818cf8',borderRadius:4},
       {label:T('Bergschakt','Rock exc.'),data:[el.berg,fv.berg,fb.berg,tr.berg,va.berg],backgroundColor:'#a78bfa',borderRadius:4},
       {label:T('Bädd','Bed'),data:[el.bed,fv.bed,fb.bed,tr.bed,va.bed],backgroundColor:'#f59e0b',borderRadius:4},
@@ -2153,7 +2153,7 @@ function renderCharts(){
     if(vNZ.length)mkPie('ch-rl-vdim',vNZ,vV);
   }else if(p==='sm'){
     const el=elAll().tot,fv=fvAll().tot,fb=fbAll().tot,tr=trAll().tot,va=vaAll().tot;
-    mkBar('ch-sm-bar',['EL-2018','FV','Fylln','TRUMMA','VA 2026'],[
+    mkBar('ch-sm-bar',['EL kanalisation','Fjärrvärme','Fyllnad','Trumma','Vatten & Avlopp'],[
       {label:T('Jord','Soil'),data:[el.jord,fv.jord,fb.jord,tr.jord,va.jord],backgroundColor:'#818cf8',borderRadius:4},
       {label:T('Berg','Rock'),data:[el.berg,fv.berg,fb.berg,tr.berg,va.berg],backgroundColor:'#a78bfa',borderRadius:4},
       {label:T('Bädd','Bed'),data:[el.bed,fv.bed,fb.bed,tr.bed,va.bed],backgroundColor:'#f59e0b',borderRadius:4},
@@ -2174,7 +2174,7 @@ function xCSV(){
   const el=elAll().tot,fv=fvAll().tot,fb=fbAll().tot,tr=trAll().tot,va=vaAll().tot;
   let c=`${T('Projekt','Project')}: ${curProj().name}\n`;
   c+='Typ,Längd,Schakt m³,Jord m³,Berg m³,Bädd m³,Kring m³,Rest m³,Geo m²\n';
-  [[' EL-2018',el],[' FV',fv],[' Fylln',fb],[' TRUMMA',tr],[' VA 2026',va]].forEach(([n,t])=>{
+  [[' EL kanalisation',el],[' Fjärrvärme',fv],[' Fyllnad',fb],[' Trumma',tr],[' Vatten & Avlopp',va]].forEach(([n,t])=>{
     c+=`${n},${t.l?.toFixed(1)||0},${t.exc.toFixed(2)},${t.jord.toFixed(2)},${t.berg.toFixed(2)},${t.bed.toFixed(2)},${t.sur.toFixed(2)},${(t.remA||t.rem||0).toFixed(2)},${t.geo.toFixed(2)}\n`;
   });
   dl(`${curProj().name}-kalkyl.csv`,c,'text/csv');toast('📄 CSV exporterat');
@@ -2200,7 +2200,7 @@ function xPDF(){
   <div class="m"><div class="v">${(el.jord+fv.jord+va.jord).toFixed(0)}</div><div class="l">Jordschakt m³</div></div>
   <div class="m"><div class="v">${fmtSEK(va.cost)}</div><div class="l">VA Kostnad</div></div>
   <table><tr><th>Typ</th><th>Längd</th><th>Schakt m³</th><th>Jord m³</th><th>Berg m³</th><th>Bädd m³</th><th>Kring m³</th></tr>
-  ${[['EL-2018',el],['FV',fv],['VA 2026',va]].map(([n,t])=>`<tr><td>${n}</td><td>${t.l?.toFixed(1)||0}m</td><td>${t.exc.toFixed(1)}</td><td>${t.jord.toFixed(1)}</td><td>${t.berg.toFixed(1)}</td><td>${t.bed.toFixed(1)}</td><td>${t.sur.toFixed(1)}</td></tr>`).join('')}
+  ${[['EL kanalisation',el],['Fjärrvärme',fv],['Vatten & Avlopp',va]].map(([n,t])=>`<tr><td>${n}</td><td>${t.l?.toFixed(1)||0}m</td><td>${t.exc.toFixed(1)}</td><td>${t.jord.toFixed(1)}</td><td>${t.berg.toFixed(1)}</td><td>${t.bed.toFixed(1)}</td><td>${t.sur.toFixed(1)}</td></tr>`).join('')}
   </table>
   <p style="color:#94a3b8;margin-top:20px;font-size:10px">Tryck Ctrl+P för att spara som PDF · AMA/MER Kalkyl Pro v6</p>
   </body></html>`);
