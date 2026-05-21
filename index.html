@@ -1296,7 +1296,7 @@ function renderFV(){
   return`<div>
   <div class="ph"><h2>🔥 ${T('Fjärrvärme','District Heating')}</h2>
   <div class="sub">${T('Isolerade parledningar. Bottenbredd beräknas automatiskt. Klicka rad för tvärsnitt.','Insulated twin pipes. Bottom width auto-calculated. Click row to preview.')}</div></div>
-  <div class="infobox"><h4>ℹ️ ${T('Fjärrvärme-schakt AMA','District heating trench AMA')}</h4>
+  <div class="infobox"><h4>ℹ️ ${T('Beräkningsprincip Fjärrvärme','District Heating Calculation Principle')}</h4>
     <p>${T('FV-rör levereras i par (tilledning + retur). Bottenbredden beräknas automatiskt från rördimensionerna + 20cm. Schaktet kräver noggrann kringfyllning för att skydda isoleringen mot mekanisk skada.','FV pipes come in pairs (supply + return). Bottom width is auto-calculated from pipe diameters + 20cm. Careful surrounding fill protects insulation from mechanical damage.')}</p>
     <ul style="margin-top:6px">
       <li><strong>BW</strong> = C (${T('ytterdia tilledning','outer dia supply')}) + D (${T('ytterdia retur','outer dia return')}) + 0.20m</li>
@@ -1374,7 +1374,7 @@ function renderFB(){
   return`<div>
   <div class="ph"><h2>🏗️ ${T('Fyllnad mot byggnad','Fill against building')}</h2>
   <div class="sub">${T('Schakt längs husgrunder och källarmurar. Bottenbredd beräknas automatiskt från rördimensioner.','Excavation along building foundations and basement walls. Bottom width auto-calculated.')}</div></div>
-  <div class="infobox"><h4>ℹ️ ${T('Vad är Fyllnad mot byggnad?','What is Fill against building?')}</h4>
+  <div class="infobox"><h4>ℹ️ ${T('Beräkningsprincip Fyllnad mot byggnad','Fill Against Building Calculation Principle')}</h4>
     <p>${T('Fyllnad mot byggnad avser schakt och fyllning utmed husgrunder och källarmurar. Arbetet utförs med försiktighet för att inte skada befintlig konstruktion. Bottenbredden styrs av rörledningarnas yttermått plus säkerhetsavstånd.','Fill against building refers to excavation and fill alongside building foundations and basement walls. Work is done carefully to avoid damaging existing structures. Bottom width is controlled by pipe outer dimensions plus safety margins.')}</p>
     <ul style="margin-top:6px">
       <li>${T('BW = ytterdia tilledning (C) + ytterdia retur (D) + 0.20m','BW = outer dia supply pipe (C) + outer dia return pipe (D) + 0.20m')}</li>
@@ -1534,6 +1534,16 @@ function renderVA(){
   return`<div>
   <div class="ph"><h2>💧 ${T('Vatten och Avlopp','Water & Sewer')}</h2>
   <div class="sub">${T('Vatten- och avloppsledningar med fullständig volymsberäkning.','Water and sewer pipes with full volume calculation.')}</div></div>
+  <div class="infobox"><h4>ℹ️ ${T('Beräkningsprincip Vatten och Avlopp','VA Calculation Principle')}</h4>
+    <p>${T('VA-schakt beräknas med en eller flera rörledningar i samma schakt. Bottenbredden styrs av konfigurerade rördiametrar och schaktets geometri. Djup interpoleras lineärt mellan profilpunkter.','VA trench is calculated with one or more pipes in the same trench. Bottom width is controlled by configured pipe diameters and trench geometry. Depth is linearly interpolated between profile points.')}</p>
+    <ul style="margin-top:6px">
+      <li><strong>BW</strong> = ${T('beräknas automatiskt från konfigurerade rördiametrar + avstånd','auto-calculated from configured pipe diameters + spacing')}</li>
+      <li><strong>E</strong> = ${T('schaktdjup interpolerat lineärt mellan profilpunkter','excavation depth linearly interpolated between profile points')}</li>
+      <li><strong>F</strong> = ${T('bäddlagrets tjocklek under rörens underkant (AMA-standard)','bedding layer thickness below pipe bottom (AMA standard)')}</li>
+      <li><strong>A</strong> = ${T('kringfyllningshöjd upp till täcklager','surrounding fill height up to top layer')}</li>
+      <li>${T('Kostnad beräknas i Budget från enhetspriser × volymer per segment','Cost is calculated in Budget from unit prices × volumes per segment')}</li>
+    </ul>
+  </div>
   <!-- ══ RÖR & KONFIGURATION ══ -->
   <div class="cd">
   <div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Rör & konfiguration','Pipes & configuration')}</div>
