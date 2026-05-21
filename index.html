@@ -268,6 +268,32 @@ a{color:inherit;text-decoration:none}
 .seg-selector{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .seg-btn{padding:5px 10px;border-radius:6px;border:1.5px solid var(--bd);background:var(--sf);color:var(--ts);font-size:10px;font-weight:600;cursor:pointer;transition:var(--tr);font-family:inherit}
 .seg-btn.a{border-color:var(--p);background:var(--pl);color:var(--p)}
+/* ═══ VA PIPE BUILDER ═════════════════════════════════════════ */
+.va-pipe-builder{background:var(--sa);border:1px solid var(--bd);border-radius:var(--rs);padding:14px 16px;margin-bottom:14px}
+.va-pb-label{font-size:10px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.va-pipe-list{display:flex;flex-wrap:wrap;gap:6px;min-height:36px;align-items:center;padding:4px 0}
+.va-pipe-tag{display:inline-flex;align-items:center;gap:5px;background:var(--sf);border-radius:20px;padding:5px 10px 5px 12px;font-size:11px;font-weight:700;border:1.5px solid;box-shadow:var(--sh);transition:var(--tr)}
+.va-pipe-tag:hover{transform:translateY(-1px)}
+.va-pipe-tag .ptdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.va-pipe-tag button{background:0;border:0;cursor:pointer;font-size:15px;line-height:1;padding:0 0 0 4px;opacity:.45;transition:opacity .15s}
+.va-pipe-tag button:hover{opacity:1}
+.va-pipe-empty{font-size:12px;color:var(--tm);font-style:italic;padding:4px 0}
+.va-pipe-quick{display:flex;flex-wrap:wrap;gap:5px}
+.va-pipe-btn{padding:5px 11px;border-radius:20px;border:1.5px solid var(--bd);background:var(--sf);color:var(--ts);font-size:10px;font-weight:700;cursor:pointer;transition:var(--tr);font-family:inherit;letter-spacing:.2px}
+.va-pipe-btn:hover{background:var(--pl);border-color:var(--pi);color:var(--p)}
+.va-custom-row{display:flex;gap:6px;align-items:center;margin-top:10px}
+.va-custom-row input{flex:0 0 150px;padding:7px 10px;border:1.5px solid var(--bd);border-radius:var(--rss);font-size:12px;background:var(--sf);color:var(--tx);font-family:inherit;transition:var(--tr)}
+.va-custom-row input:focus{border-color:var(--p);outline:0;box-shadow:0 0 0 2px rgba(79,70,229,.1)}
+.va-cfg-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.va-cfg-group{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);padding:14px 16px;box-shadow:var(--sh)}
+.va-cfg-group-title{font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:5px}
+.va-cfg-group .fi{margin-bottom:8px}
+.va-cfg-group .fi:last-child{margin-bottom:0}
+.va-cfg-group label{font-size:10px;font-weight:600;color:var(--tm);letter-spacing:.2px}
+.va-pipe-strip{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:10px 14px;background:linear-gradient(135deg,rgba(6,182,212,.08),rgba(79,70,229,.06));border:1px solid rgba(6,182,212,.18);border-radius:var(--rs);margin-bottom:14px;font-size:11px}
+.va-pipe-strip .ps-stat{display:flex;flex-direction:column;gap:1px}
+.va-pipe-strip .ps-val{font-size:16px;font-weight:800;color:var(--i);line-height:1}
+.va-pipe-strip .ps-lbl{font-size:9px;color:var(--tm);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
 /* ═══ GLOSSARY GRID ════════════════════════════════════════════ */
 .gloss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
 .gloss-item{background:var(--sb);border-radius:8px;padding:10px 12px;border:1px solid var(--bd)}
@@ -1459,14 +1485,90 @@ function renderVA(){
   return`<div>
   <div class="ph"><h2>💧 VA 2026 — ${T('VA-ledningar','Water & Sewer')}</h2>
   <div class="sub">${T('Vatten- och avloppsledningar med fullständig volyms- och kostnadskalkyl.','Water and sewer pipes with full volume and cost calculation.')}</div></div>
-  <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Rör & konfiguration','Pipes & configuration')}</div>
-  <div class="fg">
-    <div class="fi" style="grid-column:span 2"><label>${T('Rörkonfiguration (diameter m, kommaseparerat)','Pipe configuration (diameter m, comma-separated)')}</label>
-      <input type="text" value="${VA.cfg.pipes.join(',')}" oninput="try{const v=this.value.split(',').map(x=>+x.trim()).filter(x=>x>0);if(v.length)D('VA').cfg.pipes=v;touchProj();save();}catch(e){}"></div>
-    <div class="fi"><label>${T('Slant V H:1V','Slope V H:1V')}</label><input type="number" value="${VA.cfg.slopeV}" step=".05" oninput="D('VA').cfg.slopeV=+this.value;touchProj();save();go('va')"></div>
-    <div class="fi"><label>${T('Slant H H:1V','Slope H H:1V')}</label><input type="number" value="${VA.cfg.slopeH}" step=".05" oninput="D('VA').cfg.slopeH=+this.value;touchProj();save();go('va')"></div>
-    <div class="fi"><label>${T('Kringf.höjd (m)','Surr.fill h (m)')}</label><input type="number" value="${VA.cfg.sfh}" step=".05" oninput="D('VA').cfg.sfh=+this.value;touchProj();save();go('va')"></div>
-  </div></div>
+  <div class="cd">
+  <div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Rör & konfiguration','Pipes & configuration')}</div>
+
+  <!-- ── Live summary strip ── -->
+  ${(()=>{
+    const pipes=VA.cfg.pipes;
+    const totalA=pipes.reduce((s,d)=>s+Math.PI*(d/2)**2,0);
+    const sorted=[...pipes].map(d=>Math.round(d*1000)).sort((a,b)=>a-b);
+    return`<div class="va-pipe-strip">
+      <div class="ps-stat"><span class="ps-val">${pipes.length}</span><span class="ps-lbl">${T('Rör','Pipes')}</span></div>
+      <div class="ps-stat"><span class="ps-val">${(totalA*10000).toFixed(1)} cm²</span><span class="ps-lbl">${T('Total rörarea','Total pipe area')}</span></div>
+      <div class="ps-stat"><span class="ps-val">${pipes.length?sorted[0]+' – '+sorted[sorted.length-1]+' mm':'—'}</span><span class="ps-lbl">${T('Dimensionsspann','Diameter range')}</span></div>
+      <div style="flex:1;font-size:10px;color:var(--tm)">${sorted.length?sorted.map(mm=>'DN '+mm).join(' · '):T('Inga rör konfigurerade','No pipes configured')}</div>
+    </div>`;
+  })()}
+
+  <!-- ── Pipe builder ── -->
+  <div class="va-pipe-builder">
+    <div class="va-pb-label">🔵 ${T('Aktiva rörledningar i schaktet','Active pipes in trench')}</div>
+    <div class="va-pipe-list">
+      ${VA.cfg.pipes.length===0
+        ?`<span class="va-pipe-empty">${T('Inga rör tillagda — välj en standarddimension nedan','No pipes added — select a standard dimension below')}</span>`
+        :VA.cfg.pipes.map((d,i)=>{const mm=Math.round(d*1000);const col=mm<=110?'#10b981':mm<=250?'#06b6d4':mm<=400?'#4f46e5':'#8b5cf6';return`<span class="va-pipe-tag" style="border-color:${col};color:${col}"><span class="ptdot" style="background:${col}"></span>DN ${mm}<button onclick="event.stopPropagation();D('VA').cfg.pipes.splice(${i},1);touchProj();save();go('va')" title="${T('Ta bort','Remove')}" style="color:${col}">×</button></span>`;}).join('')}
+    </div>
+
+    <div class="va-pb-label" style="margin-top:12px">⚡ ${T('Snabbval — klicka för att lägga till','Quick-add — click to add')}</div>
+    <div class="va-pipe-quick">
+      ${[50,63,75,90,110,125,160,200,250,315,400,500,600,800].map(mm=>`<button class="va-pipe-btn" onclick="D('VA').cfg.pipes.push(${(mm/1000).toFixed(3)});touchProj();save();go('va')">DN ${mm}</button>`).join('')}
+    </div>
+
+    <div class="va-custom-row">
+      <input id="va-cust-mm" type="number" placeholder="${T('Eget mått (mm)','Custom size (mm)')}" min="20" max="2000" step="1" onkeydown="if(event.key==='Enter'){const v=+(document.getElementById('va-cust-mm').value);if(v>0){D('VA').cfg.pipes.push(+(v/1000).toFixed(3));touchProj();save();go('va');}}">
+      <button class="btn bp" onclick="const v=+(document.getElementById('va-cust-mm').value);if(v>0){D('VA').cfg.pipes.push(+(v/1000).toFixed(3));touchProj();save();go('va')}">+ ${T('Eget mått','Custom')}</button>
+      <button class="btn bs" onclick="D('VA').cfg.pipes=[];touchProj();save();go('va')" style="color:var(--d)">${T('Rensa alla','Clear all')}</button>
+    </div>
+  </div>
+
+  <!-- ── Config groups ── -->
+  <div class="va-cfg-groups">
+
+    <div class="va-cfg-group">
+      <div class="va-cfg-group-title">📐 ${T('Schaktgeometri','Excavation geometry')}</div>
+      <div class="fi"><label title="${T('Schaktslant i jord. H:1V = horisontell per vertikal meter. Typvärde 0.2–0.5','Slope in soil. H:1V = horizontal per vertical metre. Typical 0.2–0.5')}">${T('Släntsättning jord H:1V','Soil slope H:1V')} <span style="opacity:.5">ℹ</span></label>
+        <input type="number" value="${VA.cfg.slopeV}" step=".05" min="0" max="2" oninput="D('VA').cfg.slopeV=+this.value;touchProj();save();go('va')"></div>
+      <div class="fi"><label title="${T('Schaktslant i berg/hård mark. Typvärde 0.1–0.2','Slope in rock/hard ground. Typical 0.1–0.2')}">${T('Släntsättning berg H:1V','Rock slope H:1V')} <span style="opacity:.5">ℹ</span></label>
+        <input type="number" value="${VA.cfg.slopeH}" step=".05" min="0" max="2" oninput="D('VA').cfg.slopeH=+this.value;touchProj();save();go('va')"></div>
+      <div class="fi"><label>${T('Vägbredd (m)','Road width (m)')}</label>
+        <input type="number" value="${VA.cfg.roadW}" step=".5" min="0" oninput="D('VA').cfg.roadW=+this.value;touchProj();save();go('va')"></div>
+    </div>
+
+    <div class="va-cfg-group">
+      <div class="va-cfg-group-title">🏗️ ${T('Överbyggnad','Road surface')}</div>
+      <div class="fi"><label title="${T('Asfalt- och beläggningsdjup. Typvärde 0.08–0.14 m','Asphalt/pavement depth. Typical 0.08–0.14 m')}">${T('Asfaltdjup (m)','Asphalt depth (m)')} <span style="opacity:.5">ℹ</span></label>
+        <input type="number" value="${VA.cfg.asphalt}" step=".01" min="0" oninput="D('VA').cfg.asphalt=+this.value;touchProj();save();go('va')"></div>
+      <div class="fi"><label>${T('Vegetationsskikt (m)','Vegetation layer (m)')}</label>
+        <input type="number" value="${VA.cfg.veg}" step=".05" min="0" oninput="D('VA').cfg.veg=+this.value;touchProj();save();go('va')"></div>
+      <div class="fi"><label title="${T('Höjd på kringfyllning ovan rörtoppyta. AMA typvärde 0.3–0.6 m','Height of surround fill above pipe crown. AMA typical 0.3–0.6 m')}">${T('Kringfyllningshöjd (m)','Surround fill height (m)')} <span style="opacity:.5">ℹ</span></label>
+        <input type="number" value="${VA.cfg.sfh}" step=".05" min="0" oninput="D('VA').cfg.sfh=+this.value;touchProj();save();go('va')"></div>
+    </div>
+
+    <div class="va-cfg-group">
+      <div class="va-cfg-group-title">🪨 ${T('Markförhållanden','Ground conditions')}</div>
+      <div class="fi"><label>${T('Geotextiltyp','Geotextile type')}</label>
+        <select oninput="D('VA').cfg.geoType=+this.value;touchProj();save();go('va')">
+          <option value="0" ${VA.cfg.geoType===0?'selected':''}>Typ 0 — ${T('Ingen','None')}</option>
+          <option value="1" ${VA.cfg.geoType===1?'selected':''}>Typ 1 — ${T('Enkel','Single layer')}</option>
+          <option value="2" ${VA.cfg.geoType===2?'selected':''}>Typ 2 — ${T('Dubbel (standard)','Double (standard)')}</option>
+          <option value="3" ${VA.cfg.geoType===3?'selected':''}>Typ 3 — ${T('Tung/special','Heavy/special')}</option>
+        </select></div>
+      <div class="fi"><label>${T('Spontning','Sheet piling')}</label>
+        <select oninput="D('VA').cfg.spont=+this.value;touchProj();save();go('va')">
+          <option value="0" ${VA.cfg.spont===0?'selected':''}>Typ 0 — ${T('Ingen spontning','No sheet piling')}</option>
+          <option value="1" ${VA.cfg.spont===1?'selected':''}>Typ 1 — ${T('Enkel spontning','Single sheet piling')}</option>
+          <option value="2" ${VA.cfg.spont===2?'selected':''}>Typ 2 — ${T('Dubbel spontning','Double sheet piling')}</option>
+        </select></div>
+      <div class="fi"><label>${T('Rustbädd','Foundation bedding')}</label>
+        <select oninput="D('VA').cfg.rb=+this.value;touchProj();save();go('va')">
+          <option value="0" ${VA.cfg.rb===0?'selected':''}>0 — ${T('Ingen rustbädd','No foundation bed')}</option>
+          <option value="1" ${VA.cfg.rb===1?'selected':''}>1 — ${T('Rustbädd ingår','Foundation bed included')}</option>
+        </select></div>
+    </div>
+
+  </div>
+  </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Prissättning (kr/enhet)','Pricing (SEK/unit)')}</div>
   <p style="font-size:11.5px;color:var(--ts);margin-bottom:10px">${T('Ange enhetspriser för varje kostnadsposter i kronor per m³ eller m². Kostnad = volym × pris.','Enter unit prices for each cost category in SEK per m³ or m². Cost = volume × price.')}</p>
   <div class="fg">${[
