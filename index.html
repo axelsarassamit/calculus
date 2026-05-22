@@ -434,7 +434,7 @@ function emptyData(){
     FV:{cfg:{...CFG_FV},pts:[{i:0,e:2,bd:0,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0},{i:50,e:2,bd:0,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0}]},
     FB:{cfg:{...CFG_FB},pts:[{i:0,e:1.5,bd:0,f:.15,g:.5,a:.5,c:.2,d:.1,k:1,b:10,done:0},{i:50,e:2,bd:0,f:.15,g:.5,a:.5,c:.35,d:.2,k:1,b:10,done:0}]},
     TR:{cfg:{...CFG_TR},pts:[{i:0,e:3,bd:0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},{i:50,e:3,bd:0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0}]},
-    VA:{cfg:{...CFG_VA},prices:{...PRC_GLOBAL},pts:[{n:0,p:0,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0},{n:50,p:50,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0}]},
+    VA:{cfg:{...CFG_VA},prices:{...PRC_GLOBAL},spec:{pipes:[{name:'Vatten',dia:.315,depth:2.5,sfh:.5},{name:'Spillvatten',dia:.16,depth:1.8,sfh:.4}],bw:1.1,badd:.15},pts:[{n:0,p:0,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0},{n:50,p:50,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0}]},
     RL:{vatten:{pipes:[...VPIPES],sections:[]},avlopp:{dagPipes:[...DPIPES],spillPipes:[...SPIPES],dagSections:[]},totUtfort:0,kontrollUtfort:0},
     BUD:{cfg:{mask:[...CFG_BUD.mask.map(m=>({...m}))],arb:[...CFG_BUD.arb.map(a=>({...a}))],mat:0,etab:0,dep_r:65,prod:120,f_berg:5.0,risk:10,oh:12,vinst:8,ofor:5,rot:0,rot_pers:1,rot_max:50000},prices:{...PRC_GLOBAL}}
   };
@@ -482,7 +482,7 @@ function demoData(){
       {i:90, e:2.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
       {i:100,e:2.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0}
     ]},
-    VA:{cfg:{slopeV:.25,slopeH:.2,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,pipes:[.3,.16,.35,.25,.35,.315,.2]},
+    VA:{cfg:{slopeV:.25,slopeH:.2,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,badd:.15,pipes:[.3,.16,.35,.25,.35,.315,.2]},spec:{pipes:[{name:'Vatten',dia:.315,depth:2.5,sfh:.5},{name:'Spillvatten',dia:.16,depth:1.8,sfh:.4}],bw:1.1,badd:.15},
       prices:{...PRC_GLOBAL},
       pts:[
         {n:0, p:0, r:1.8,c:0, d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.7, bw:1.6,done:0,doneR:0},
@@ -830,6 +830,7 @@ function renderSidebar(){
     <div class="proj-divider"></div>
     <div class="nav-sec">${T('Spec','Spec')}</div>
     <div class="ni ${S.page==='fvspec'?'a':''}" onclick="go('fvspec')">📋 FV-spec</div>
+    <div class="ni ${S.page==='vaspec'?'a':''}" onclick="go('vaspec')">📐 VA-spec</div>
     <div class="ni ${S.page==='rl'?'a':''}" onclick="go('rl')">📏 ${T('Rörlängder','Pipe lengths')}</div>
     <div class="ni ${S.page==='sm'?'a':''}" onclick="go('sm')">📊 ${T('Sammanställning','Summary')}</div>
     <div class="ni ${S.page==='budget'?'a':''}" onclick="go('budget')">💰 ${T('Budget','Budget')}</div>
@@ -860,7 +861,7 @@ function renderSidebar(){
     <button class="theme-btn" onclick="tgTheme()">${S.dark?'☀️':'🌙'} ${S.dark?T('Ljust läge','Light mode'):T('Mörkt läge','Dark mode')}</button>
   </div>`;
 }
-function navIco(p){return{dashboard:'🏠',projects:'📁',start:'📚',el:'⚡',fv:'🔥',fb:'🏗️',tr:'🔵',va:'💧',fvspec:'📋',rl:'📏',sm:'📊',budget:'💰'}[p]||'📄';}
+function navIco(p){return{dashboard:'🏠',projects:'📁',start:'📚',el:'⚡',fv:'🔥',fb:'🏗️',tr:'🔵',va:'💧',fvspec:'📋',vaspec:'📐',rl:'📏',sm:'📊',budget:'💰'}[p]||'📄';}
 
 /* ═══════════════════════════════════════════════════════════════
    BOTTOM NAV (mobile)
@@ -878,7 +879,7 @@ function renderBNav(){
 ═══════════════════════════════════════════════════════════════ */
 let _goTimer=null;
 function go(p){
-  const pages={projects:renderProjects,start:renderStart,dashboard:renderDashboard,el:renderEL,fv:renderFV,fb:renderFB,tr:renderTR,va:renderVA,fvspec:renderFVSpec,rl:renderRL,sm:renderSM,budget:renderBudget};
+  const pages={projects:renderProjects,start:renderStart,dashboard:renderDashboard,el:renderEL,fv:renderFV,fb:renderFB,tr:renderTR,va:renderVA,fvspec:renderFVSpec,vaspec:renderVASpec,rl:renderRL,sm:renderSM,budget:renderBudget};
   if(p===S.page){
     clearTimeout(_goTimer);
     const scrollY=window.scrollY;
@@ -1611,6 +1612,7 @@ function renderVA(){
       <li><strong>F</strong> = ${T('bäddlagrets tjocklek under rörens underkant (AMA-standard)','bedding layer thickness below pipe bottom (AMA standard)')}</li>
       <li><strong>A</strong> = ${T('kringfyllningshöjd upp till täcklager','surrounding fill height up to top layer')}</li>
       <li>${T('Kostnad beräknas i Budget från enhetspriser × volymer per segment','Cost is calculated in Budget from unit prices × volumes per segment')}</li>
+      <li><strong>VA-spec</strong>: ${T('rör i olika djup — separat kring/restfyllning per rör','pipes at different depths — separate fill per pipe')} → <span class="badge-pill" onclick="go('vaspec')" style="cursor:pointer">VA-spec ›</span></li>
     </ul>
   </div>
   <!-- ══ RÖR & KONFIGURATION ══ -->
@@ -1801,6 +1803,160 @@ function renderFVSpec(){
       <td class="num">${s.bed.toFixed(2)}</td><td class="num">${s.sur.toFixed(2)}</td>
     </tr>`).join('')}</tbody>
   </table></div></div></div>`;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: VA-SPEC — RÖRLEDNINGAR I OLIKA DJUP
+═══════════════════════════════════════════════════════════════ */
+function renderVASpec(){
+  if(!curProj())return emptyProj();
+  const VA=D('VA');if(!VA)return emptyProj();
+  if(!VA.spec) VA.spec={pipes:[{name:'Vatten',dia:.315,depth:2.5,sfh:.5},{name:'Spillvatten',dia:.16,depth:1.8,sfh:.4}],bw:1.1,badd:.15};
+  const spec=VA.spec;
+  const bw=spec.bw||1.1;
+  const badd=spec.badd||.15;
+  const totalL=Math.max(vaAll().tot.l,1);
+
+  // Sort pipes deepest first, tag original index
+  const pipes=[...spec.pipes].map((p,oi)=>({...p,oi})).sort((a,b)=>b.depth-a.depth);
+
+  // Build layers (bottom → top order)
+  const layers=[];
+  if(pipes.length>0){
+    layers.push({name:T('Bädd djupaste rör','Bedding deepest pipe'),type:'badd',h:badd,col:'#d97706'});
+    for(let i=0;i<pipes.length;i++){
+      const p=pipes[i];
+      const kh=p.dia+p.sfh;
+      const kringTop=p.depth-p.dia/2-p.sfh;
+      layers.push({name:`${T('Kringfyllning','Surround fill')} — ${p.name} DN${Math.round(p.dia*1000)}`,type:'kring',h:kh,col:'#10b981',pipe:p});
+      if(i<pipes.length-1){
+        const nxt=pipes[i+1];
+        const gap=kringTop-(nxt.depth+nxt.dia/2);
+        if(gap>0.005) layers.push({name:T('Restfyllning mellanzon','Rest fill between zones'),type:'rest',h:gap,col:'#94a3b8'});
+      }
+    }
+    const sh=pipes[pipes.length-1];
+    const restAbove=sh.depth-sh.dia/2-sh.sfh;
+    if(restAbove>0.005) layers.push({name:T('Restfyllning ovan','Rest fill above'),type:'rest',h:restAbove,col:'#64748b'});
+  }
+
+  const totBadd=layers.filter(l=>l.type==='badd').reduce((s,l)=>s+l.h,0);
+  const totKring=layers.filter(l=>l.type==='kring').reduce((s,l)=>s+l.h,0);
+  const totRest=layers.filter(l=>l.type==='rest').reduce((s,l)=>s+l.h,0);
+  const totalH=layers.reduce((s,l)=>s+l.h,0);
+  const kringLayers=layers.filter(l=>l.type==='kring');
+  const snitth=kringLayers.length>0?kringLayers.reduce((s,l)=>s+l.h,0)/kringLayers.length:0;
+
+  // SVG cross-section (drawn top-down = deepest at bottom visually)
+  const svgW=300,svgH=210,margin=20,trH=Math.max(totalH,0.1);
+  const pxM=Math.min((svgH-30)/trH,70);
+  const bwPx=Math.min((svgW-2*margin)*.5,110);
+  const cx=svgW/2;
+  let svgParts='',yy=10;
+  for(const l of [...layers].reverse()){
+    const lh=Math.max(l.h*pxM,2);
+    svgParts+=`<rect x="${(cx-bwPx/2).toFixed(1)}" y="${yy.toFixed(1)}" width="${bwPx}" height="${lh.toFixed(1)}" fill="${l.col}" opacity=".85"/>`;
+    if(l.h>0.08){
+      const label=l.type==='badd'?T('Bädd','Bed'):l.type==='kring'?'Kring':'Rest';
+      svgParts+=`<text x="${cx}" y="${(yy+lh/2+3.5).toFixed(1)}" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">${label} ${l.h.toFixed(2)}m</text>`;
+    }
+    if(l.pipe){
+      const pR=Math.min(l.pipe.dia/2*pxM,bwPx/2-3);
+      const pY=yy+l.pipe.sfh*pxM+pR;
+      svgParts+=`<circle cx="${cx}" cy="${pY.toFixed(1)}" r="${pR.toFixed(1)}" fill="#1e3a8a" opacity=".9" stroke="#93c5fd" stroke-width="1.5"/>`;
+      svgParts+=`<text x="${(cx+pR+5).toFixed(1)}" y="${(pY+3).toFixed(1)}" font-size="8" fill="var(--ts)">DN${Math.round(l.pipe.dia*1000)}</text>`;
+    }
+    yy+=lh;
+  }
+  const svgOut=`<svg width="${svgW}" height="${svgH}" style="display:block;margin:0 auto">
+    <rect x="${(cx-bwPx/2).toFixed(1)}" y="8" width="${bwPx}" height="${(yy-8).toFixed(1)}" fill="none" stroke="var(--bd)" stroke-width="2" rx="1"/>
+    ${svgParts}
+    <line x1="${(cx-bwPx/2-12).toFixed(1)}" y1="10" x2="${(cx-bwPx/2-12).toFixed(1)}" y2="${yy.toFixed(1)}" stroke="var(--ts)" stroke-width="1" stroke-dasharray="3,2"/>
+    <text x="${(cx-bwPx/2-14).toFixed(1)}" y="${(yy/2+4).toFixed(1)}" text-anchor="middle" font-size="8" fill="var(--ts)" transform="rotate(-90,${(cx-bwPx/2-14).toFixed(1)},${(yy/2).toFixed(1)})">${totalH.toFixed(2)}m</text>
+    <text x="${cx}" y="${(yy+14).toFixed(1)}" text-anchor="middle" font-size="9" fill="var(--ts)">BW = ${bw}m</text>
+  </svg>`;
+
+  return`<div>
+  <div class="ph"><h2>📐 VA-spec — ${T('Rör i olika djup','Pipes at different depths')}</h2>
+  <div class="sub">${T('Kring- och restfyllning per rörledning när rör i samma schakt ligger på skilda höjder.','Surround and rest fill per pipe when pipes in the same trench lie at different elevations.')}</div></div>
+  <div class="infobox"><h4>ℹ️ ${T('Beräkningsprincip','Calculation principle')}</h4>
+    <p>${T('Varje rör ges en separat kringfyllningszon (= rördiameter + kring ovan krön). Restfyllning beräknas automatiskt i mellanzonerna och ovan det grundaste röret. Djup anges till rörcentrum (m.c.) från vägyta.','Each pipe gets a separate surround fill zone (= pipe diameter + surround above crown). Rest fill is computed automatically for gaps between zones and above the shallowest pipe. Depth is to pipe centreline (c/l) from road surface.')}</p>
+    <ul style="margin-top:6px">
+      <li><strong>m.c.</strong> = ${T('djup till rörcentrum från vägyta','depth to pipe centreline from road surface')}</li>
+      <li><strong>${T('Kring ovan kron','Surr. above crown')}</strong> ≥ 0.3 m (${T('AMA-krav','AMA requirement')})</li>
+      <li><strong>snitthöjd kringfylln</strong> = ${T('medelhöjd kringfyllning för alla rör','average surround fill height across all pipes')}</li>
+    </ul>
+  </div>
+
+  <div class="cg2">
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Schaktkonfiguration','Trench configuration')}</div>
+  <div class="fg">
+    <div class="fi"><label>${T('Bottenbredd BW (m)','Bottom width BW (m)')}</label>
+      <input type="number" value="${bw}" step=".05" min=".1" oninput="D('VA').spec.bw=+this.value;touchProj();save();go('vaspec')"></div>
+    <div class="fi"><label>${T('Bädd djupaste rör (m)','Bedding deepest pipe (m)')}</label>
+      <input type="number" value="${badd}" step=".05" min="0" oninput="D('VA').spec.badd=+this.value;touchProj();save();go('vaspec')"></div>
+    <div class="fi"><label>${T('Schaktlängd (m) — från VA','Trench length (m) — from VA')}</label>
+      <input type="number" value="${totalL.toFixed(1)}" readonly style="opacity:.6;cursor:default"></div>
+  </div></div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:#06b6d4"></span>${T('Tvärsnitt','Cross-section')}</div>
+  ${svgOut}</div>
+  </div>
+
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Rörledningar — djup och kringfyllningszoner','Pipes — depth and surround fill zones')}</div>
+  <div class="tbl-wrap"><table class="dt">
+    <thead><tr>
+      <th>${T('Rörnamn','Pipe name')}</th>
+      <th>${T('Dim (mm)','Dim (mm)')}</th>
+      <th>${T('Djup m.c. (m)','Depth c/l (m)')}</th>
+      <th>${T('Kring ovan kron (m)','Surr. above crown (m)')}</th>
+      <th>${T('Kringzon höjd (m)','Kring zone height (m)')}</th>
+      <th></th>
+    </tr></thead>
+    <tbody>${spec.pipes.map((p,i)=>`<tr>
+      <td><input type="text" value="${p.name}" onclick="event.stopPropagation()" oninput="D('VA').spec.pipes[${i}].name=this.value;touchProj();save();go('vaspec')"></td>
+      <td><input type="number" value="${Math.round(p.dia*1000)}" step="1" min="20" onclick="event.stopPropagation()" oninput="D('VA').spec.pipes[${i}].dia=+this.value/1000;touchProj();save();go('vaspec')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.depth}" step=".1" onclick="event.stopPropagation()" oninput="D('VA').spec.pipes[${i}].depth=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('vaspec')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.sfh}" step=".05" min="0" onclick="event.stopPropagation()" oninput="D('VA').spec.pipes[${i}].sfh=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('vaspec')"></td>
+      <td class="num" style="font-weight:700;color:var(--i)">${(p.dia+p.sfh).toFixed(3)}</td>
+      <td>${spec.pipes.length>1?`<button class="bd-btn" onclick="event.stopPropagation();D('VA').spec.pipes.splice(${i},1);touchProj();save();go('vaspec')">✕</button>`:''}</td>
+    </tr>`).join('')}</tbody>
+  </table></div>
+  <div class="btn-row">
+    <button class="btn bp" onclick="const pp=D('VA').spec.pipes;pp.push({name:'Rör '+(pp.length+1),dia:.16,depth:Math.max(...pp.map(x=>x.depth))-0.7,sfh:.4});touchProj();save();go('vaspec')">+ ${T('Lägg till rör','Add pipe')}</button>
+  </div></div>
+
+  ${layers.length?`
+  <div class="mg">
+    ${mc(snitth.toFixed(2),T('Snitthöjd kring','Avg kring height'),'m','',70)}
+    ${mc((totBadd*bw*totalL).toFixed(1),T('Bädd','Bedding'),'m³','c3',40)}
+    ${mc((totKring*bw*totalL).toFixed(1),T('Kringfyllning tot','Surr. fill total'),'m³','c2',100)}
+    ${mc((totRest*bw*totalL).toFixed(1),T('Restfyllning tot','Rest fill total'),'m³','c4',60)}
+  </div>
+  <div class="cd"><div class="ct"><span class="dot" style="background:#8b5cf6"></span>${T('Lagerredovisning — nedifrån upp','Layer breakdown — bottom to top')}</div>
+  <div class="tbl-wrap"><table class="dt">
+    <thead><tr>
+      <th>${T('Zon','Zone')}</th>
+      <th>${T('Typ','Type')}</th>
+      <th>${T('Höjd (m)','Height (m)')}</th>
+      <th>${T('m³ per löpm','m³ per run m')}</th>
+      <th>${T('Totalt m³','Total m³')}</th>
+    </tr></thead>
+    <tbody>${layers.map(l=>`<tr>
+      <td><span style="display:inline-block;width:10px;height:10px;background:${l.col};border-radius:2px;margin-right:6px;vertical-align:middle"></span>${l.name}</td>
+      <td style="color:var(--ts);font-size:11px">${l.type==='badd'?T('Bädd','Bedding'):l.type==='kring'?T('Kring','Surround'):T('Rest','Rest fill')}</td>
+      <td class="num">${l.h.toFixed(3)}</td>
+      <td class="num">${(l.h*bw).toFixed(3)}</td>
+      <td class="num">${(l.h*bw*totalL).toFixed(1)}</td>
+    </tr>`).join('')}</tbody>
+    <tfoot><tr>
+      <td colspan="2"><strong>${T('TOTALT schaktdjup','TOTAL trench depth')}</strong></td>
+      <td class="num"><strong>${totalH.toFixed(3)}</strong></td>
+      <td class="num"><strong>${(totalH*bw).toFixed(3)}</strong></td>
+      <td class="num"><strong>${(totalH*bw*totalL).toFixed(1)}</strong></td>
+    </tr></tfoot>
+  </table></div></div>`:''}
+  </div>`;
 }
 
 /* ═══════════════════════════════════════════════════════════════
