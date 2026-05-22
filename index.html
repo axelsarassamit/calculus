@@ -412,7 +412,7 @@ let Charts={},modalMode='new';
 ═══════════════════════════════════════════════════════════════ */
 const CFG_EL={spacingI:.05,spacingL:.05,slopeJord:1,slopeBerg:.2,asphalt:.1,veg:.2,sfh:.3,geoType:2,spont:0};
 const CFG_FV={slopeJord:1,slopeBerg:.2,asphalt:.1,veg:.2,geoType:2,spont:0};
-const CFG_FB={slopeJord:.5,slopeBerg:.1,asphalt:.1,veg:.2,geoType:2,spont:0};
+const CFG_FB={slopeJord:.5,slopeBerg:.1,asphalt:.1,veg:.2,sfh:.3,geoType:2,spont:0};
 const CFG_TR={slopeJord:1,slopeBerg:.2,asphalt:.1,veg:.2,geoType:2,spont:0};
 const CFG_VA={slopeV:.25,slopeH:.2,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,badd:.15,pipes:[.3,.16]};
 const CFG_BUD={
@@ -433,7 +433,7 @@ function emptyData(){
   return{
     EL:{cfg:{...CFG_EL},pts:[{w:0,e:1.2,d:0,h:1,n50:0,n110:2,n160:0,k:1,done:0},{w:50,e:1.2,d:0,h:1,n50:0,n110:2,n160:0,k:1,done:0}]},
     FV:{cfg:{...CFG_FV},pts:[{i:0,e:2,bd:0,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0},{i:50,e:2,bd:0,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0}]},
-    FB:{cfg:{...CFG_FB},pts:[{i:0,e:1.5,bd:0,f:.15,g:.5,a:.5,c:.2,d:.1,k:1,b:10,done:0},{i:50,e:2,bd:0,f:.15,g:.5,a:.5,c:.35,d:.2,k:1,b:10,done:0}]},
+    FB:{cfg:{...CFG_FB},spec:{pipes:[{name:'Vatten',dia:.16,depth:1.5},{name:'Avlopp',dia:.2,depth:2.0}],bw:0.56,badd:.15},pts:[{i:0,e:1.5,bd:0,f:.15,g:.5,a:.5,k:1,done:0},{i:50,e:2,bd:0,f:.15,g:.5,a:.5,k:1,done:0}]},
     TR:{cfg:{...CFG_TR},pts:[{i:0,e:3,bd:0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},{i:50,e:3,bd:0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0}]},
     VA:{cfg:{...CFG_VA},prices:{...PRC_GLOBAL},spec:{pipes:[{name:'Vatten',dia:.315,depth:2.5,sfh:.5},{name:'Spillvatten',dia:.16,depth:1.8,sfh:.4}],bw:1.1,badd:.15},pts:[{n:0,p:0,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0},{n:50,p:50,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0}]},
     RL:{vatten:{pipes:[...VPIPES],sections:[]},avlopp:{dagPipes:[...DPIPES],spillPipes:[...SPIPES],dagSections:[]},totUtfort:0,kontrollUtfort:0},
@@ -461,14 +461,14 @@ function demoData(){
       {i:90, e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0},
       {i:101,e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0}
     ]},
-    FB:{cfg:{...CFG_FB},pts:[
-      {i:0,  e:1.5,f:.15,g:.5,a:.5,c:.2, d:.1,  k:1,b:10,done:0},
-      {i:10, e:2.0,f:.15,g:.5,a:.5,c:.35,d:.2,  k:1,b:10,done:0},
-      {i:20, e:2.5,f:.15,g:.5,a:.5,c:.35,d:.25, k:1,b:10,done:0},
-      {i:30, e:3.0,f:.15,g:.5,a:.5,c:.35,d:.25, k:1,b:10,done:0},
-      {i:40, e:3.0,f:.15,g:.5,a:.5,c:.35,d:.25, k:1,b:10,done:0},
-      {i:50, e:3.0,f:.15,g:.5,a:.5,c:.35,d:.25, k:1,b:10,done:0},
-      {i:60, e:3.0,f:.15,g:.5,a:.5,c:.35,d:.25, k:1,b:5, done:0}
+    FB:{cfg:{...CFG_FB},spec:{pipes:[{name:'Vatten',dia:.16,depth:1.5},{name:'Avlopp',dia:.2,depth:2.0}],bw:.56,badd:.15},pts:[
+      {i:0,  e:1.5,bd:0,f:.15,g:.5,a:.5,k:1,done:0},
+      {i:10, e:2.0,bd:0,f:.15,g:.5,a:.5,k:1,done:0},
+      {i:20, e:2.5,bd:0,f:.15,g:.5,a:.5,k:1,done:0},
+      {i:30, e:3.0,bd:0,f:.15,g:.5,a:.5,k:1,done:0},
+      {i:40, e:3.0,bd:0,f:.15,g:.5,a:.5,k:1,done:0},
+      {i:50, e:3.0,bd:0,f:.15,g:.5,a:.5,k:1,done:0},
+      {i:60, e:3.0,bd:0,f:.15,g:.5,a:.5,k:1,done:0}
     ]},
     TR:{cfg:{...CFG_TR},pts:[
       {i:0,  e:3.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
@@ -652,6 +652,69 @@ function svgSection(bw,tw,d,pipes=[],label='',animated=false){
   </svg>`;
 }
 
+/* Asymmetric cross-section: left wall vertical (building), right wall sloped */
+function svgSectionFB(bw,tw,d,specPipes=[],slJ=0.5,label=''){
+  const W=380,H=220,lx=62,pt=34,rm=20;
+  const maxD=Math.max(d,...specPipes.map(p=>p.depth||0),0.1);
+  const sc=Math.min((W-lx-rm)/Math.max(tw,bw,.01),(H-pt-30)/maxD);
+  const gy=pt,by=gy+d*sc;
+  const bwPx=bw*sc,twPx=tw*sc;
+  const pipeC=['#6366f1','#06b6d4','#10b981','#f59e0b','#ef4444','#8b5cf6'];
+  const beddH=Math.max(6,0.15*sc);
+  // Building wall texture (left side)
+  let bldg='';
+  for(let yy=gy;yy<by+4;yy+=6)bldg+=`<line x1="${lx-12}" y1="${yy.toFixed(0)}" x2="${lx}" y2="${(yy+6).toFixed(0)}" stroke="#f97316" stroke-width="1.5" opacity=".7"/>`;
+  // Pipes at depth
+  let pipeSVG='';
+  specPipes.forEach((p,i)=>{
+    const py=gy+p.depth*sc;
+    if(py<gy||py>by-2)return;
+    const pr=Math.max(4,Math.min(p.dia/2*sc,bwPx/2-3));
+    const pcx=lx+bwPx/2;
+    pipeSVG+=`<circle cx="${pcx.toFixed(1)}" cy="${py.toFixed(1)}" r="${pr.toFixed(1)}" fill="${pipeC[i%pipeC.length]}" opacity=".9" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>`;
+    pipeSVG+=`<text x="${(pcx+pr+5).toFixed(1)}" y="${py.toFixed(1)}" dominant-baseline="middle" font-size="8" fill="rgba(255,255,255,.65)" font-family="Inter,sans-serif" font-weight="600">${p.name||('DN'+Math.round(p.dia*1000))}</text>`;
+    pipeSVG+=`<line x1="${lx}" y1="${py.toFixed(1)}" x2="${(lx-10).toFixed(1)}" y2="${py.toFixed(1)}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="2,2"/>`;
+    pipeSVG+=`<text x="${(lx-12).toFixed(1)}" y="${py.toFixed(1)}" text-anchor="end" dominant-baseline="middle" font-size="7" fill="#94a3b8" font-family="Inter,sans-serif">${p.depth.toFixed(1)}m</text>`;
+  });
+  // Slope annotation on right side
+  const slopePx=slJ*d*sc;
+  const midY=(gy+by)/2;
+  return`<svg width="${W}" height="${H}" style="border-radius:12px;background:#0b1425;display:block;width:100%;max-width:${W}px" viewBox="0 0 ${W} ${H}">
+  <defs>
+    <linearGradient id="skyFB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f2040"/><stop offset="1" stop-color="#1e3a5f"/></linearGradient>
+    <linearGradient id="soilFB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d2b1f" stop-opacity=".6"/><stop offset="1" stop-color="#2d1b0e" stop-opacity=".3"/></linearGradient>
+    <pattern id="hatchFB" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="rgba(99,102,241,.12)" stroke-width="3"/></pattern>
+    <pattern id="bldgPat" patternUnits="userSpaceOnUse" width="12" height="12"><rect width="12" height="12" fill="#1a0a00"/><line x1="0" y1="0" x2="12" y2="12" stroke="#92400e" stroke-width="1.5" opacity=".6"/></pattern>
+  </defs>
+  <rect x="0" y="0" width="${W}" height="${gy}" fill="url(#skyFB)"/>
+  <rect x="0" y="${gy}" width="${W}" height="${H-gy}" fill="url(#soilFB)"/>
+  <!-- Right-side soil hatch -->
+  <rect x="${(lx+twPx).toFixed(1)}" y="${gy}" width="${(W-lx-twPx).toFixed(1)}" height="${H-gy}" fill="url(#hatchFB)"/>
+  <!-- Building wall block -->
+  <rect x="0" y="${gy-2}" width="${lx}" height="${H-gy+2}" fill="url(#bldgPat)" stroke="#f97316" stroke-width="1.5" opacity=".9"/>
+  <!-- Ground line -->
+  <line x1="${lx}" y1="${gy}" x2="${W}" y2="${gy}" stroke="#84cc16" stroke-width="1.5" stroke-dasharray="6,4" opacity=".5"/>
+  <!-- Trench: left vertical, right sloped -->
+  <polygon points="${lx},${gy} ${(lx+twPx).toFixed(1)},${gy} ${(lx+bwPx).toFixed(1)},${by.toFixed(1)} ${lx},${by.toFixed(1)}" fill="rgba(15,20,40,.92)" stroke="rgba(99,102,241,.5)" stroke-width="1.5"/>
+  <!-- Kring zone -->
+  <polygon points="${lx},${(by-beddH-Math.max(8,0.4*sc)).toFixed(1)} ${(lx+bwPx).toFixed(1)},${(by-beddH-Math.max(8,0.4*sc)).toFixed(1)} ${(lx+bwPx).toFixed(1)},${(by-beddH).toFixed(1)} ${lx},${(by-beddH).toFixed(1)}" fill="rgba(6,182,212,.2)" stroke="rgba(6,182,212,.3)" stroke-width=".5"/>
+  <!-- Bädd -->
+  <rect x="${lx}" y="${(by-beddH).toFixed(1)}" width="${bwPx.toFixed(1)}" height="${beddH.toFixed(1)}" fill="rgba(245,158,11,.55)" stroke="rgba(245,158,11,.4)" stroke-width=".5" rx="1"/>
+  ${pipeSVG}
+  <!-- BW label -->
+  <text x="${(lx+bwPx/2).toFixed(1)}" y="${(by+16).toFixed(1)}" text-anchor="middle" font-size="10" fill="#fbbf24" font-family="Inter,sans-serif" font-weight="700">BW ${bw.toFixed(2)}m</text>
+  <!-- D label -->
+  <line x1="${(lx+twPx+6).toFixed(1)}" y1="${gy}" x2="${(lx+twPx+6).toFixed(1)}" y2="${by.toFixed(1)}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="${(lx+twPx+12).toFixed(1)}" y="${midY.toFixed(1)}" font-size="10" fill="#94a3b8" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">D ${d.toFixed(2)}m</text>
+  <!-- Slope annotation -->
+  <line x1="${(lx+bwPx).toFixed(1)}" y1="${by.toFixed(1)}" x2="${(lx+twPx).toFixed(1)}" y2="${gy}" stroke="#c084fc" stroke-width="1.5" stroke-dasharray="4,3" opacity=".7"/>
+  <text x="${(lx+bwPx+slopePx/2+4).toFixed(1)}" y="${(gy+by)/2+4}" font-size="9" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600">${slJ}H:1V</text>
+  <!-- Building label -->
+  <text x="${(lx/2).toFixed(1)}" y="${(gy+10)}" text-anchor="middle" font-size="8" fill="#f97316" font-family="Inter,sans-serif" font-weight="700" transform="rotate(-90,${(lx/2).toFixed(1)},${((gy+by)/2).toFixed(1)})">BYGGNAD</text>
+  ${label?`<text x="${(lx+twPx/2).toFixed(1)}" y="${H-5}" text-anchor="middle" font-size="9" fill="#475569" font-family="Inter,sans-serif">${label}</text>`:''}
+  </svg>`;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    CALCULATIONS
 ═══════════════════════════════════════════════════════════════ */
@@ -689,7 +752,7 @@ function elAll(){
   }
   return{segs,tot:sumSegs(segs,'el')};
 }
-function calcSections(pts,cfg,getBW){
+function calcSections(pts,cfg,getBW,sideMult=2){
   const segs=[];
   for(let i=0;i<pts.length-1;i++){
     const p1=pts[i],p2=pts[i+1],L=Math.abs(p2.i-p1.i);
@@ -699,9 +762,9 @@ function calcSections(pts,cfg,getBW){
     const slB=cfg.spont>=2?0:(cfg.slopeBerg||slJ);
     const d1=p1.e+p1.f,d2=p2.e+p2.f;
     const bd1=Math.min(p1.bd||0,d1),bd2=Math.min(p2.bd||0,d2);
-    // Top width: rock zone uses slopeBerg, soil zone uses slopeJord
-    const tw1=bw1+2*(bd1>0?bd1*slB+(d1-bd1)*slJ:d1*slJ);
-    const tw2=bw2+2*(bd2>0?bd2*slB+(d2-bd2)*slJ:d2*slJ);
+    // Top width: sideMult=2 both sides slope, sideMult=1 one side only (FB = against building)
+    const tw1=bw1+sideMult*(bd1>0?bd1*slB+(d1-bd1)*slJ:d1*slJ);
+    const tw2=bw2+sideMult*(bd2>0?bd2*slB+(d2-bd2)*slJ:d2*slJ);
     const exc=((bw1+tw1)/2*d1+(bw2+tw2)/2*d2)/2*L;
     // Jord/berg volume split: geometric when bd>0, else use K%
     let jord,berg;
@@ -725,7 +788,19 @@ function calcSections(pts,cfg,getBW){
   return{segs,tot:sumSegs(segs,'fv')};
 }
 function fvAll(){const FV=D('FV');if(!FV)return{segs:[],tot:zFV()};return calcSections(FV.pts,FV.cfg,fvBW);}
-function fbAll(){const FB=D('FB');if(!FB)return{segs:[],tot:zFV()};return calcSections(FB.pts,FB.cfg,fvBW);}
+function fbAll(){
+  const FB=D('FB');if(!FB)return{segs:[],tot:zFV()};
+  if(!FB.spec)FB.spec={pipes:[],bw:.6,badd:.15};
+  // Migrate: if spec.pipes empty but pts have c/d, seed from first point
+  if(!FB.spec.pipes.length&&FB.pts.length&&(FB.pts[0].c||FB.pts[0].d)){
+    const p0=FB.pts[0];
+    if(p0.c)FB.spec.pipes.push({name:'Rör 1',dia:p0.c,depth:p0.e});
+    if(p0.d&&p0.d!==p0.c)FB.spec.pipes.push({name:'Rör 2',dia:p0.d,depth:Math.max(0.5,p0.e-0.4)});
+  }
+  const sps=FB.spec.pipes;
+  const fbBW=()=>sps.length?Math.max(.4,sps.reduce((s,p)=>s+p.dia,0)+.20):.60;
+  return calcSections(FB.pts,FB.cfg,fbBW,1);  // sideMult=1: left wall is vertical (building)
+}
 function trAll(){const TR=D('TR');if(!TR)return{segs:[],tot:zFV()};return calcSections(TR.pts,TR.cfg,(pt)=>pt.c+pt.d+.1);}
 function vaAll(){
   const VA=D('VA');if(!VA)return{segs:[],tot:zVA()};
@@ -1440,27 +1515,88 @@ function renderFB(){
   if(!curProj())return emptyProj();
   const{segs,tot}=fbAll();const FB=D('FB');const mx=Math.max(tot.exc,1);
   const seg=segs[S.selSeg]||segs[0];
+  if(!FB.spec)FB.spec={pipes:[],bw:.6,badd:.15};
+  const spec=FB.spec;
+  const sps=spec.pipes;
+  const slJ=FB.cfg.slopeJord||.5;
+  const fbBW=sps.length?Math.max(.4,sps.reduce((s,p)=>s+p.dia,0)+.20):.60;
   return`<div>
   <div class="ph"><h2>🏗️ ${T('Fyllnad mot byggnad','Fill against building')}</h2>
-  <div class="sub">${T('Schakt längs husgrunder och källarmurar. Bottenbredd beräknas automatiskt från rördimensioner.','Excavation along building foundations and basement walls. Bottom width auto-calculated.')}</div></div>
+  <div class="sub">${T('Schakt längs husgrunder och källarmurar. Vänster vägg vertikal mot byggnad, höger vägg med konfigurerbar slant.','Excavation along building foundations. Left wall vertical against building, right wall with configurable slope.')}</div></div>
   <div class="infobox"><h4>ℹ️ ${T('Beräkningsprincip Fyllnad mot byggnad','Fill Against Building Calculation Principle')}</h4>
-    <p>${T('Fyllnad mot byggnad avser schakt och fyllning utmed husgrunder och källarmurar. Arbetet utförs med försiktighet för att inte skada befintlig konstruktion. Bottenbredden styrs av rörledningarnas yttermått plus säkerhetsavstånd.','Fill against building refers to excavation and fill alongside building foundations and basement walls. Work is done carefully to avoid damaging existing structures. Bottom width is controlled by pipe outer dimensions plus safety margins.')}</p>
+    <p>${T('Schakt mot husgrund har alltid vertikal vägg mot byggnaden (vänster) och slantad schaktvägg på den fria sidan (höger). Bottenbredden styrs av konfigurerade rörledningar plus 0.20m säkerhetsavstånd.','Excavation against building always has a vertical wall toward the building (left) and sloped excavation on the open side (right). Bottom width is controlled by configured pipes plus 0.20m safety margin.')}</p>
     <ul style="margin-top:6px">
-      <li><strong>BW</strong> = C (${T('ytterdia 1','outer dia 1')}) + D (${T('ytterdia 2','outer dia 2')}) + 0.20m</li>
-      <li><strong>E</strong> = ${T('schaktdjup per punkt','excavation depth per point')}</li>
-      <li><strong>F</strong> = ${T('bäddlagrets tjocklek under rörets underkant','bedding layer thickness below pipe bottom')}</li>
-      <li><strong>G</strong> = ${T('jordslant H:1V per punkt — normalt 0.1:1 pga risk för ras mot byggnad','soil slope H:1V per point — normally 0.1:1 due to collapse risk')}</li>
+      <li><strong>BW</strong> = ${T('summa rördiametrar','sum of pipe diameters')} + 0.20m</li>
+      <li><strong>TW</strong> = BW + ${T('Slant H:1V × schaktdjup (en sida)','Slope H:1V × depth (one side only)')}</li>
+      <li><strong>Slant H:1V</strong>: ${T('0.5 = 0.5m horisontellt per 1m djup. Normalt 0.1–0.5 mot byggnad.','0.5 = 0.5m horizontal per 1m depth. Normally 0.1–0.5 against building.')}</li>
+      <li><strong>G</strong> = ${T('slant-override per punkt (överstyr global slant)','slope override per point (overrides global slope)')}</li>
     </ul>
   </div>
-  <div class="cd"><div class="ct"><span class="dot" style="background:var(--o)"></span>${T('Konfiguration','Configuration')}</div>
+
+  <!-- ══ RÖR & KONFIGURATION ══ -->
+  <div class="cd">
+  <div class="ct"><span class="dot" style="background:var(--o)"></span>${T('Rör & konfiguration','Pipes & configuration')}</div>
+  ${(()=>{
+    if(!D('FB')||!D('FB').spec)return'';
+    const sps=D('FB').spec.pipes;
+    const totalA=sps.reduce((s,p)=>s+Math.PI*(p.dia/2)**2,0);
+    const dnList=sps.map(p=>Math.round(p.dia*1000)).sort((a,b)=>a-b);
+    const bwCalc=sps.length?Math.max(.4,sps.reduce((s,p)=>s+p.dia,0)+.20):.60;
+    let h='<div class="va-pipe-strip">'
+      +'<div class="ps-stat"><span class="ps-val">'+sps.length+'</span><span class="ps-lbl">'+T('Rör','Pipes')+'</span></div>'
+      +'<div class="ps-stat"><span class="ps-val">'+bwCalc.toFixed(2)+' m</span><span class="ps-lbl">BW</span></div>'
+      +'<div class="ps-stat"><span class="ps-val">'+(totalA*10000).toFixed(1)+' cm\xb2</span><span class="ps-lbl">'+T('Total rörarea','Total pipe area')+'</span></div>'
+      +'<div style="flex:1;font-size:10px;color:var(--tm)">'+(dnList.length?dnList.map(mm=>'DN '+mm).join(' \xb7 '):T('Inga rör konfigurerade','No pipes configured'))+'</div>'
+      +'</div>';
+    h+='<div class="tbl-wrap"><table class="dt"><thead><tr>'
+      +'<th>'+T('Namn','Name')+'</th>'
+      +'<th>'+T('DN (mm)','DN (mm)')+'</th>'
+      +'<th title="'+T('Djup till rörcentrum från markytan','Depth to pipe centreline from ground surface')+'">'+T('Djup m.c.','Depth c/l')+' (m)</th>'
+      +'<th></th>'
+      +'</tr></thead><tbody>';
+    if(!sps.length){
+      h+='<tr><td colspan="4" style="text-align:center;color:var(--ts);font-size:12px;padding:14px">'+T('Inga rör tillagda — använd snabbval nedan','No pipes added — use quick-add below')+'</td></tr>';
+    } else {
+      sps.forEach((p,i)=>{
+        h+='<tr>'
+          +'<td><input type="text" value="'+p.name+'" onchange="D(\'FB\').spec.pipes['+i+'].name=this.value;touchProj();save();go(\'fb\')"></td>'
+          +'<td><input type="number" value="'+Math.round(p.dia*1000)+'" step="1" min="20" style="width:70px" onchange="D(\'FB\').spec.pipes['+i+'].dia=+this.value/1000;touchProj();save();go(\'fb\')"></td>'
+          +'<td><input type="text" inputmode="decimal" value="'+p.depth+'" style="width:70px" onchange="D(\'FB\').spec.pipes['+i+'].depth=parseFloat(this.value.replace(\',\',\'.\'))||0;touchProj();save();go(\'fb\')"></td>'
+          +'<td>'+(sps.length>1?'<button class="bd-btn" onclick="event.stopPropagation();D(\'FB\').spec.pipes.splice('+i+',1);touchProj();save();go(\'fb\')">&#x2715;</button>':'')+'</td>'
+          +'</tr>';
+      });
+    }
+    h+='</tbody></table></div>';
+    h+='<div class="va-pb-label" style="margin-top:10px">⚡ '+T('Snabbval — klicka för att lägga till','Quick-add — click to add')+'</div><div class="va-pipe-quick">';
+    [50,63,75,90,110,125,160,200,250,315].forEach(mm=>{
+      const dia=(mm/1000).toFixed(3);
+      h+='<button class="va-pipe-btn" onclick="const d=D(\'FB\');const dep=d.spec.pipes.length?Math.max(...d.spec.pipes.map(x=>x.depth))+0.3:1.5;d.spec.pipes.push({name:\'DN'+mm+'\',dia:'+dia+',depth:Math.round(dep*10)/10});touchProj();save();go(\'fb\')">DN '+mm+'</button>';
+    });
+    h+='</div>';
+    h+='<div class="va-custom-row">'
+      +'<input id="fb-cust-mm" type="number" placeholder="'+T('Eget DN (mm)','Custom DN (mm)')+'" min="20" max="2000" step="1"'
+      +' onkeydown="if(event.key===\'Enter\'){const v=+document.getElementById(\'fb-cust-mm\').value;if(v>0){const d=D(\'FB\');const dep=d.spec.pipes.length?Math.max(...d.spec.pipes.map(x=>x.depth))+0.3:1.5;d.spec.pipes.push({name:\'DN\'+v,dia:+(v/1000).toFixed(3),depth:Math.round(dep*10)/10});touchProj();save();go(\'fb\');}}">'
+      +'<button class="btn bp" onclick="const v=+document.getElementById(\'fb-cust-mm\').value;if(v>0){const d=D(\'FB\');const dep=d.spec.pipes.length?Math.max(...d.spec.pipes.map(x=>x.depth))+0.3:1.5;d.spec.pipes.push({name:\'DN\'+v,dia:+(v/1000).toFixed(3),depth:Math.round(dep*10)/10});touchProj();save();go(\'fb\')}">+ '+T('Eget mått','Custom')+'</button>'
+      +'<button class="btn bs" onclick="D(\'FB\').spec.pipes=[];touchProj();save();go(\'fb\')" style="color:var(--d)">'+T('Rensa alla','Clear all')+'</button>'
+      +'</div>';
+    return h;
+  })()}
+  </div>
+
+  <!-- ══ SCHAKTKONFIGURATION ══ -->
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--o)"></span>${T('Schaktkonfiguration','Trench configuration')}</div>
   <div class="fg">
-    <div class="fi"><label>${T('Slant jord H:1V','Soil slope H:1V')}</label><input type="number" value="${FB.cfg.slopeJord??FB.cfg.slope??.5}" step=".1" onchange="D('FB').cfg.slopeJord=+this.value;touchProj();save();go('fb')"></div>
-    <div class="fi"><label>${T('Slant berg H:1V','Rock slope H:1V')}</label><input type="number" value="${FB.cfg.slopeBerg??FB.cfg.slope??.1}" step=".1" onchange="D('FB').cfg.slopeBerg=+this.value;touchProj();save();go('fb')"></div>
+    <div class="fi"><label title="${T('Slant på den fria sidan (höger). H:1V = meter horisontellt per meter djup. Mot byggnad normalt 0.1–0.5.','Slope on the open side (right). H:1V = metres horizontal per metre depth. Against building normally 0.1–0.5.')}">
+      ${T('Slant H:1V','Slope H:1V')} <span style="opacity:.5">ℹ</span>
+      <span style="display:block;font-size:9px;color:var(--ts);font-weight:400">${T('Fri sida — vänster är alltid vertikal','Open side — left is always vertical')}</span>
+    </label><input type="number" value="${FB.cfg.slopeJord??FB.cfg.slope??.5}" step=".1" min="0" max="3" onchange="D('FB').cfg.slopeJord=+this.value;touchProj();save();go('fb')"></div>
+    <div class="fi"><label>${T('Slant berg H:1V','Rock slope H:1V')}</label><input type="number" value="${FB.cfg.slopeBerg??FB.cfg.slope??.1}" step=".1" min="0" onchange="D('FB').cfg.slopeBerg=+this.value;touchProj();save();go('fb')"></div>
     <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${FB.cfg.asphalt}" step=".05" onchange="D('FB').cfg.asphalt=+this.value;touchProj();save();go('fb')"></div>
     <div class="fi"><label>${T('Vegetation (m)','Vegetation (m)')}</label><input type="number" value="${FB.cfg.veg}" step=".05" onchange="D('FB').cfg.veg=+this.value;touchProj();save();go('fb')"></div>
     <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select onchange="D('FB').cfg.geoType=+this.value;touchProj();save();go('fb')">${[0,1,2,3].map(v=>`<option value="${v}" ${FB.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
     <div class="fi"><label>${T('Spontning','Sheet piling')}</label><select onchange="D('FB').cfg.spont=+this.value;touchProj();save();go('fb')">${[0,1,2].map(v=>`<option value="${v}" ${FB.cfg.spont===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
   </div></div>
+
   ${pcBar(tot.done,tot.total,T('Utfört Fyllnad-schakt','Fyllnad completed'))}
   <div class="mg">
     ${mc(tot.l,T('Längd','Length'),'m','',100)}${mc(tot.exc,T('Schakt tot','Exc. total'),'m³','',100)}
@@ -1470,7 +1606,7 @@ function renderFB(){
   </div>
   <div class="cg2">
     <div class="cd"><div class="ct"><span class="dot" style="background:#f97316"></span>${T('Tvärsnitt — segment','Cross-section — segment')} ${S.selSeg+1}</div>
-      <div class="svg-box" id="fb-svg">${seg?svgSection(seg.bw1,seg.tw1,seg.ad,[.2,.1],'FB'):T('–','–')}</div></div>
+      <div class="svg-box" id="fb-svg">${seg?svgSectionFB(seg.bw1,seg.tw1,seg.ad,sps,slJ,'FB'):T('–','–')}</div></div>
     <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Volymfördelning','Volume split')}</div>
       <div class="ch-wrap"><canvas id="ch-fb-pie"></canvas></div></div>
   </div>
@@ -1480,21 +1616,19 @@ function renderFB(){
     <div class="cd"><div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Volymer per segment','Volume per segment')}</div>
       <div class="ch-wrap"><canvas id="ch-fb-seg"></canvas></div></div>
   </div>
-  <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Profilpunkter — klicka rad för tvärsnitt','Profile points — click row for section')}
-    <span style="margin-left:auto;font-size:9px;color:var(--ts);font-weight:400;text-transform:none">${T('I=Station · E=Schaktdjup · F=Bäddtjocklek · G=Slant · A=Kringh. · C/D=Rördim · K=Jordfraktion','I=Station · E=Exc.depth · F=Bed thickness · G=Slope · A=Surr.h · C/D=Pipe diam · K=Soil fraction')}</span>
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Profilpunkter','Profile points')}
+    <span style="margin-left:auto;font-size:9px;color:var(--ts);font-weight:400;text-transform:none">${T('E=Schaktdjup · bd=Bergdjup · F=Bädd · G=Slant override · A=Kring · K=Jordfraktion','E=Depth · bd=Rock · F=Bed · G=Slope override · A=Surr. · K=Soil frac.')}</span>
   </div>
   <div class="tbl-wrap"><table class="dt">
-    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Jorddjup','Soil depth')}</th><th>D ${T('Bergdjup','Rock depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia 1','Dia 1')}</th><th>${T('Dia 2','Dia 2')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
+    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Jorddjup','Soil depth')}</th><th>bd ${T('Berg','Rock')}</th><th>F ${T('Bädd','Bed')}</th><th title="${T('Slant H:1V per punkt — överstyr global om >0','Slope H:1V per point — overrides global if >0')}">G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>${FB.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].i=+this.value;touchProj();save();go('fb')"></td>
       <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
       <td><input type="text" inputmode="decimal" value="${p.bd||0}" step=".1" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].bd=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
       <td><input type="text" inputmode="decimal" value="${p.f}" step=".05" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].f=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.g}" step=".25" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].g=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.g||0}" step=".1" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].g=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
       <td><input type="text" inputmode="decimal" value="${p.a}" step=".05" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].a=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.c}" step=".01" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].c=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.d}" step=".01" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].d=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.k}" step=".1" min="0" max="1" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].k=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.k||1}" step=".1" min="0" max="1" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].k=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
       <td><input type="checkbox" ${p.done?'checked':''} onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].done=this.checked?1:0;touchProj();save();go('fb')"></td>
       <td>${FB.pts.length>2?`<button class="bd-btn" onclick="event.stopPropagation();D('FB').pts.splice(${i},1);touchProj();save();go('fb')">✕</button>`:''}</td>
     </tr>`).join('')}</tbody>
