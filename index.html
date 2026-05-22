@@ -1606,7 +1606,11 @@ function renderVA(){
   const{segs,tot}=vaAll();const VA=D('VA');const mx=Math.max(tot.exc,1);
   const seg=segs[S.selSeg]||segs[0];
   // ── VA-spec integration (rör i olika djup) ──
-  if(VA&&!VA.spec)VA.spec={pipes:[{name:'Vatten',dia:.315,depth:2.5},{name:'Spillvatten',dia:.16,depth:1.8}],bw:1.1,badd:.15};
+  if(VA&&!VA.spec)VA.spec={pipes:[],bw:1.1,badd:.15};
+  // Migrate: if spec.pipes is empty but cfg.pipes has entries, seed from cfg.pipes with staggered depths
+  if(VA&&VA.cfg.pipes.length&&!VA.spec.pipes.length){
+    VA.spec.pipes=VA.cfg.pipes.map((dia,i)=>({name:'DN'+Math.round(dia*1000),dia,depth:Math.max(0.5,2.0-i*0.5)}));
+  }
   const spec=VA?VA.spec:{pipes:[],bw:1.1,badd:.15};
   const specBW=spec.bw||1.1,specBadd=spec.badd||.15;
   const specPipes=[...spec.pipes].map((p,oi)=>({...p,oi})).sort((a,b)=>b.depth-a.depth);
