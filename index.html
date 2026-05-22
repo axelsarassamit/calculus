@@ -410,9 +410,9 @@ let Charts={},modalMode='new';
    DEFAULT DATA TEMPLATES
 ═══════════════════════════════════════════════════════════════ */
 const CFG_EL={spacingI:.05,spacingL:.05,slopeJord:1,slopeBerg:.2,asphalt:.1,veg:.2,sfh:.3,geoType:2,spont:0};
-const CFG_FV={slope:.2,asphalt:.1,veg:.2,geoType:2,spont:0};
-const CFG_FB={slope:.1,asphalt:.1,veg:.2,geoType:2,spont:0};
-const CFG_TR={slope:1,asphalt:.1,veg:.2,geoType:2,spont:0};
+const CFG_FV={slopeJord:1,slopeBerg:.2,asphalt:.1,veg:.2,geoType:2,spont:0};
+const CFG_FB={slopeJord:.5,slopeBerg:.1,asphalt:.1,veg:.2,geoType:2,spont:0};
+const CFG_TR={slopeJord:1,slopeBerg:.2,asphalt:.1,veg:.2,geoType:2,spont:0};
 const CFG_VA={slopeV:.25,slopeH:.2,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,pipes:[.3,.16]};
 const CFG_BUD={
   mask:[{n:'Grävmaskin 20t',r:1800,h:0},{n:'Hjullastare',r:1200,h:0},{n:'Lastbil (schakttransport)',r:900,h:0}],
@@ -692,19 +692,30 @@ function calcSections(pts,cfg,getBW){
     const p1=pts[i],p2=pts[i+1],L=Math.abs(p2.i-p1.i);
     if(L<=0)continue;
     const bw1=getBW(p1),bw2=getBW(p2);
-    const sl=cfg.spont>=2?0:(p1.g||cfg.slope||.5);
+    const slJ=cfg.spont>=2?0:(p1.g||cfg.slopeJord||cfg.slope||.5);
+    const slB=cfg.spont>=2?0:(cfg.slopeBerg||slJ);
     const d1=p1.e+p1.f,d2=p2.e+p2.f;
-    const tw1=bw1+2*d1*sl,tw2=bw2+2*d2*sl;
+    const bd1=Math.min(p1.bd||0,d1),bd2=Math.min(p2.bd||0,d2);
+    // Top width: rock zone uses slopeBerg, soil zone uses slopeJord
+    const tw1=bw1+2*(bd1>0?bd1*slB+(d1-bd1)*slJ:d1*slJ);
+    const tw2=bw2+2*(bd2>0?bd2*slB+(d2-bd2)*slJ:d2*slJ);
     const exc=((bw1+tw1)/2*d1+(bw2+tw2)/2*d2)/2*L;
-    const bd1=p1.bd||0,bd2=p2.bd||0;
-    const kj1=bd1>0?Math.max(0,(d1-bd1)/Math.max(d1,0.001)):(p1.k||1);
-    const kj2=bd2>0?Math.max(0,(d2-bd2)/Math.max(d2,0.001)):(p2.k||1);
-    const jord=exc*(kj1+kj2)/2,berg=exc*(1-(kj1+kj2)/2);
+    // Jord/berg volume split: geometric when bd>0, else use K%
+    let jord,berg;
+    if(bd1>0||bd2>0){
+      const hy1=bw1+2*bd1*slB,hy2=bw2+2*bd2*slB;
+      const excB=((bw1+hy1)/2*bd1+(bw2+hy2)/2*bd2)/2*L;
+      const excJ=((hy1+tw1)/2*(d1-bd1)+(hy2+tw2)/2*(d2-bd2))/2*L;
+      jord=excJ;berg=excB;
+    } else {
+      const kj1=p1.k||1,kj2=p2.k||1;
+      jord=exc*(kj1+kj2)/2;berg=exc*(1-(kj1+kj2)/2);
+    }
     const bed=L*(bw1+bw2)/2*(p1.f+p2.f)/2,bedA=L*(bw1+bw2)/2;
     const ab=(bw1+bw2)/2,ad=(d1+d2)/2,at=(tw1+tw2)/2;
     const sur=Math.max(0,(ab*(p1.a+p2.a)/2-(p1.f+p2.f)/2)*L);
     const rem=Math.max(0,exc-bed-sur);
-    const sLen=Math.sqrt(ad**2+(ad*sl)**2);
+    const sLen=Math.sqrt(ad**2+(ad*slJ)**2);
     let geo=0;if(cfg.geoType===1)geo=L*ab;else if(cfg.geoType>=2)geo=L*(ab+2*sLen+.3);
     segs.push({f:p1.i,t:p2.i,L,ad,ab,at,exc,jord,berg,bed,bedA,sur,rem,geo,aa:cfg.asphalt>0?L*at:0,va:cfg.veg>0?L*at:0,sp:cfg.spont>0?L*ad:0,bal:exc-(bed+sur+rem),bw1,tw1,done:p1.done});
   }
@@ -1338,13 +1349,14 @@ function renderFV(){
     <ul style="margin-top:6px">
       <li><strong>BW</strong> = C (${T('ytterdia tilledning','outer dia supply')}) + D (${T('ytterdia retur','outer dia return')}) + 0.20m</li>
       <li><strong>E</strong> = ${T('schaktdjup per punkt, interpoleras lineärt mellan punkter','excavation depth per point, linearly interpolated between points')}</li>
-      <li><strong>G</strong> = ${T('slant H:1V per punkt — override av konfigurationsvärdet','slope H:1V per point — overrides config value')}</li>
+      <li><strong>G</strong> = ${T('jordslant H:1V per punkt — override av konfigurationen','soil slope H:1V per point — overrides config value')}</li>
       <li><strong>FV-spec</strong>: ${T('djupare/grundare än 1.0m redovisas separat','deeper/shallower than 1.0m reported separately')} → <span class="badge-pill" onclick="go('fvspec')" style="cursor:pointer">FV-spec ›</span></li>
     </ul>
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--d)"></span>${T('Konfiguration','Configuration')}</div>
   <div class="fg">
-    <div class="fi"><label>${T('Slant H:1V (standard)','Slope H:1V (default)')}</label><input type="number" value="${FV.cfg.slope}" step=".25" oninput="D('FV').cfg.slope=+this.value;touchProj();save();go('fv')"></div>
+    <div class="fi"><label>${T('Slant jord H:1V','Soil slope H:1V')}</label><input type="number" value="${FV.cfg.slopeJord??FV.cfg.slope??1}" step=".25" oninput="D('FV').cfg.slopeJord=+this.value;touchProj();save();go('fv')"></div>
+    <div class="fi"><label>${T('Slant berg H:1V','Rock slope H:1V')}</label><input type="number" value="${FV.cfg.slopeBerg??FV.cfg.slope??.2}" step=".1" oninput="D('FV').cfg.slopeBerg=+this.value;touchProj();save();go('fv')"></div>
     <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select oninput="D('FV').cfg.geoType=+this.value;touchProj();save();go('fv')">${[0,1,2,3].map(v=>`<option value="${v}" ${FV.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
     <div class="fi"><label>${T('Spontning','Sheet piling')}</label><select oninput="D('FV').cfg.spont=+this.value;touchProj();save();go('fv')">${[0,1,2].map(v=>`<option value="${v}" ${FV.cfg.spont===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
     <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${FV.cfg.asphalt}" step=".05" oninput="D('FV').cfg.asphalt=+this.value;touchProj();save();go('fv')"></div>
@@ -1420,12 +1432,13 @@ function renderFB(){
       <li><strong>BW</strong> = C (${T('ytterdia 1','outer dia 1')}) + D (${T('ytterdia 2','outer dia 2')}) + 0.20m</li>
       <li><strong>E</strong> = ${T('schaktdjup per punkt','excavation depth per point')}</li>
       <li><strong>F</strong> = ${T('bäddlagrets tjocklek under rörets underkant','bedding layer thickness below pipe bottom')}</li>
-      <li><strong>G</strong> = ${T('slant H:1V — normalt 0.1:1 pga risk för ras mot byggnad','slope H:1V — normally 0.1:1 due to collapse risk against building')}</li>
+      <li><strong>G</strong> = ${T('jordslant H:1V per punkt — normalt 0.1:1 pga risk för ras mot byggnad','soil slope H:1V per point — normally 0.1:1 due to collapse risk')}</li>
     </ul>
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--o)"></span>${T('Konfiguration','Configuration')}</div>
   <div class="fg">
-    <div class="fi"><label>${T('Slant H:1V (standard)','Slope H:1V (default)')}</label><input type="number" value="${FB.cfg.slope}" step=".1" oninput="D('FB').cfg.slope=+this.value;touchProj();save();go('fb')"></div>
+    <div class="fi"><label>${T('Slant jord H:1V','Soil slope H:1V')}</label><input type="number" value="${FB.cfg.slopeJord??FB.cfg.slope??.5}" step=".1" oninput="D('FB').cfg.slopeJord=+this.value;touchProj();save();go('fb')"></div>
+    <div class="fi"><label>${T('Slant berg H:1V','Rock slope H:1V')}</label><input type="number" value="${FB.cfg.slopeBerg??FB.cfg.slope??.1}" step=".1" oninput="D('FB').cfg.slopeBerg=+this.value;touchProj();save();go('fb')"></div>
     <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${FB.cfg.asphalt}" step=".05" oninput="D('FB').cfg.asphalt=+this.value;touchProj();save();go('fb')"></div>
     <div class="fi"><label>${T('Vegetation (m)','Vegetation (m)')}</label><input type="number" value="${FB.cfg.veg}" step=".05" oninput="D('FB').cfg.veg=+this.value;touchProj();save();go('fb')"></div>
     <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select oninput="D('FB').cfg.geoType=+this.value;touchProj();save();go('fb')">${[0,1,2,3].map(v=>`<option value="${v}" ${FB.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
@@ -1507,7 +1520,8 @@ function renderTR(){
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Konfiguration','Configuration')}</div>
   <div class="fg">
-    <div class="fi"><label>${T('Slant H:1V (standard)','Slope H:1V (default)')}</label><input type="number" value="${TR.cfg.slope}" step=".25" oninput="D('TR').cfg.slope=+this.value;touchProj();save();go('tr')"></div>
+    <div class="fi"><label>${T('Slant jord H:1V','Soil slope H:1V')}</label><input type="number" value="${TR.cfg.slopeJord??TR.cfg.slope??1}" step=".25" oninput="D('TR').cfg.slopeJord=+this.value;touchProj();save();go('tr')"></div>
+    <div class="fi"><label>${T('Slant berg H:1V','Rock slope H:1V')}</label><input type="number" value="${TR.cfg.slopeBerg??TR.cfg.slope??.2}" step=".1" oninput="D('TR').cfg.slopeBerg=+this.value;touchProj();save();go('tr')"></div>
     <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${TR.cfg.asphalt}" step=".05" oninput="D('TR').cfg.asphalt=+this.value;touchProj();save();go('tr')"></div>
     <div class="fi"><label>${T('Vegetation (m)','Vegetation (m)')}</label><input type="number" value="${TR.cfg.veg}" step=".05" oninput="D('TR').cfg.veg=+this.value;touchProj();save();go('tr')"></div>
     <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select oninput="D('TR').cfg.geoType=+this.value;touchProj();save();go('tr')">${[0,1,2,3].map(v=>`<option value="${v}" ${TR.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
