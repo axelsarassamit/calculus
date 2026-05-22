@@ -435,7 +435,7 @@ function emptyData(){
     FV:{cfg:{...CFG_FV},pts:[{i:0,e:2,bd:0,f:.15,g:.5,a:.43,c:.125,d:.125,k:1,b:1,done:0},{i:50,e:2,bd:0,f:.15,g:.5,a:.43,c:.125,d:.125,k:1,b:1,done:0}]},
     FB:{cfg:{...CFG_FB},spec:{pipes:[{name:'Vatten',dia:.16,depth:1.5},{name:'Avlopp',dia:.2,depth:2.0}],bw:0.56,badd:.15},pts:[{i:0,e:1.5,bd:0,f:.15,g:.5,a:.5,k:1,done:0},{i:50,e:2,bd:0,f:.15,g:.5,a:.5,k:1,done:0}]},
     TR:{cfg:{...CFG_TR},pts:[{i:0,e:3,bd:0,f:.3,g:1,a:.77,c:.315,d:.315,k:1,b:10,done:0},{i:50,e:3,bd:0,f:.3,g:1,a:.77,c:.315,d:.315,k:1,b:10,done:0}]},
-    VA:{cfg:{...CFG_VA},prices:{...PRC_GLOBAL},spec:{pipes:[{name:'Vatten',dia:.315,depth:2.5,sfh:.5},{name:'Spillvatten',dia:.16,depth:1.8,sfh:.4}],bw:1.1,badd:.15},pts:[{n:0,p:0,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0},{n:50,p:50,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0}]},
+    VA:{cfg:{...CFG_VA},prices:{...PRC_GLOBAL},spec:{pipes:[{name:'Vatten',dia:.315,depth:2.5,sfh:.5},{name:'Spillvatten',dia:.16,depth:1.8,sfh:.4}],bw:1.1,badd:.15},pts:[{n:0,r:1.8,c:0,a:.55,bw:1.1,done:0,doneR:0},{n:50,r:1.8,c:0,a:.55,bw:1.1,done:0,doneR:0}]},
     RL:{vatten:{pipes:[...VPIPES],sections:[]},avlopp:{dagPipes:[...DPIPES],spillPipes:[...SPIPES],dagSections:[]},totUtfort:0,kontrollUtfort:0},
     BUD:{cfg:{mask:[...CFG_BUD.mask.map(m=>({...m}))],arb:[...CFG_BUD.arb.map(a=>({...a}))],mat:0,etab:0,dep_r:65,prod:120,f_berg:5.0,risk:10,oh:12,vinst:8,ofor:5,rot:0,rot_pers:1,rot_max:50000},prices:{...PRC_GLOBAL}}
   };
@@ -488,11 +488,11 @@ function demoData(){
     VA:{cfg:{slopeV:1,slopeH:1,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,badd:.15,pipes:[.3,.16,.35,.25,.35,.315,.2]},spec:{pipes:[{name:'Vatten',dia:.315,depth:2.5,sfh:.5},{name:'Spillvatten',dia:.16,depth:1.8,sfh:.4}],bw:1.1,badd:.15},
       prices:{...PRC_GLOBAL},
       pts:[
-        {n:0, p:0, r:1.8,c:0, d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.7, bw:1.6,done:0,doneR:0},
-        {n:15,p:15,r:1.8,c:0, d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0},
-        {n:30,p:30,r:2.0,c:0, d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0},
-        {n:60,p:60,r:2.1,c:.3,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0},
-        {n:90,p:90,r:2.0,c:0, d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:.95,done:0,doneR:0}
+        {n:0, r:1.8,c:0,  a:.7, bw:1.6, done:0,doneR:0},
+        {n:15,r:1.8,c:0,  a:.55,bw:1.1, done:0,doneR:0},
+        {n:30,r:2.0,c:0,  a:.55,bw:1.1, done:0,doneR:0},
+        {n:60,r:2.1,c:.3, a:.55,bw:1.1, done:0,doneR:0},
+        {n:90,r:2.0,c:0,  a:.55,bw:.95, done:0,doneR:0}
       ]
     },
     RL:{
@@ -594,7 +594,7 @@ const PROJ_COLORS=['#4f46e5','#10b981','#f59e0b','#8b5cf6','#06b6d4'];
 /* ═══════════════════════════════════════════════════════════════
    SVG CROSS-SECTION
 ═══════════════════════════════════════════════════════════════ */
-function svgSection(bw,tw,d,pipes=[],label='',animated=false){
+function svgSection(bw,tw,d,pipes=[],label='',animated=false,badd=0.15,kring=0.4){
   const W=380,H=210,px=44,pt=34;
   const sc=Math.min((W-2*px)/Math.max(tw,.01),(H-pt-24)/Math.max(d,.01));
   const cx=W/2,gy=pt,by=gy+d*sc;
@@ -607,14 +607,14 @@ function svgSection(bw,tw,d,pipes=[],label='',animated=false){
     let px2=cx-totW/2;
     pipes.forEach((dia,i)=>{
       const r=Math.max(3,dia*sc/2);
-      const cy=by-r-.04*sc;
+      const cy=by-badd*sc-r-.02*sc;
       pipeSVG+=`<circle cx="${(px2+r).toFixed(1)}" cy="${cy.toFixed(1)}" r="${r.toFixed(1)}" fill="${pipeC[i%pipeC.length]}" opacity=".8" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>
       <text x="${(px2+r).toFixed(1)}" y="${(cy+r+10).toFixed(1)}" text-anchor="middle" font-size="7" fill="rgba(255,255,255,.5)" font-family="Inter,sans-serif">Ø${(dia*1000).toFixed(0)}</text>`;
       px2+=dia*sc+sp*sc;
     });
   }
-  const beddH=Math.max(6,0.15*sc);
-  const kringH=Math.max(8,0.4*sc);
+  const beddH=Math.max(6,badd*sc);
+  const kringH=Math.max(8,kring*sc);
   const anim=animated?'style="transition:all .4s ease"':'';
   const slope=d>0?(tw-bw)/(2*d):0;
   const slopeLabel=slope>0.01?`1:${slope.toFixed(1)}`:'';
@@ -649,7 +649,7 @@ function svgSection(bw,tw,d,pipes=[],label='',animated=false){
   <text x="${cx}" y="${(by+16).toFixed(1)}" text-anchor="middle" font-size="10" fill="#fbbf24" font-family="Inter,sans-serif" font-weight="700">BW ${bw.toFixed(2)}m</text>
   <!-- D label -->
   <line x1="${(cx+hbw+8).toFixed(1)}" y1="${gy}" x2="${(cx+hbw+8).toFixed(1)}" y2="${by.toFixed(1)}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
-  <text x="${(cx+hbw+14).toFixed(1)}" y="${((gy+by)/2).toFixed(1)}" font-size="10" fill="#94a3b8" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">D ${d.toFixed(2)}m</text>
+  <text x="${(cx+hbw+14).toFixed(1)}" y="${((gy+by)/2).toFixed(1)}" font-size="10" fill="#94a3b8" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">E ${d.toFixed(2)}m</text>
   <!-- Slope annotation -->
   ${slopeLabel?`<line x1="${(cx+hbw).toFixed(1)}" y1="${by.toFixed(1)}" x2="${(cx+htw).toFixed(1)}" y2="${gy}" stroke="#c084fc" stroke-width="1.2" stroke-dasharray="4,3" opacity=".6"/>
   <text x="${wallMidX.toFixed(1)}" y="${wallMidY.toFixed(1)}" font-size="9" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600" dominant-baseline="middle">${slopeLabel}</text>`:''}
@@ -661,14 +661,14 @@ function svgSection(bw,tw,d,pipes=[],label='',animated=false){
 }
 
 /* Asymmetric cross-section: left wall vertical (building), right wall sloped */
-function svgSectionFB(bw,tw,d,specPipes=[],slJ=0.5,label=''){
+function svgSectionFB(bw,tw,d,specPipes=[],slJ=0.5,label='',badd=0.15,kring=0.4){
   const W=380,H=220,lx=62,pt=34,rm=20;
   const maxD=Math.max(d,...specPipes.map(p=>p.depth||0),0.1);
   const sc=Math.min((W-lx-rm)/Math.max(tw,bw,.01),(H-pt-30)/maxD);
   const gy=pt,by=gy+d*sc;
   const bwPx=bw*sc,twPx=tw*sc;
   const pipeC=['#6366f1','#06b6d4','#10b981','#f59e0b','#ef4444','#8b5cf6'];
-  const beddH=Math.max(6,0.15*sc);
+  const beddH=Math.max(6,badd*sc);
   // Building wall texture (left side)
   let bldg='';
   for(let yy=gy;yy<by+4;yy+=6)bldg+=`<line x1="${lx-12}" y1="${yy.toFixed(0)}" x2="${lx}" y2="${(yy+6).toFixed(0)}" stroke="#f97316" stroke-width="1.5" opacity=".7"/>`;
@@ -705,7 +705,7 @@ function svgSectionFB(bw,tw,d,specPipes=[],slJ=0.5,label=''){
   <!-- Trench: left vertical, right sloped -->
   <polygon points="${lx},${gy} ${(lx+twPx).toFixed(1)},${gy} ${(lx+bwPx).toFixed(1)},${by.toFixed(1)} ${lx},${by.toFixed(1)}" fill="rgba(15,20,40,.92)" stroke="rgba(99,102,241,.5)" stroke-width="1.5"/>
   <!-- Kring zone -->
-  <polygon points="${lx},${(by-beddH-Math.max(8,0.4*sc)).toFixed(1)} ${(lx+bwPx).toFixed(1)},${(by-beddH-Math.max(8,0.4*sc)).toFixed(1)} ${(lx+bwPx).toFixed(1)},${(by-beddH).toFixed(1)} ${lx},${(by-beddH).toFixed(1)}" fill="rgba(6,182,212,.2)" stroke="rgba(6,182,212,.3)" stroke-width=".5"/>
+  <polygon points="${lx},${(by-beddH-Math.max(8,kring*sc)).toFixed(1)} ${(lx+bwPx).toFixed(1)},${(by-beddH-Math.max(8,kring*sc)).toFixed(1)} ${(lx+bwPx).toFixed(1)},${(by-beddH).toFixed(1)} ${lx},${(by-beddH).toFixed(1)}" fill="rgba(6,182,212,.2)" stroke="rgba(6,182,212,.3)" stroke-width=".5"/>
   <!-- Bädd -->
   <rect x="${lx}" y="${(by-beddH).toFixed(1)}" width="${bwPx.toFixed(1)}" height="${beddH.toFixed(1)}" fill="rgba(245,158,11,.55)" stroke="rgba(245,158,11,.4)" stroke-width=".5" rx="1"/>
   ${pipeSVG}
@@ -713,7 +713,7 @@ function svgSectionFB(bw,tw,d,specPipes=[],slJ=0.5,label=''){
   <text x="${(lx+bwPx/2).toFixed(1)}" y="${(by+16).toFixed(1)}" text-anchor="middle" font-size="10" fill="#fbbf24" font-family="Inter,sans-serif" font-weight="700">BW ${bw.toFixed(2)}m</text>
   <!-- D label -->
   <line x1="${(lx+twPx+6).toFixed(1)}" y1="${gy}" x2="${(lx+twPx+6).toFixed(1)}" y2="${by.toFixed(1)}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
-  <text x="${(lx+twPx+12).toFixed(1)}" y="${midY.toFixed(1)}" font-size="10" fill="#94a3b8" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">D ${d.toFixed(2)}m</text>
+  <text x="${(lx+twPx+12).toFixed(1)}" y="${midY.toFixed(1)}" font-size="10" fill="#94a3b8" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">E ${d.toFixed(2)}m</text>
   <!-- Slope annotation -->
   <line x1="${(lx+bwPx).toFixed(1)}" y1="${by.toFixed(1)}" x2="${(lx+twPx).toFixed(1)}" y2="${gy}" stroke="#c084fc" stroke-width="1.5" stroke-dasharray="4,3" opacity=".7"/>
   <text x="${(lx+bwPx+slopePx/2+4).toFixed(1)}" y="${(gy+by)/2+4}" font-size="9" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600">1:${slJ}</text>
@@ -782,7 +782,8 @@ function calcSections(pts,cfg,getBW,sideMult=2){
     // Jord/berg volume split: geometric when bd>0, else use K%
     let jord,berg;
     if(bd1>0||bd2>0){
-      const hy1=bw1+2*bd1*slB,hy2=bw2+2*bd2*slB;
+      // Use sideMult so FB (one-sided) only widens on the open side
+      const hy1=bw1+sideMult*bd1*slB,hy2=bw2+sideMult*bd2*slB;
       const excB=((bw1+hy1)/2*bd1+(bw2+hy2)/2*bd2)/2*L;
       const excJ=((hy1+tw1)/2*(d1-bd1)+(hy2+tw2)/2*(d2-bd2))/2*L;
       jord=excJ;berg=excB;
@@ -792,7 +793,8 @@ function calcSections(pts,cfg,getBW,sideMult=2){
     }
     const bed=L*(bw1+bw2)/2*(p1.f+p2.f)/2,bedA=L*(bw1+bw2)/2;
     const ab=(bw1+bw2)/2,ad=(d1+d2)/2,at=(tw1+tw2)/2;
-    const sur=Math.max(0,(ab*(p1.a+p2.a)/2-(p1.f+p2.f)/2)*L);
+    // Kring volume: BW × (avg kring zone height − avg badd thickness) × L
+    const sur=Math.max(0,ab*((p1.a+p2.a)/2-(p1.f+p2.f)/2)*L);
     const rem=Math.max(0,exc-bed-sur);
     const sLen=Math.sqrt(ad**2+(ad*slJ)**2);
     let geo=0;if(cfg.geoType===1)geo=L*ab;else if(cfg.geoType>=2)geo=L*(ab+2*sLen+.3);
@@ -1369,7 +1371,7 @@ function renderEL(){
   </div>
   <div class="cg2">
     <div class="cd"><div class="ct"><span class="dot" style="background:#6366f1"></span>${T('Tvärsnitt — valt segment','Cross-section — selected segment')} ${S.selSeg+1}</div>
-      <div class="svg-box" id="el-svg">${seg?svgSection(seg.bw1,seg.tw1,seg.ad,pipes):T('Inga segment','No segments')}</div>
+      <div class="svg-box" id="el-svg">${seg?(()=>{const bh=seg.bed/Math.max(seg.ab*seg.L,.001),kh=seg.sur/Math.max(seg.ab*seg.L,.001);return svgSection(seg.ab,seg.at,seg.ad,pipes,'',false,bh,kh);})():T('Inga segment','No segments')}</div>
     </div>
     <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Volymfördelning','Volume split')}</div>
       <div class="ch-wrap"><canvas id="ch-el-pie"></canvas></div></div>
@@ -1424,22 +1426,29 @@ function updateSegSVG(){
     const seg=segs[S.selSeg];if(!seg)return;
     const pt=EL.pts[S.selSeg]||EL.pts[0];
     const pipes=[];for(let i=0;i<pt.n50;i++)pipes.push(.05);for(let i=0;i<pt.n110;i++)pipes.push(.11);for(let i=0;i<pt.n160;i++)pipes.push(.16);
-    const el=document.getElementById('el-svg');if(el)el.innerHTML=svgSection(seg.bw1,seg.tw1,seg.ad,pipes,'',true);
+    const badd_h=seg.bed/Math.max(seg.ab*seg.L,0.001),kring_h=seg.sur/Math.max(seg.ab*seg.L,0.001);
+    const el=document.getElementById('el-svg');if(el)el.innerHTML=svgSection(seg.ab,seg.at,seg.ad,pipes,'',true,badd_h,kring_h);
   }else if(p==='fv'){
-    const {segs}=fvAll();const seg=segs[S.selSeg];if(!seg)return;
-    const el=document.getElementById('fv-svg');if(el)el.innerHTML=svgSection(seg.bw1,seg.tw1,seg.ad,[.125,.125],'',true);
+    const {segs}=fvAll();const FV=D('FV');const seg=segs[S.selSeg];if(!seg)return;
+    const fvPt=FV.pts[S.selSeg]||FV.pts[0];
+    const fvPipes=[fvPt.c||.125,fvPt.d||.125];
+    const badd_h=seg.bed/Math.max(seg.ab*seg.L,0.001),kring_h=seg.sur/Math.max(seg.ab*seg.L,0.001);
+    const el=document.getElementById('fv-svg');if(el)el.innerHTML=svgSection(seg.ab,seg.at,seg.ad,fvPipes,'',true,badd_h,kring_h);
   }else if(p==='fb'){
     const {segs}=fbAll();const FB=D('FB');const seg=segs[S.selSeg];if(!seg)return;
     const fbSps=FB.spec?.pipes||[];const fbSlJ=FB.cfg.slopeJord||1;
-    const el=document.getElementById('fb-svg');if(el)el.innerHTML=svgSectionFB(seg.bw1,seg.tw1,seg.ad,fbSps,fbSlJ,'');
+    const badd_h=seg.bed/Math.max(seg.ab*seg.L,0.001),kring_h=seg.sur/Math.max(seg.ab*seg.L,0.001);
+    const el=document.getElementById('fb-svg');if(el)el.innerHTML=svgSectionFB(seg.ab,seg.at,seg.ad,fbSps,fbSlJ,'',badd_h,kring_h);
   }else if(p==='tr'){
     const {segs}=trAll();const TR=D('TR');const seg=segs[S.selSeg];if(!seg)return;
     const pt=TR.pts[S.selSeg]||TR.pts[0];
-    const el=document.getElementById('tr-svg');if(el)el.innerHTML=svgSection(seg.bw1,seg.tw1,seg.ad,[pt.c,pt.d],'',true);
+    const badd_h=seg.bed/Math.max(seg.ab*seg.L,0.001),kring_h=seg.sur/Math.max(seg.ab*seg.L,0.001);
+    const el=document.getElementById('tr-svg');if(el)el.innerHTML=svgSection(seg.ab,seg.at,seg.ad,[pt.c,pt.d],'',true,badd_h,kring_h);
   }else if(p==='va'){
     const {segs}=vaAll();const VA2=D('VA');const seg=segs[S.selSeg];if(!seg)return;
     const vaPipes=(VA2.spec?.pipes||[]).map(p=>p.dia);
-    const el=document.getElementById('va-svg');if(el)el.innerHTML=svgSection(seg.ab||seg.bw||VA2.spec?.bw||1,seg.tw||seg.ab||1,seg.ad||2,vaPipes,'',true);
+    const badd_h=seg.bed/Math.max(seg.ab*seg.L,0.001),kring_h=seg.sur/Math.max(seg.ab*seg.L,0.001);
+    const el=document.getElementById('va-svg');if(el)el.innerHTML=svgSection(seg.ab,seg.at||seg.ab,seg.ad||2,vaPipes,'',true,badd_h,kring_h);
   }
 }
 
@@ -1451,6 +1460,8 @@ function renderFV(){
   const{segs,tot}=fvAll();const FV=D('FV');
   const mx=Math.max(tot.exc,1);
   const seg=segs[S.selSeg]||segs[0];
+  const fvPt=FV.pts[S.selSeg]||FV.pts[0]||{};
+  const fvPipes=[fvPt.c||.125,fvPt.d||.125];
   return`<div>
   <div class="ph"><h2>🔥 ${T('Fjärrvärme','District Heating')}</h2>
   <div class="sub">${T('Isolerade parledningar. Bottenbredd beräknas automatiskt. Klicka rad för tvärsnitt.','Insulated twin pipes. Bottom width auto-calculated. Click row to preview.')}</div></div>
@@ -1481,7 +1492,7 @@ function renderFV(){
   </div>
   <div class="cg2">
     <div class="cd"><div class="ct"><span class="dot" style="background:#ef4444"></span>${T('Tvärsnitt — segment','Cross-section — segment')} ${S.selSeg+1}</div>
-      <div class="svg-box" id="fv-svg">${seg?svgSection(seg.bw1,seg.tw1,seg.ad,[.125,.125],'FV-ledning'):T('–','–')}</div></div>
+      <div class="svg-box" id="fv-svg">${seg?(()=>{const bh=seg.bed/Math.max(seg.ab*seg.L,.001),kh=seg.sur/Math.max(seg.ab*seg.L,.001);return svgSection(seg.ab,seg.at,seg.ad,fvPipes,'FV-ledning',false,bh,kh);})():T('–','–')}</div></div>
     <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Volymfördelning','Volume split')}</div>
       <div class="ch-wrap"><canvas id="ch-fv-pie"></canvas></div></div>
   </div>
@@ -1624,7 +1635,7 @@ function renderFB(){
   </div>
   <div class="cg2">
     <div class="cd"><div class="ct"><span class="dot" style="background:#f97316"></span>${T('Tvärsnitt — segment','Cross-section — segment')} ${S.selSeg+1}</div>
-      <div class="svg-box" id="fb-svg">${seg?svgSectionFB(seg.bw1,seg.tw1,seg.ad,sps,slJ,'FB'):T('–','–')}</div></div>
+      <div class="svg-box" id="fb-svg">${seg?(()=>{const bh=seg.bed/Math.max(seg.ab*seg.L,.001),kh=seg.sur/Math.max(seg.ab*seg.L,.001);return svgSectionFB(seg.ab,seg.at,seg.ad,sps,slJ,'',bh,kh);})():T('–','–')}</div></div>
     <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Volymfördelning','Volume split')}</div>
       <div class="ch-wrap"><canvas id="ch-fb-pie"></canvas></div></div>
   </div>
@@ -1705,7 +1716,7 @@ function renderTR(){
   </div>
   <div class="cg2">
     <div class="cd"><div class="ct"><span class="dot" style="background:#06b6d4"></span>${T('Tvärsnitt — segment','Cross-section — segment')} ${S.selSeg+1}</div>
-      <div class="svg-box" id="tr-svg">${seg?svgSection(seg.bw1,seg.tw1,seg.ad,[trPipe1,trPipe2],'Trumma DN'+Math.round(trPipe1*1000)):T('–','–')}</div></div>
+      <div class="svg-box" id="tr-svg">${seg?(()=>{const bh=seg.bed/Math.max(seg.ab*seg.L,.001),kh=seg.sur/Math.max(seg.ab*seg.L,.001);return svgSection(seg.ab,seg.at,seg.ad,[trPipe1,trPipe2],'Trumma DN'+Math.round(trPipe1*1000),false,bh,kh);})():T('–','–')}</div></div>
     <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Volymfördelning','Volume split')}</div>
       <div class="ch-wrap"><canvas id="ch-tr-pie"></canvas></div></div>
   </div>
