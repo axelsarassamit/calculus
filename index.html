@@ -745,7 +745,7 @@ function elAll(){
     const tw1=c.spont>=2?bw1:Math.max(tw1J,tw1B||0);
     const tw2=c.spont>=2?bw2:Math.max(tw2J,tw2B||0);
     const jordV=((bw1+tw1J)/2*p1.e+(bw2+tw2J)/2*p2.e)/2*L;
-    const bergV=(p1.d>0?(bw1+tw1B)/2*p1.d:0+p2.d>0?(bw2+tw2B)/2*p2.d:0)/2*L;
+    const bergV=((p1.d>0?(bw1+tw1B)/2*p1.d:0)+(p2.d>0?(bw2+tw2B)/2*p2.d:0))/2*L;
     const excV=jordV+bergV;
     const ab=(bw1+bw2)/2,at=(tw1+tw2)/2,ad=(p1.e+p1.d+p2.e+p2.d)/2;
     const bed=L*ab*c.sfh,bedA=L*ab;
@@ -817,27 +817,30 @@ function vaAll(){
     const p1=VA.pts[i],p2=VA.pts[i+1],L=Math.abs(p2.n-p1.n);
     if(L<=0)continue;
     if(!(p1.r>0)||!(p2.r>0))continue; // skip if either endpoint has no soil depth
-    const bw=p1.bw||1.1;
-    const d1=p1.r+p1.d+p1.e+c.rb+p1.a,d2=p2.r+p2.d+p2.e+c.rb+p2.a;
+    const bw=((p1.bw||1.1)+(p2.bw||1.1))/2;
+    // AMA: Schaktdjup E = Jorddjup R + Bergdjup C. Kring/badd are sub-zones within E, not extra depth.
+    const d1=p1.r+(p1.c||0),d2=p2.r+(p2.c||0);
     const slV=c.spont>=2?0:(p1.f||c.slopeV),slH=c.spont>=2?0:(p1.h||c.slopeH);
-    const bd1=Math.min(p1.c||0,d1),bd2=Math.min(p2.c||0,d2);
+    // Rock occupies the bottom bd metres; soil occupies the remaining (d - bd) above
+    const bd1=p1.c||0,bd2=p2.c||0;
     // Symmetric two-slope geometry: rock zone uses slopeH, soil zone slopeV
     const tw1=bw+2*(bd1>0?bd1*slH+(d1-bd1)*slV:d1*slV);
     const tw2=bw+2*(bd2>0?bd2*slH+(d2-bd2)*slV:d2*slV);
-    const exc=((bw+tw1)/2*d1+(bw+tw2)/2*d2)/2*L;
     // Jord/berg split: geometric when bd>0, else K% fraction
-    let jord,berg;
+    let exc,jord,berg;
     if(bd1>0||bd2>0){
       const hy1=bw+2*bd1*slH,hy2=bw+2*bd2*slH;
       const excB=((bw+hy1)/2*bd1+(bw+hy2)/2*bd2)/2*L;
       const excJ=((hy1+tw1)/2*(d1-bd1)+(hy2+tw2)/2*(d2-bd2))/2*L;
-      jord=excJ;berg=excB;
+      exc=excB+excJ;jord=excJ;berg=excB;
     } else {
+      exc=((bw+tw1)/2*d1+(bw+tw2)/2*d2)/2*L;
       const frac=(p1.c||0)/Math.max(p1.r||d1,0.001);
       jord=exc*(1-frac);berg=Math.max(0,exc*frac);
     }
     const bed=L*bw*(SET?.baddDefault??c.badd??0.15),bedA=L*bw;
-    const sur=Math.max(0,bw*c.sfh*L-bed),remA=Math.max(0,exc-bed-sur);
+    const avgA=(p1.a+p2.a)/2;
+    const sur=Math.max(0,bw*avgA*L-bed),remA=Math.max(0,exc-bed-sur);
     const ad=(d1+d2)/2,at=(tw1+tw2)/2;
     const avgSl=(slV+slH)/2,sLen=Math.sqrt(ad**2+(ad*avgSl)**2);
     let geo=0;if(c.geoType===1)geo=L*bw;else if(c.geoType>=2)geo=L*(bw+2*sLen+.3);
@@ -2022,41 +2025,56 @@ function renderVA(){
 function renderFVSpec(){
   if(!curProj())return emptyProj();
   const{segs,tot}=fvAll();
-  const deep=segs.filter(s=>s.ad>1),shallow=segs.filter(s=>s.ad<=1);
-  const dJord=deep.reduce((s,x)=>s+x.jord,0),sJord=shallow.reduce((s,x)=>s+x.jord,0);
-  const dBerg=deep.reduce((s,x)=>s+x.berg,0);
-  const dLen=deep.reduce((s,x)=>s+x.L,0),sLen=shallow.reduce((s,x)=>s+x.L,0);
+  // MER DCB.111: three depth classes — ≤1.0m, 1.0–2.0m, >2.0m
+  const cls=(s)=>s.ad<=1?0:s.ad<=2?1:2;
+  const shallow=segs.filter(s=>cls(s)===0),mid=segs.filter(s=>cls(s)===1),vdeep=segs.filter(s=>cls(s)===2);
+  const r=(arr,k)=>arr.reduce((a,s)=>a+s[k],0);
+  const clsLabel=(s)=>s.ad<=1?'≤1.0m':s.ad<=2?'1–2m':'>2.0m';
+  const clsColor=(s)=>s.ad<=1?'var(--s)':s.ad<=2?'var(--d)':'#ef4444';
+  const clsMERCode=(s)=>s.ad<=1?'DCB.1111':s.ad<=2?'DCB.1112':'DCB.1113';
   return`<div>
   <div class="ph"><h2>📋 FV-spec — ${T('Djupspecifikation','Depth specification')}</h2>
-  <div class="sub">${T('Uppdelning av FV-schakt per djup (>1.0m / ≤1.0m) enligt MER.','FV excavation split by depth (>1.0m / ≤1.0m) per MER rules.')}</div></div>
-  <div class="infobox"><h4>ℹ️ ${T('MER-krav för djupspecifikation','MER requirements for depth specification')}</h4>
-    ${T('MER kräver separat redovisning av schakt djupare och grundare än 1.0m. Automatisk beräkning baseras på medeldjupet per segment.','MER requires separate reporting of excavation deeper and shallower than 1.0m. Automatic calculation based on average depth per segment.')}</div>
-  <div class="cg2">
-    <div class="cd" style="border-left:4px solid var(--d)"><div class="ct"><span class="dot" style="background:var(--d)"></span>${T('Djupt schakt > 1.0m','Deep excavation > 1.0m')}</div>
+  <div class="sub">${T('Uppdelning av FV-schakt per djupklass enligt MER Anläggning DCB.111.','FV excavation split by depth class per MER Anläggning DCB.111.')}</div></div>
+  <div class="infobox"><h4>ℹ️ ${T('MER Anläggning — djupklasser DCB.111','MER Anläggning — depth classes DCB.111')}</h4>
+    <p>${T('Schaktdjup (E) = rörbottendjup + bädd. Tre klasser per MER:','Excavation depth (E) = pipe invert depth + bedding. Three classes per MER:')}</p>
+    <ul style="margin-top:4px">
+      <li><strong>DCB.1111</strong> — E ≤ 1.0 m</li>
+      <li><strong>DCB.1112</strong> — 1.0 m &lt; E ≤ 2.0 m</li>
+      <li><strong>DCB.1113</strong> — E &gt; 2.0 m</li>
+    </ul>
+  </div>
+  <div class="mg" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px">
+    <div class="cd" style="border-left:4px solid var(--s)"><div class="ct" style="font-size:12px"><span class="dot" style="background:var(--s)"></span>DCB.1111 ≤ 1.0m</div>
       <div class="mg" style="margin-bottom:0">
-        ${mc(dLen.toFixed(0),T('Längd','Length'),'m','c2',pct(dLen,tot.l))}
-        ${mc(dJord.toFixed(1),T('Jordschakt','Soil exc.'),'m³','c2',pct(dJord,tot.jord))}
-        ${mc(dBerg.toFixed(1),T('Bergschakt','Rock exc.'),'m³','c2',pct(dBerg,tot.berg))}
+        ${mc(r(shallow,'L').toFixed(0),T('Längd','Length'),'m','c4',pct(r(shallow,'L'),tot.l))}
+        ${mc(r(shallow,'jord').toFixed(1),T('Jordschakt','Soil exc.'),'m³','c4',pct(r(shallow,'jord'),tot.jord||1))}
+        ${mc(r(shallow,'berg').toFixed(1),T('Berg','Rock'),'m³','c2',pct(r(shallow,'berg'),tot.berg||1))}
       </div></div>
-    <div class="cd" style="border-left:4px solid var(--s)"><div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Grunt schakt ≤ 1.0m','Shallow excavation ≤ 1.0m')}</div>
+    <div class="cd" style="border-left:4px solid var(--d)"><div class="ct" style="font-size:12px"><span class="dot" style="background:var(--d)"></span>DCB.1112 1–2m</div>
       <div class="mg" style="margin-bottom:0">
-        ${mc(sLen.toFixed(0),T('Längd','Length'),'m','c4',pct(sLen,tot.l))}
-        ${mc(sJord.toFixed(1),T('Jordschakt','Soil exc.'),'m³','c4',pct(sJord,tot.jord))}
-        ${mc((tot.sur).toFixed(1),T('Kringfyllning','Surr.fill'),'m³','c4',50)}
+        ${mc(r(mid,'L').toFixed(0),T('Längd','Length'),'m','c2',pct(r(mid,'L'),tot.l))}
+        ${mc(r(mid,'jord').toFixed(1),T('Jordschakt','Soil exc.'),'m³','c2',pct(r(mid,'jord'),tot.jord||1))}
+        ${mc(r(mid,'berg').toFixed(1),T('Berg','Rock'),'m³','c2',pct(r(mid,'berg'),tot.berg||1))}
+      </div></div>
+    <div class="cd" style="border-left:4px solid #ef4444"><div class="ct" style="font-size:12px"><span class="dot" style="background:#ef4444"></span>DCB.1113 &gt; 2.0m</div>
+      <div class="mg" style="margin-bottom:0">
+        ${mc(r(vdeep,'L').toFixed(0),T('Längd','Length'),'m','c2',pct(r(vdeep,'L'),tot.l))}
+        ${mc(r(vdeep,'jord').toFixed(1),T('Jordschakt','Soil exc.'),'m³','c2',pct(r(vdeep,'jord'),tot.jord||1))}
+        ${mc(r(vdeep,'berg').toFixed(1),T('Berg','Rock'),'m³','c2',pct(r(vdeep,'berg'),tot.berg||1))}
       </div></div>
   </div>
   <div class="cg2">
-    <div class="cd"><div class="ct"><span class="dot" style="background:var(--p)"></span>${T('Längdfördelning djup','Length split by depth')}</div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--p)"></span>${T('Längdfördelning djupklass','Length by depth class')}</div>
       <div class="ch-wrap"><canvas id="ch-fvs-depth"></canvas></div></div>
-    <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Volymfördelning djup','Volume split by depth')}</div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Volymfördelning djupklass','Volume by depth class')}</div>
       <div class="ch-wrap"><canvas id="ch-fvs-vol"></canvas></div></div>
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:#8b5cf6"></span>${T('Segment per djupklass','Segments by depth class')}</div>
   <div class="tbl-wrap"><table class="dt">
-    <thead><tr><th>${T('Från','From')}</th><th>${T('Till','To')}</th><th>L(m)</th><th>${T('Medeldjup','Avg depth')}</th><th>${T('Klass','Class')}</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th></tr></thead>
+    <thead><tr><th>${T('Från','From')}</th><th>${T('Till','To')}</th><th>L(m)</th><th>E(m)</th><th>${T('MER-kod','MER code')}</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th></tr></thead>
     <tbody>${segs.map(s=>`<tr>
       <td>${s.f}</td><td>${s.t}</td><td>${s.L.toFixed(1)}</td><td>${s.ad.toFixed(2)}</td>
-      <td><span style="font-weight:700;color:${s.ad>1?'var(--d)':'var(--s)'}">${s.ad>1?'>1.0m':'≤1.0m'}</span></td>
+      <td><span style="font-weight:700;color:${clsColor(s)}">${clsMERCode(s)}</span></td>
       <td class="num">${s.jord.toFixed(2)}</td><td class="num">${s.berg.toFixed(2)}</td>
       <td class="num">${s.bed.toFixed(2)}</td><td class="num">${s.sur.toFixed(2)}</td>
     </tr>`).join('')}</tbody>
@@ -2888,9 +2906,10 @@ function renderCharts(){
     }
   }else if(p==='fvspec'){
     const{segs,tot}=fvAll();
-    const deep=segs.filter(s=>s.ad>1),shallow=segs.filter(s=>s.ad<=1);
-    mkPie('ch-fvs-depth',[T('Djup > 1.0m','Deep > 1.0m'),T('Grunt ≤ 1.0m','Shallow ≤ 1.0m')],[deep.reduce((s,x)=>s+x.L,0),shallow.reduce((s,x)=>s+x.L,0)],['#ef4444','#10b981']);
-    mkPie('ch-fvs-vol',[T('Jord >1m','Soil >1m'),T('Jord ≤1m','Soil ≤1m'),T('Berg','Rock'),T('Bädd','Bed'),T('Kring','Surr')],[deep.reduce((s,x)=>s+x.jord,0),shallow.reduce((s,x)=>s+x.jord,0),tot.berg,tot.bed,tot.sur],['#ef4444','#10b981','#8b5cf6','#f59e0b','#06b6d4']);
+    const r3=(arr,k)=>arr.reduce((a,s)=>a+s[k],0);
+    const sh=segs.filter(s=>s.ad<=1),mi=segs.filter(s=>s.ad>1&&s.ad<=2),vd=segs.filter(s=>s.ad>2);
+    mkPie('ch-fvs-depth',[T('DCB.1111 ≤1m','DCB.1111 ≤1m'),T('DCB.1112 1–2m','DCB.1112 1–2m'),T('DCB.1113 >2m','DCB.1113 >2m')],[r3(sh,'L'),r3(mi,'L'),r3(vd,'L')],['#10b981','#f59e0b','#ef4444']);
+    mkPie('ch-fvs-vol',[T('Jord ≤1m','Soil ≤1m'),T('Jord 1-2m','Soil 1-2m'),T('Jord >2m','Soil >2m'),T('Berg','Rock'),T('Bädd','Bed'),T('Kring','Surr')],[r3(sh,'jord'),r3(mi,'jord'),r3(vd,'jord'),tot.berg,tot.bed,tot.sur],['#10b981','#f59e0b','#ef4444','#8b5cf6','#d97706','#06b6d4']);
   }else if(p==='rl'){
     const RL=D('RL');
     const vTotals=RL.vatten.pipes.map((_,pi)=>RL.vatten.sections.reduce((s,sec)=>s+(sec.counts[pi]||0)*sec.len,0));
