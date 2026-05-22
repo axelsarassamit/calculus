@@ -1705,11 +1705,11 @@ function renderVA(){
     } else {
       sps.forEach((p,i)=>{
         h+='<tr>'
-          +'<td><input type="text" value="'+p.name+'" onchange="D('VA').spec.pipes['+i+'].name=this.value;touchProj();save();go('va')"></td>'
-          +'<td><input type="number" value="'+Math.round(p.dia*1000)+'" step="1" min="20" style="width:70px" onchange="const d=D('VA');d.spec.pipes['+i+'].dia=+this.value/1000;d.cfg.pipes['+i+']=+this.value/1000;touchProj();save();go('va')"></td>'
-          +'<td><input type="text" inputmode="decimal" value="'+p.depth+'" style="width:70px" onchange="D('VA').spec.pipes['+i+'].depth=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('va')"></td>'
+          +'<td><input type="text" value="'+p.name+'" onchange="D(\'VA\').spec.pipes['+i+'].name=this.value;touchProj();save();go(\'va\')"></td>'
+          +'<td><input type="number" value="'+Math.round(p.dia*1000)+'" step="1" min="20" style="width:70px" onchange="const d=D(\'VA\');d.spec.pipes['+i+'].dia=+this.value/1000;d.cfg.pipes['+i+']=+this.value/1000;touchProj();save();go(\'va\')"></td>'
+          +'<td><input type="text" inputmode="decimal" value="'+p.depth+'" style="width:70px" onchange="D(\'VA\').spec.pipes['+i+'].depth=parseFloat(this.value.replace(\',\',\'.\'))||0;touchProj();save();go(\'va\')"></td>'
           +'<td class="num" style="color:var(--i);font-weight:700">'+(p.dia+SET.kringAMA).toFixed(3)+'</td>'
-          +'<td>'+(sps.length>1?'<button class="bd-btn" onclick="event.stopPropagation();const d=D('VA');d.spec.pipes.splice('+i+',1);d.cfg.pipes.splice('+i+',1);touchProj();save();go('va')">&#x2715;</button>':'')+'</td>'
+          +'<td>'+(sps.length>1?'<button class="bd-btn" onclick="event.stopPropagation();const d=D(\'VA\');d.spec.pipes.splice('+i+',1);d.cfg.pipes.splice('+i+',1);touchProj();save();go(\'va\')">&#x2715;</button>':'')+'</td>'
           +'</tr>';
       });
     }
@@ -1718,24 +1718,24 @@ function renderVA(){
     h+='<div class="va-pb-label" style="margin-top:10px">⚡ '+T('Snabbval — klicka för att lägga till','Quick-add — click to add')+'</div><div class="va-pipe-quick">';
     [50,63,75,90,110,125,160,200,250,315,400,500,600,800].forEach(mm=>{
       const dia=(mm/1000).toFixed(3);
-      h+='<button class="va-pipe-btn" onclick="const d=D('VA');const dep=d.spec.pipes.length?Math.max(...d.spec.pipes.map(x=>x.depth))-0.5:2.0;d.spec.pipes.push({name:'DN'+mm+'',dia:'+dia+',depth:Math.max(0.5,dep)});d.cfg.pipes.push('+dia+');touchProj();save();go('va')">DN '+mm+'</button>';
+      h+='<button class="va-pipe-btn" onclick="const d=D(\'VA\');const dep=d.spec.pipes.length?Math.max(...d.spec.pipes.map(x=>x.depth))-0.5:2.0;d.spec.pipes.push({name:\'DN'+mm+'\',dia:'+dia+',depth:Math.max(0.5,dep)});d.cfg.pipes.push('+dia+');touchProj();save();go(\'va\')">DN '+mm+'</button>';
     });
     h+='</div>';
     // Custom DN input
     h+='<div class="va-custom-row">'
       +'<input id="va-cust-mm" type="number" placeholder="'+T('Eget DN (mm)','Custom DN (mm)')+'" min="20" max="2000" step="1"'
-      +' onkeydown="if(event.key==='Enter'){const v=+document.getElementById('va-cust-mm').value;if(v>0){const d=D('VA');const dep=d.spec.pipes.length?Math.max(...d.spec.pipes.map(x=>x.depth))-0.5:2.0;d.spec.pipes.push({name:'DN'+v,dia:+(v/1000).toFixed(3),depth:Math.max(0.5,dep)});d.cfg.pipes.push(+(v/1000).toFixed(3));touchProj();save();go('va');}}">'
-      +'<button class="btn bp" onclick="const v=+document.getElementById('va-cust-mm').value;if(v>0){const d=D('VA');const dep=d.spec.pipes.length?Math.max(...d.spec.pipes.map(x=>x.depth))-0.5:2.0;d.spec.pipes.push({name:'DN'+v,dia:+(v/1000).toFixed(3),depth:Math.max(0.5,dep)});d.cfg.pipes.push(+(v/1000).toFixed(3));touchProj();save();go('va')}">+ '+T('Eget mått','Custom')+'</button>'
-      +'<button class="btn bs" onclick="const d=D('VA');d.spec.pipes=[];d.cfg.pipes=[];touchProj();save();go('va')" style="color:var(--d)">'+T('Rensa alla','Clear all')+'</button>'
+      +' onkeydown="if(event.key===\'Enter\'){const v=+document.getElementById(\'va-cust-mm\').value;if(v>0){const d=D(\'VA\');const dep=d.spec.pipes.length?Math.max(...d.spec.pipes.map(x=>x.depth))-0.5:2.0;d.spec.pipes.push({name:\'DN\'+v,dia:+(v/1000).toFixed(3),depth:Math.max(0.5,dep)});d.cfg.pipes.push(+(v/1000).toFixed(3));touchProj();save();go(\'va\');}}">'
+      +'<button class="btn bp" onclick="const v=+document.getElementById(\'va-cust-mm\').value;if(v>0){const d=D(\'VA\');const dep=d.spec.pipes.length?Math.max(...d.spec.pipes.map(x=>x.depth))-0.5:2.0;d.spec.pipes.push({name:\'DN\'+v,dia:+(v/1000).toFixed(3),depth:Math.max(0.5,dep)});d.cfg.pipes.push(+(v/1000).toFixed(3));touchProj();save();go(\'va\')}">+ '+T('Eget mått','Custom')+'</button>'
+      +'<button class="btn bs" onclick="const d=D(\'VA\');d.spec.pipes=[];d.cfg.pipes=[];touchProj();save();go(\'va\')" style="color:var(--d)">'+T('Rensa alla','Clear all')+'</button>'
       +'</div>';
     // BW / Badd / Kring row
     h+='<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11px;border-top:1px solid var(--bd);margin-top:10px;padding-top:8px">'
       +'<label style="color:var(--ts)">BW (m):</label>'
-      +'<input type="number" value="'+specBW+'" step=".05" min=".1" style="width:64px" onchange="D('VA').spec.bw=+this.value;touchProj();save();go('va')">'
+      +'<input type="number" value="'+specBW+'" step=".05" min=".1" style="width:64px" onchange="D(\'VA\').spec.bw=+this.value;touchProj();save();go(\'va\')">'
       +'<label style="color:var(--ts)">'+T('Bädd (m):','Bed (m):')+'</label>'
-      +'<input type="number" value="'+specBadd+'" step=".05" min="0" style="width:64px" onchange="D('VA').spec.badd=+this.value;touchProj();save();go('va')">'
+      +'<input type="number" value="'+specBadd+'" step=".05" min="0" style="width:64px" onchange="D(\'VA\').spec.badd=+this.value;touchProj();save();go(\'va\')">'
       +'<span style="color:var(--ts);margin-left:4px">'+T('Kring ovan kron:','Surr. above crown:')+' <strong style="color:var(--i)">'+SET.kringAMA*100+' cm</strong> (AMA)'
-      +' · <span onclick="go('settings')" style="cursor:pointer;color:var(--a);text-decoration:underline">'+T('Ändra i inställningar','Change in settings')+'</span></span>'
+      +' \xb7 <span onclick="go(\'settings\')" style="cursor:pointer;color:var(--a);text-decoration:underline">'+T('Ändra i inställningar','Change in settings')+'</span></span>'
       +'</div>';
     return h;
   })()}
