@@ -412,9 +412,9 @@ let Charts={},modalMode='new';
 ═══════════════════════════════════════════════════════════════ */
 const CFG_EL={spacingI:.05,spacingL:.05,slopeJord:1,slopeBerg:.2,asphalt:.1,veg:.2,sfh:.3,geoType:2,spont:0};
 const CFG_FV={slopeJord:1,slopeBerg:.2,asphalt:.1,veg:.2,geoType:2,spont:0};
-const CFG_FB={slopeJord:.5,slopeBerg:.1,asphalt:.1,veg:.2,sfh:.3,geoType:2,spont:0};
+const CFG_FB={slopeJord:1,slopeBerg:1,asphalt:.1,veg:.2,sfh:.3,geoType:2,spont:0};
 const CFG_TR={slopeJord:1,slopeBerg:.2,asphalt:.1,veg:.2,geoType:2,spont:0};
-const CFG_VA={slopeV:.25,slopeH:.2,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,badd:.15,pipes:[.3,.16]};
+const CFG_VA={slopeV:1,slopeH:1,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,badd:.15,pipes:[.3,.16]};
 const CFG_BUD={
   mask:[{n:'Grävmaskin 20t',r:1800,h:0},{n:'Hjullastare',r:1200,h:0},{n:'Lastbil (schakttransport)',r:900,h:0}],
   arb:[{n:'Maskinist',r:420,h:0},{n:'Grovarbetare',r:340,h:0},{n:'Arbetsledare',r:580,h:0}],
@@ -483,7 +483,7 @@ function demoData(){
       {i:90, e:2.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
       {i:100,e:2.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0}
     ]},
-    VA:{cfg:{slopeV:.25,slopeH:.2,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,badd:.15,pipes:[.3,.16,.35,.25,.35,.315,.2]},spec:{pipes:[{name:'Vatten',dia:.315,depth:2.5,sfh:.5},{name:'Spillvatten',dia:.16,depth:1.8,sfh:.4}],bw:1.1,badd:.15},
+    VA:{cfg:{slopeV:1,slopeH:1,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,badd:.15,pipes:[.3,.16,.35,.25,.35,.315,.2]},spec:{pipes:[{name:'Vatten',dia:.315,depth:2.5,sfh:.5},{name:'Spillvatten',dia:.16,depth:1.8,sfh:.4}],bw:1.1,badd:.15},
       prices:{...PRC_GLOBAL},
       pts:[
         {n:0, p:0, r:1.8,c:0, d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.7, bw:1.6,done:0,doneR:0},
