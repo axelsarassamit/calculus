@@ -825,7 +825,8 @@ function vaAll(){
     const bw=((p1.bw||1.1)+(p2.bw||1.1))/2;
     // AMA: Schaktdjup E = Jorddjup R + Bergdjup C. Kring/badd are sub-zones within E, not extra depth.
     const d1=p1.r+(p1.c||0),d2=p2.r+(p2.c||0);
-    const slV=c.spont>=2?0:(p1.f||c.slopeV),slH=c.spont>=2?0:(p1.h||c.slopeH);
+    // Always use global cfg slopes — p1.f/p1.h are legacy fields and not exposed in UI
+    const slV=c.spont>=2?0:c.slopeV,slH=c.spont>=2?0:c.slopeH;
     // Rock occupies the bottom bd metres; soil occupies the remaining (d - bd) above
     const bd1=p1.c||0,bd2=p2.c||0;
     // Symmetric two-slope geometry: rock zone uses slopeH, soil zone slopeV
@@ -1784,14 +1785,17 @@ function renderVA(){
   const specTotalH=specLayers.reduce((s,l)=>s+l.h,0);
   const specKLs=specLayers.filter(l=>l.type==='kring');
   const specSnitth=specKLs.length?specKLs.reduce((s,l)=>s+l.h,0)/specKLs.length:0;
-  // Build spec SVG — same dark style as svgSection(), string concat avoids nested template literals
+  // Build spec SVG — use actual selected segment geometry (not spec pipe depth)
   const svgW2=380,svgH2=210,svgPx2=44,svgPt2=34;
   const svgSlJ2=VA?VA.cfg.slopeV||0:0;
-  const svgMaxD2=specPipes.length?Math.max(...specPipes.map(p=>p.depth))+Math.max(...specPipes.map(p=>p.dia))/2+0.2:Math.max(specTotalH,0.5);
-  const svgTwM2=specBW+2*svgSlJ2*svgMaxD2;
+  // Use the selected profile segment's actual trench depth and BW for a true cross-section
+  const selSeg2=segs[Math.min(S.selSeg,segs.length-1)];
+  const svgMaxD2=selSeg2?selSeg2.ad:Math.max(specTotalH,0.5);
+  const svgBW2=selSeg2?selSeg2.bw:specBW;
+  const svgTwM2=selSeg2?selSeg2.at:(svgBW2+2*svgSlJ2*svgMaxD2);
   const svgSc2=Math.min((svgW2-2*svgPx2)/Math.max(svgTwM2,0.01),(svgH2-svgPt2-24)/Math.max(svgMaxD2,0.01));
   const svgCx2=svgW2/2,svgGy2=svgPt2,svgBy2=svgGy2+svgMaxD2*svgSc2;
-  const svgHbw2=specBW*svgSc2/2,svgHtw2=svgTwM2*svgSc2/2;
+  const svgHbw2=svgBW2*svgSc2/2,svgHtw2=svgTwM2*svgSc2/2;
   const svgBeddH2=Math.max(6,specTotBadd*svgSc2);
   const svgKringH2=Math.max(8,specTotKring*svgSc2);
   const svgPC2=['#6366f1','#06b6d4','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#f97316'];
@@ -1832,10 +1836,10 @@ function renderVA(){
     +'<line x1="'+(svgCx2-svgHtw2+2).toFixed(1)+'" y1="'+(svgGy2+10).toFixed(1)+'" x2="'+(svgCx2+svgHtw2-2).toFixed(1)+'" y2="'+(svgGy2+10).toFixed(1)+'" stroke="#c084fc" stroke-width="1" marker-end="url(#a)"/>'
     +'<text x="'+svgCx2+'" y="'+(svgGy2-6)+'" text-anchor="middle" font-size="10" fill="#c084fc" font-family="Inter,sans-serif" font-weight="700">TW '+svgTwM2.toFixed(2)+'m</text>'
     // BW label
-    +'<text x="'+svgCx2+'" y="'+(svgBy2+16).toFixed(1)+'" text-anchor="middle" font-size="10" fill="#fbbf24" font-family="Inter,sans-serif" font-weight="700">BW '+specBW+'m</text>'
+    +'<text x="'+svgCx2+'" y="'+(svgBy2+16).toFixed(1)+'" text-anchor="middle" font-size="10" fill="#fbbf24" font-family="Inter,sans-serif" font-weight="700">BW '+svgBW2.toFixed(2)+'m</text>'
     // D label (right side vertical ruler)
     +'<line x1="'+(svgCx2+svgHbw2+8).toFixed(1)+'" y1="'+svgGy2+'" x2="'+(svgCx2+svgHbw2+8).toFixed(1)+'" y2="'+svgBy2.toFixed(1)+'" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>'
-    +'<text x="'+(svgCx2+svgHbw2+14).toFixed(1)+'" y="'+((svgGy2+svgBy2)/2).toFixed(1)+'" font-size="10" fill="#94a3b8" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">D '+svgMaxD2.toFixed(2)+'m</text>'
+    +'<text x="'+(svgCx2+svgHbw2+14).toFixed(1)+'" y="'+((svgGy2+svgBy2)/2).toFixed(1)+'" font-size="10" fill="#94a3b8" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">E '+svgMaxD2.toFixed(2)+'m</text>'
     // Layer labels (left of BW zone)
     +'<text x="'+(svgCx2-svgHbw2-4).toFixed(1)+'" y="'+(svgBy2-svgBeddH2/2).toFixed(1)+'" text-anchor="end" font-size="8" fill="#fbbf24" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">Bädd</text>'
     +'<text x="'+(svgCx2-svgHbw2-4).toFixed(1)+'" y="'+(svgBy2-svgBeddH2-svgKringH2/2).toFixed(1)+'" text-anchor="end" font-size="8" fill="#06b6d4" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">Kring</text>'
