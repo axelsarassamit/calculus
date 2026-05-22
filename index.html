@@ -1859,20 +1859,25 @@ function renderVASpec(){
   const bwPx=Math.min((svgW-2*margin)*.5,110);
   const cx=svgW/2;
   let svgParts='',yy=10;
+  // Fill bands spanning full trench width (no pipes in this loop)
   for(const l of [...layers].reverse()){
     const lh=Math.max(l.h*pxM,2);
-    svgParts+=`<rect x="${(cx-bwPx/2).toFixed(1)}" y="${yy.toFixed(1)}" width="${bwPx}" height="${lh.toFixed(1)}" fill="${l.col}" opacity=".85"/>`;
-    if(l.h>0.08){
+    svgParts+=`<rect x="${(cx-bwPx/2).toFixed(1)}" y="${yy.toFixed(1)}" width="${bwPx}" height="${lh.toFixed(1)}" fill="${l.col}" opacity=".8"/>`;
+    if(l.h>0.1){
       const label=l.type==='badd'?T('Bädd','Bed'):l.type==='kring'?'Kring':'Rest';
       svgParts+=`<text x="${cx}" y="${(yy+lh/2+3.5).toFixed(1)}" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">${label} ${l.h.toFixed(2)}m</text>`;
     }
-    if(l.pipe){
-      const pR=Math.min(l.pipe.dia/2*pxM,bwPx/2-3);
-      const pY=yy+SET.kringAMA*pxM+pR;
-      svgParts+=`<circle cx="${cx}" cy="${pY.toFixed(1)}" r="${pR.toFixed(1)}" fill="#1e3a8a" opacity=".9" stroke="#93c5fd" stroke-width="1.5"/>`;
-      svgParts+=`<text x="${(cx+pR+5).toFixed(1)}" y="${(pY+3).toFixed(1)}" font-size="8" fill="var(--ts)">DN${Math.round(l.pipe.dia*1000)}</text>`;
-    }
     yy+=lh;
+  }
+  // Draw pipes SIDE BY SIDE at their actual depths — evenly spaced horizontally
+  const n=pipes.length||1;
+  for(let pi=0;pi<pipes.length;pi++){
+    const p=pipes[pi];
+    const px=cx-bwPx/2+(pi+.5)/n*bwPx;   // horizontal: evenly spaced L→R
+    const py=10+p.depth*pxM;               // vertical: actual depth from road
+    const pR=Math.min(Math.max(p.dia/2*pxM,4),bwPx/(2*n)-2);
+    svgParts+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${pR.toFixed(1)}" fill="#1e3a8a" opacity=".95" stroke="#93c5fd" stroke-width="1.5"/>`;
+    svgParts+=`<text x="${px.toFixed(1)}" y="${(py+pR+10).toFixed(1)}" text-anchor="middle" font-size="8" fill="var(--ts)" font-weight="600">DN${Math.round(p.dia*1000)}</text>`;
   }
   const svgOut=`<svg width="${svgW}" height="${svgH}" style="display:block;margin:0 auto">
     <rect x="${(cx-bwPx/2).toFixed(1)}" y="8" width="${bwPx}" height="${(yy-8).toFixed(1)}" fill="none" stroke="var(--bd)" stroke-width="2" rx="1"/>
@@ -1883,10 +1888,10 @@ function renderVASpec(){
   </svg>`;
 
   return`<div>
-  <div class="ph"><h2>📐 VA-spec — ${T('Rör i olika djup','Pipes at different depths')}</h2>
-  <div class="sub">${T('Kring- och restfyllning per rörledning när rör i samma schakt ligger på skilda höjder.','Surround and rest fill per pipe when pipes in the same trench lie at different elevations.')}</div></div>
+  <div class="ph"><h2>📐 VA-spec — ${T('Rör i samma schakt, olika djup','Pipes in shared trench, different depths')}</h2>
+  <div class="sub">${T('Rör ligger bredvid varandra (inte ovanpå) men på olika djup. Beräknar kring- och restfyllning lager för lager.','Pipes lie side by side (not stacked) but at different depths. Calculates surround and rest fill layer by layer.')}</div></div>
   <div class="infobox"><h4>ℹ️ ${T('Beräkningsprincip','Calculation principle')}</h4>
-    <p>${T('Varje rör ges en separat kringfyllningszon (= rördiameter + kring ovan krön). Restfyllning beräknas automatiskt i mellanzonerna och ovan det grundaste röret. Djup anges till rörcentrum (m.c.) från vägyta.','Each pipe gets a separate surround fill zone (= pipe diameter + surround above crown). Rest fill is computed automatically for gaps between zones and above the shallowest pipe. Depth is to pipe centreline (c/l) from road surface.')}</p>
+    <p>${T('Används när rörledningar i samma schakt ligger bredvid varandra men på olika djup (t.ex. vatten och spillvatten). Rören ligger inte ovanpå varandra — de är placerade sida vid sida i schaktet men på olika nivåer. Varje rör får sin egen kringfyllningszon. Restfyllning fyller automatiskt mellanzonerna och zonen ovan det grundaste röret.','Use when pipes in the same trench lie side by side but at different depths (e.g. water and sewer). Pipes are not stacked on top of each other — they sit next to each other in the trench but at different elevations. Each pipe gets its own surround fill zone. Rest fill automatically fills the gaps between zones and above the deepest pipe.')}</p>
     <ul style="margin-top:6px">
       <li><strong>m.c.</strong> = ${T('djup till rörcentrum från vägyta','depth to pipe centreline from road surface')}</li>
       <li><strong>${T('Kring ovan kron','Surr. above crown')}</strong> = <strong>${SET.kringAMA*100} cm</strong> — ${T('AMA-standard, automatiskt för alla rör. Ändra under','AMA standard, applied automatically to all pipes. Change under')} <span class="badge-pill" onclick="go('settings')" style="cursor:pointer">⚙️ ${T('Inställningar','Settings')}</span></li>
@@ -1916,7 +1921,7 @@ function renderVASpec(){
     <thead><tr>
       <th>${T('Rörnamn','Pipe name')}</th>
       <th>${T('Dim (mm)','Dim (mm)')}</th>
-      <th>${T('Djup m.c. (m)','Depth c/l (m)')}</th>
+      <th title="${T('Djup från vägyta till rörcentrum. Rören ligger bredvid varandra på sina respektive djup.','Depth from road surface to pipe centreline. Pipes lie side by side, each at its own depth.')}">${T('Djup m.c. (m)','Depth c/l (m)')} <span style="opacity:.5">ℹ</span></th>
       <th>${T('Kringzon höjd (m)','Zone height (m)')}</th>
       <th></th>
     </tr></thead>
