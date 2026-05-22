@@ -431,9 +431,9 @@ const SPIPES=['315mm','160mm','110mm'];
 function emptyData(){
   return{
     EL:{cfg:{...CFG_EL},pts:[{w:0,e:1.2,d:0,h:1,n50:0,n110:2,n160:0,k:1,done:0},{w:50,e:1.2,d:0,h:1,n50:0,n110:2,n160:0,k:1,done:0}]},
-    FV:{cfg:{...CFG_FV},pts:[{i:0,e:2,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0},{i:50,e:2,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0}]},
-    FB:{cfg:{...CFG_FB},pts:[{i:0,e:1.5,f:.15,g:.5,a:.5,c:.2,d:.1,k:1,b:10,done:0},{i:50,e:2,f:.15,g:.5,a:.5,c:.35,d:.2,k:1,b:10,done:0}]},
-    TR:{cfg:{...CFG_TR},pts:[{i:0,e:3,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},{i:50,e:3,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0}]},
+    FV:{cfg:{...CFG_FV},pts:[{i:0,e:2,bd:0,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0},{i:50,e:2,bd:0,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0}]},
+    FB:{cfg:{...CFG_FB},pts:[{i:0,e:1.5,bd:0,f:.15,g:.5,a:.5,c:.2,d:.1,k:1,b:10,done:0},{i:50,e:2,bd:0,f:.15,g:.5,a:.5,c:.35,d:.2,k:1,b:10,done:0}]},
+    TR:{cfg:{...CFG_TR},pts:[{i:0,e:3,bd:0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},{i:50,e:3,bd:0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0}]},
     VA:{cfg:{...CFG_VA},prices:{...PRC_GLOBAL},pts:[{n:0,p:0,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0},{n:50,p:50,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0}]},
     RL:{vatten:{pipes:[...VPIPES],sections:[]},avlopp:{dagPipes:[...DPIPES],spillPipes:[...SPIPES],dagSections:[]},totUtfort:0,kontrollUtfort:0},
     BUD:{cfg:{mask:[...CFG_BUD.mask.map(m=>({...m}))],arb:[...CFG_BUD.arb.map(a=>({...a}))],mat:0,etab:0,dep_r:65,prod:120,f_berg:5.0,risk:10,oh:12,vinst:8,ofor:5,rot:0,rot_pers:1,rot_max:50000},prices:{...PRC_GLOBAL}}
@@ -696,7 +696,10 @@ function calcSections(pts,cfg,getBW){
     const d1=p1.e+p1.f,d2=p2.e+p2.f;
     const tw1=bw1+2*d1*sl,tw2=bw2+2*d2*sl;
     const exc=((bw1+tw1)/2*d1+(bw2+tw2)/2*d2)/2*L;
-    const jord=exc*(p1.k||1),berg=exc*(1-(p1.k||1));
+    const bd1=p1.bd||0,bd2=p2.bd||0;
+    const kj1=bd1>0?Math.max(0,(d1-bd1)/Math.max(d1,0.001)):(p1.k||1);
+    const kj2=bd2>0?Math.max(0,(d2-bd2)/Math.max(d2,0.001)):(p2.k||1);
+    const jord=exc*(kj1+kj2)/2,berg=exc*(1-(kj1+kj2)/2);
     const bed=L*(bw1+bw2)/2*(p1.f+p2.f)/2,bedA=L*(bw1+bw2)/2;
     const ab=(bw1+bw2)/2,ad=(d1+d2)/2,at=(tw1+tw2)/2;
     const sur=Math.max(0,(ab*(p1.a+p2.a)/2-(p1.f+p2.f)/2)*L);
@@ -1260,7 +1263,7 @@ function renderEL(){
     <span style="margin-left:auto;font-size:9px;font-weight:400;text-transform:none;color:var(--ts)">${T('Klicka rad = visa tvärsnitt','Click row = show section')}</span>
   </div>
   <div class="tbl-wrap"><table class="dt">
-    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Djup jord','Soil depth')}</th><th>D ${T('Djup berg','Rock depth')}</th><th>H ${T('Täckn.','Cover')}</th><th>⌀50</th><th>⌀110</th><th>⌀160</th><th>K%</th><th>✓</th><th></th></tr></thead>
+    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Jorddjup','Soil depth')}</th><th>D ${T('Bergdjup','Rock depth')}</th><th>H ${T('Täckn.','Cover')}</th><th>⌀50</th><th>⌀110</th><th>⌀160</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>
     ${EL.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.w}" step="5" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].w=+this.value;touchProj();save();go('el')"></td>
@@ -1368,10 +1371,11 @@ function renderFV(){
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Profilpunkter — klicka rad för tvärsnitt','Profile points — click row for section')}</div>
   <div class="tbl-wrap"><table class="dt">
-    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Djup','Depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia tilledn.','Supply dia')}</th><th>D ${T('Dia retur','Return dia')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
+    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Jorddjup','Soil depth')}</th><th>D ${T('Bergdjup','Rock depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia tilledn.','Supply dia')}</th><th>${T('Dia retur','Return dia')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>${FV.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].i=+this.value;touchProj();save();go('fv')"></td>
       <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.bd||0}" step=".1" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].bd=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
       <td><input type="text" inputmode="decimal" value="${p.f}" step=".05" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].f=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
       <td><input type="text" inputmode="decimal" value="${p.g}" step=".25" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].g=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
       <td><input type="text" inputmode="decimal" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].a=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
@@ -1450,10 +1454,11 @@ function renderFB(){
     <span style="margin-left:auto;font-size:9px;color:var(--ts);font-weight:400;text-transform:none">${T('I=Station · E=Schaktdjup · F=Bäddtjocklek · G=Slant · A=Kringh. · C/D=Rördim · K=Jordfraktion','I=Station · E=Exc.depth · F=Bed thickness · G=Slope · A=Surr.h · C/D=Pipe diam · K=Soil fraction')}</span>
   </div>
   <div class="tbl-wrap"><table class="dt">
-    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Djup','Depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia 1','Dia 1')}</th><th>D ${T('Dia 2','Dia 2')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
+    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Jorddjup','Soil depth')}</th><th>D ${T('Bergdjup','Rock depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia 1','Dia 1')}</th><th>${T('Dia 2','Dia 2')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>${FB.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].i=+this.value;touchProj();save();go('fb')"></td>
       <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.bd||0}" step=".1" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].bd=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
       <td><input type="text" inputmode="decimal" value="${p.f}" step=".05" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].f=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
       <td><input type="text" inputmode="decimal" value="${p.g}" step=".25" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].g=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
       <td><input type="text" inputmode="decimal" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].a=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
@@ -1531,10 +1536,11 @@ function renderTR(){
     <span style="margin-left:auto;font-size:9px;color:var(--ts);font-weight:400;text-transform:none">${T('I=Station · E=Schaktdjup · F=Bäddtjocklek · G=Slant · A=Kringh. · C/D=Rördim','I=Station · E=Exc.depth · F=Bed thickness · G=Slope · A=Surr.h · C/D=Pipe diam')}</span>
   </div>
   <div class="tbl-wrap"><table class="dt">
-    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Djup','Depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia 1','Dia 1')}</th><th>D ${T('Dia 2','Dia 2')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
+    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Jorddjup','Soil depth')}</th><th>D ${T('Bergdjup','Rock depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia 1','Dia 1')}</th><th>${T('Dia 2','Dia 2')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>${TR.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].i=+this.value;touchProj();save();go('tr')"></td>
       <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.bd||0}" step=".1" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].bd=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
       <td><input type="text" inputmode="decimal" value="${p.f}" step=".05" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].f=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
       <td><input type="text" inputmode="decimal" value="${p.g}" step=".25" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].g=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
       <td><input type="text" inputmode="decimal" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].a=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
@@ -1692,7 +1698,7 @@ function renderVA(){
     <span style="margin-left:auto;font-size:9px;font-weight:400;text-transform:none;color:var(--ts)">${T('Klicka rad = visa tvärsnitt','Click row = show section')}</span>
   </div>
   <div class="tbl-wrap"><table class="dt">
-    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>R ${T('Djup','Depth')}</th><th>C ${T('Bergdj.','Rock d.')}</th><th>BW</th><th>A ${T('Kring','Surr.')}</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th><th>✓</th><th></th></tr></thead>
+    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>R ${T('Jorddjup','Soil depth')}</th><th>D ${T('Bergdjup','Rock depth')}</th><th>BW</th><th>A ${T('Kring','Surr.')}</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th><th>✓</th><th></th></tr></thead>
     <tbody>${VA.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.n}" step="5" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].n=+this.value;touchProj();save();go('va')"></td>
       <td><input type="text" inputmode="decimal" value="${p.r}" step=".1" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].r=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('va')"></td>
