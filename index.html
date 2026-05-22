@@ -1745,49 +1745,48 @@ function renderVA(){
     <div class="va-cfg-group">
       <div class="va-cfg-group-title">📐 ${T('Schaktgeometri','Excavation geometry')}</div>
       <div class="fi"><label title="${T('Schaktslant i jord. H:1V = horisontell per vertikal meter. Typvärde 0.2–0.5','Slope in soil. H:1V = horizontal per vertical metre. Typical 0.2–0.5')}">${T('Slant jord H:1V','Soil slope H:1V')} <span style="opacity:.5">ℹ</span></label>
-        <input type="number" value="${VA2.cfg.slopeV}" step=".05" min="0" max="2" onchange="D('VA').cfg.slopeV=+this.value;touchProj();save();go('va')"></div>
+        <input type="number" value="${VA.cfg.slopeV}" step=".05" min="0" max="2" onchange="D('VA').cfg.slopeV=+this.value;touchProj();save();go('va')"></div>
       <div class="fi"><label title="${T('Schaktslant i berg/hård mark. Typvärde 0.1–0.2','Slope in rock/hard ground. Typical 0.1–0.2')}">${T('Slant berg H:1V','Rock slope H:1V')} <span style="opacity:.5">ℹ</span></label>
-        <input type="number" value="${VA2.cfg.slopeH}" step=".05" min="0" max="2" onchange="D('VA').cfg.slopeH=+this.value;touchProj();save();go('va')"></div>
+        <input type="number" value="${VA.cfg.slopeH}" step=".05" min="0" max="2" onchange="D('VA').cfg.slopeH=+this.value;touchProj();save();go('va')"></div>
       <div class="fi"><label>${T('Vägbredd (m)','Road width (m)')}</label>
-        <input type="number" value="${VA2.cfg.roadW}" step=".5" min="0" onchange="D('VA').cfg.roadW=+this.value;touchProj();save();go('va')"></div>
+        <input type="number" value="${VA.cfg.roadW}" step=".5" min="0" onchange="D('VA').cfg.roadW=+this.value;touchProj();save();go('va')"></div>
       <div class="fi"><label title="${T('Bäddlagrets tjocklek under rörbotten. AMA-standard 0.10–0.20 m','Bedding layer thickness below pipe bottom. AMA standard 0.10–0.20 m')}">${T('Bädd (m)','Bedding (m)')} <span style="opacity:.5">ℹ</span></label>
-        <input type="number" value="${VA2.cfg.badd??0.15}" step=".05" min="0" onchange="D('VA').cfg.badd=+this.value;touchProj();save();go('va')"></div>
+        <input type="number" value="${VA.cfg.badd??0.15}" step=".05" min="0" onchange="D('VA').cfg.badd=+this.value;touchProj();save();go('va')"></div>
     </div>
 
     <div class="va-cfg-group">
       <div class="va-cfg-group-title">🏗️ ${T('Överbyggnad','Road surface')}</div>
       <div class="fi"><label title="${T('Asfalt- och beläggningsdjup. Typvärde 0.08–0.14 m','Asphalt/pavement depth. Typical 0.08–0.14 m')}">${T('Asfaltdjup (m)','Asphalt depth (m)')} <span style="opacity:.5">ℹ</span></label>
-        <input type="number" value="${VA2.cfg.asphalt}" step=".01" min="0" onchange="D('VA').cfg.asphalt=+this.value;touchProj();save();go('va')"></div>
+        <input type="number" value="${VA.cfg.asphalt}" step=".01" min="0" onchange="D('VA').cfg.asphalt=+this.value;touchProj();save();go('va')"></div>
       <div class="fi"><label>${T('Vegetationsskikt (m)','Vegetation layer (m)')}</label>
-        <input type="number" value="${VA2.cfg.veg}" step=".05" min="0" onchange="D('VA').cfg.veg=+this.value;touchProj();save();go('va')"></div>
+        <input type="number" value="${VA.cfg.veg}" step=".05" min="0" onchange="D('VA').cfg.veg=+this.value;touchProj();save();go('va')"></div>
       <div class="fi"><label title="${T('Höjd på kringfyllning ovan rörtoppyta. AMA typvärde 0.3–0.6 m','Height of surround fill above pipe crown. AMA typical 0.3–0.6 m')}">${T('Kringfyllningshöjd (m)','Surround fill height (m)')} <span style="opacity:.5">ℹ</span></label>
-        <input type="number" value="${VA2.cfg.sfh}" step=".05" min="0" onchange="D('VA').cfg.sfh=+this.value;touchProj();save();go('va')"></div>
+        <input type="number" value="${VA.cfg.sfh}" step=".05" min="0" onchange="D('VA').cfg.sfh=+this.value;touchProj();save();go('va')"></div>
     </div>
 
     <div class="va-cfg-group">
       <div class="va-cfg-group-title">🪨 ${T('Markförhållanden','Ground conditions')}</div>
       <div class="fi"><label>${T('Geotextiltyp','Geotextile type')}</label>
         <select onchange="D('VA').cfg.geoType=+this.value;touchProj();save();go('va')">
-          <option value="0" ${VA2.cfg.geoType===0?'selected':''}>Typ 0 — ${T('Ingen','None')}</option>
-          <option value="1" ${VA2.cfg.geoType===1?'selected':''}>Typ 1 — ${T('Enkel','Single layer')}</option>
-          <option value="2" ${VA2.cfg.geoType===2?'selected':''}>Typ 2 — ${T('Dubbel (standard)','Double (standard)')}</option>
-          <option value="3" ${VA2.cfg.geoType===3?'selected':''}>Typ 3 — ${T('Tung/special','Heavy/special')}</option>
+          <option value="0" ${VA.cfg.geoType===0?'selected':''}>Typ 0 — ${T('Ingen','None')}</option>
+          <option value="1" ${VA.cfg.geoType===1?'selected':''}>Typ 1 — ${T('Enkel','Single layer')}</option>
+          <option value="2" ${VA.cfg.geoType===2?'selected':''}>Typ 2 — ${T('Dubbel (standard)','Double (standard)')}</option>
+          <option value="3" ${VA.cfg.geoType===3?'selected':''}>Typ 3 — ${T('Tung/special','Heavy/special')}</option>
         </select></div>
       <div class="fi"><label>${T('Spontning','Sheet piling')}</label>
         <select onchange="D('VA').cfg.spont=+this.value;touchProj();save();go('va')">
-          <option value="0" ${VA2.cfg.spont===0?'selected':''}>Typ 0 — ${T('Ingen spontning','No sheet piling')}</option>
-          <option value="1" ${VA2.cfg.spont===1?'selected':''}>Typ 1 — ${T('Enkel spontning','Single sheet piling')}</option>
-          <option value="2" ${VA2.cfg.spont===2?'selected':''}>Typ 2 — ${T('Dubbel spontning','Double sheet piling')}</option>
+          <option value="0" ${VA.cfg.spont===0?'selected':''}>Typ 0 — ${T('Ingen spontning','No sheet piling')}</option>
+          <option value="1" ${VA.cfg.spont===1?'selected':''}>Typ 1 — ${T('Enkel spontning','Single sheet piling')}</option>
+          <option value="2" ${VA.cfg.spont===2?'selected':''}>Typ 2 — ${T('Dubbel spontning','Double sheet piling')}</option>
         </select></div>
       <div class="fi"><label>${T('Rustbädd','Foundation bedding')}</label>
         <select onchange="D('VA').cfg.rb=+this.value;touchProj();save();go('va')">
-          <option value="0" ${VA2.cfg.rb===0?'selected':''}>0 — ${T('Ingen rustbädd','No foundation bed')}</option>
-          <option value="1" ${VA2.cfg.rb===1?'selected':''}>1 — ${T('Rustbädd ingår','Foundation bed included')}</option>
+          <option value="0" ${VA.cfg.rb===0?'selected':''}>0 — ${T('Ingen rustbädd','No foundation bed')}</option>
+          <option value="1" ${VA.cfg.rb===1?'selected':''}>1 — ${T('Rustbädd ingår','Foundation bed included')}</option>
         </select></div>
     </div>
 
-  </div>`;
-  })()}
+  </div>
   </div>
   ${pcBar(tot.done,tot.total,T('Utfört VA-schakt','VA completed'))}
 
