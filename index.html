@@ -432,9 +432,9 @@ const SPIPES=['315mm','160mm','110mm'];
 function emptyData(){
   return{
     EL:{cfg:{...CFG_EL},pts:[{w:0,e:1.2,d:0,h:1,n50:0,n110:2,n160:0,k:1,done:0},{w:50,e:1.2,d:0,h:1,n50:0,n110:2,n160:0,k:1,done:0}]},
-    FV:{cfg:{...CFG_FV},pts:[{i:0,e:2,bd:0,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0},{i:50,e:2,bd:0,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0}]},
+    FV:{cfg:{...CFG_FV},pts:[{i:0,e:2,bd:0,f:.15,g:.5,a:.43,c:.125,d:.125,k:1,b:1,done:0},{i:50,e:2,bd:0,f:.15,g:.5,a:.43,c:.125,d:.125,k:1,b:1,done:0}]},
     FB:{cfg:{...CFG_FB},spec:{pipes:[{name:'Vatten',dia:.16,depth:1.5},{name:'Avlopp',dia:.2,depth:2.0}],bw:0.56,badd:.15},pts:[{i:0,e:1.5,bd:0,f:.15,g:.5,a:.5,k:1,done:0},{i:50,e:2,bd:0,f:.15,g:.5,a:.5,k:1,done:0}]},
-    TR:{cfg:{...CFG_TR},pts:[{i:0,e:3,bd:0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},{i:50,e:3,bd:0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0}]},
+    TR:{cfg:{...CFG_TR},pts:[{i:0,e:3,bd:0,f:.3,g:1,a:.77,c:.315,d:.315,k:1,b:10,done:0},{i:50,e:3,bd:0,f:.3,g:1,a:.77,c:.315,d:.315,k:1,b:10,done:0}]},
     VA:{cfg:{...CFG_VA},prices:{...PRC_GLOBAL},spec:{pipes:[{name:'Vatten',dia:.315,depth:2.5,sfh:.5},{name:'Spillvatten',dia:.16,depth:1.8,sfh:.4}],bw:1.1,badd:.15},pts:[{n:0,p:0,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0},{n:50,p:50,r:1.8,c:0,d:.15,e:.2,f:.25,h:.2,l:1,m:0,a:.55,bw:1.1,done:0,doneR:0}]},
     RL:{vatten:{pipes:[...VPIPES],sections:[]},avlopp:{dagPipes:[...DPIPES],spillPipes:[...SPIPES],dagSections:[]},totUtfort:0,kontrollUtfort:0},
     BUD:{cfg:{mask:[...CFG_BUD.mask.map(m=>({...m}))],arb:[...CFG_BUD.arb.map(a=>({...a}))],mat:0,etab:0,dep_r:65,prod:120,f_berg:5.0,risk:10,oh:12,vinst:8,ofor:5,rot:0,rot_pers:1,rot_max:50000},prices:{...PRC_GLOBAL}}
@@ -449,17 +449,18 @@ function demoData(){
       {w:133, e:1.5,d:0,h:1,n50:1,n110:2,n160:1,k:1,done:0}
     ]},
     FV:{cfg:{...CFG_FV},pts:[
-      {i:0,  e:2.0,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0},
-      {i:10, e:2.0,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0},
-      {i:20, e:2.0,f:.15,g:.5,a:.4,c:.125,d:.125,k:1,b:1,done:0},
-      {i:30, e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0},
-      {i:40, e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0},
-      {i:50, e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0},
-      {i:60, e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0},
-      {i:70, e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0},
-      {i:80, e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0},
-      {i:90, e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0},
-      {i:101,e:2.0,f:.15,g:.5,a:.4,c:.35, d:.2,  k:1,b:1,done:0}
+      // a = f + max(c,d) + kringAMA(0.15). DN125: 0.15+0.125+0.15=0.43. DN350: 0.15+0.35+0.15=0.65
+      {i:0,  e:2.0,bd:0,f:.15,g:.5,a:.43,c:.125,d:.125,k:1,b:1,done:0},
+      {i:10, e:2.0,bd:0,f:.15,g:.5,a:.43,c:.125,d:.125,k:1,b:1,done:0},
+      {i:20, e:2.0,bd:0,f:.15,g:.5,a:.43,c:.125,d:.125,k:1,b:1,done:0},
+      {i:30, e:2.0,bd:0,f:.15,g:.5,a:.65,c:.35, d:.2,  k:1,b:1,done:0},
+      {i:40, e:2.0,bd:0,f:.15,g:.5,a:.65,c:.35, d:.2,  k:1,b:1,done:0},
+      {i:50, e:2.0,bd:0,f:.15,g:.5,a:.65,c:.35, d:.2,  k:1,b:1,done:0},
+      {i:60, e:2.0,bd:0,f:.15,g:.5,a:.65,c:.35, d:.2,  k:1,b:1,done:0},
+      {i:70, e:2.0,bd:0,f:.15,g:.5,a:.65,c:.35, d:.2,  k:1,b:1,done:0},
+      {i:80, e:2.0,bd:0,f:.15,g:.5,a:.65,c:.35, d:.2,  k:1,b:1,done:0},
+      {i:90, e:2.0,bd:0,f:.15,g:.5,a:.65,c:.35, d:.2,  k:1,b:1,done:0},
+      {i:101,e:2.0,bd:0,f:.15,g:.5,a:.65,c:.35, d:.2,  k:1,b:1,done:0}
     ]},
     FB:{cfg:{...CFG_FB},spec:{pipes:[{name:'Vatten',dia:.16,depth:1.5},{name:'Avlopp',dia:.2,depth:2.0}],bw:.56,badd:.15},pts:[
       {i:0,  e:1.5,bd:0,f:.15,g:.5,a:.5,k:1,done:0},
@@ -471,17 +472,18 @@ function demoData(){
       {i:60, e:3.0,bd:0,f:.15,g:.5,a:.5,k:1,done:0}
     ]},
     TR:{cfg:{...CFG_TR},pts:[
-      {i:0,  e:3.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
-      {i:10, e:3.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
-      {i:20, e:3.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
-      {i:30, e:2.5,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
-      {i:40, e:2.5,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
-      {i:50, e:2.5,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
-      {i:60, e:2.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
-      {i:70, e:2.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
-      {i:80, e:2.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
-      {i:90, e:2.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0},
-      {i:100,e:2.0,f:.3,g:1,a:.5,c:.315,d:.315,k:1,b:10,done:0}
+      // a = f + max(c,d) + kringAMA(0.15). DN315: 0.30+0.315+0.15=0.765 → 0.77
+      {i:0,  e:3.0,bd:0,f:.3,g:1,a:.77,c:.315,d:.315,k:1,b:10,done:0},
+      {i:10, e:3.0,bd:0,f:.3,g:1,a:.77,c:.315,d:.315,k:1,b:10,done:0},
+      {i:20, e:3.0,bd:0,f:.3,g:1,a:.77,c:.315,d:.315,k:1,b:10,done:0},
+      {i:30, e:2.5,bd:0,f:.3,g:1,a:.77,c:.315,d:.315,k:1,b:10,done:0},
+      {i:40, e:2.5,bd:0,f:.3,g:1,a:.77,c:.315,d:.315,k:1,b:10,done:0},
+      {i:50, e:2.5,bd:0,f:.3,g:1,a:.77,c:.315,d:.315,k:1,b:10,done:0},
+      {i:60, e:2.0,bd:0,f:.3,g:1,a:.77,c:.315,d:.315,k:1,b:10,done:0},
+      {i:70, e:2.0,bd:0,f:.3,g:1,a:.77,c:.315,d:.315,k:1,b:10,done:0},
+      {i:80, e:2.0,bd:0,f:.3,g:1,a:.77,c:.315,d:.315,k:1,b:10,done:0},
+      {i:90, e:2.0,bd:0,f:.3,g:1,a:.77,c:.315,d:.315,k:1,b:10,done:0},
+      {i:100,e:2.0,bd:0,f:.3,g:1,a:.77,c:.315,d:.315,k:1,b:10,done:0}
     ]},
     VA:{cfg:{slopeV:1,slopeH:1,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,badd:.15,pipes:[.3,.16,.35,.25,.35,.315,.2]},spec:{pipes:[{name:'Vatten',dia:.315,depth:2.5,sfh:.5},{name:'Spillvatten',dia:.16,depth:1.8,sfh:.4}],bw:1.1,badd:.15},
       prices:{...PRC_GLOBAL},
@@ -740,12 +742,15 @@ function elAll(){
     if(L<=0||!p1.h)continue;
     if(!(p1.e>0)||!(p2.e>0))continue; // skip if either endpoint has no depth
     const bw1=elBW(p1),bw2=elBW(p2);
-    const tw1J=p1.e*c.slopeJord*2+bw1,tw2J=p2.e*c.slopeJord*2+bw2;
-    const tw1B=p1.d>0?p1.d*c.slopeBerg*2+bw1+1:0,tw2B=p2.d>0?p2.d*c.slopeBerg*2+bw2+1:0;
-    const tw1=c.spont>=2?bw1:Math.max(tw1J,tw1B||0);
-    const tw2=c.spont>=2?bw2:Math.max(tw2J,tw2B||0);
-    const jordV=((bw1+tw1J)/2*p1.e+(bw2+tw2J)/2*p2.e)/2*L;
-    const bergV=((p1.d>0?(bw1+tw1B)/2*p1.d:0)+(p2.d>0?(bw2+tw2B)/2*p2.d:0))/2*L;
+    // Rock interface width: rock zone widens by slopeBerg, +1m blasting clearance (AMA EL)
+    const hy1=p1.d>0?bw1+2*p1.d*c.slopeBerg+1:bw1,hy2=p2.d>0?bw2+2*p2.d*c.slopeBerg+1:bw2;
+    // Soil zone expands upward FROM the rock interface (correct two-zone geometry per MER DCB)
+    const tw1J=hy1+2*p1.e*c.slopeJord,tw2J=hy2+2*p2.e*c.slopeJord;
+    const tw1=c.spont>=2?bw1:tw1J,tw2=c.spont>=2?bw2:tw2J;
+    // Soil volume: trapezoid from rock interface (hy) up to ground surface
+    const jordV=((hy1+tw1J)/2*p1.e+(hy2+tw2J)/2*p2.e)/2*L;
+    // Rock volume: trapezoid from bw at bottom to rock interface
+    const bergV=((p1.d>0?(bw1+hy1)/2*p1.d:0)+(p2.d>0?(bw2+hy2)/2*p2.d:0))/2*L;
     const excV=jordV+bergV;
     const ab=(bw1+bw2)/2,at=(tw1+tw2)/2,ad=(p1.e+p1.d+p2.e+p2.d)/2;
     const bed=L*ab*c.sfh,bedA=L*ab;
@@ -1487,7 +1492,7 @@ function renderFV(){
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Profilpunkter — klicka rad för tvärsnitt','Profile points — click row for section')}</div>
   <div class="tbl-wrap"><table class="dt">
-    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Jorddjup','Soil depth')}</th><th>D ${T('Bergdjup','Rock depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia tilledn.','Supply dia')}</th><th>${T('Dia retur','Return dia')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
+    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th title="${T('Rörbottendjup — schaktdjup = E + F','Pipe invert depth — exc. depth = E + F')}">E ${T('Rördjup','Pipe depth')}</th><th>D ${T('Bergdjup','Rock depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th title="${T('Kringfyllningshöjd = F + rördia + överfyllning','Surround height = F + pipe dia + cover')}">A ${T('Kring','Surr.')}</th><th>C ${T('Dia tilledn.','Supply dia')}</th><th>${T('Dia retur','Return dia')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>${FV.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" onchange="D('FV').pts[${i}].i=+this.value;touchProj();save();go('fv')"></td>
       <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" onchange="D('FV').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
@@ -1629,10 +1634,10 @@ function renderFB(){
       <div class="ch-wrap"><canvas id="ch-fb-seg"></canvas></div></div>
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Profilpunkter','Profile points')}
-    <span style="margin-left:auto;font-size:9px;color:var(--ts);font-weight:400;text-transform:none">${T('E=Schaktdjup · bd=Bergdjup · F=Bädd · G=Slant override · A=Kring · K=Jordfraktion','E=Depth · bd=Rock · F=Bed · G=Slope override · A=Surr. · K=Soil frac.')}</span>
+    <span style="margin-left:auto;font-size:9px;color:var(--ts);font-weight:400;text-transform:none">${T('E=Rördjup · bd=Bergdjup · F=Bädd · G=Slant override · A=Kring · K=Jordfraktion','E=Pipe depth · bd=Rock · F=Bed · G=Slope override · A=Surr. · K=Soil frac.')}</span>
   </div>
   <div class="tbl-wrap"><table class="dt">
-    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Jorddjup','Soil depth')}</th><th>bd ${T('Berg','Rock')}</th><th>F ${T('Bädd','Bed')}</th><th title="${T('Slant 1:Y per punkt — överstyr global om >0','Slope 1:Y per point — overrides global if >0')}">G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
+    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th title="${T('Rörbottendjup — schaktdjup = E + F','Pipe invert depth — exc. depth = E + F')}">E ${T('Rördjup','Pipe depth')}</th><th>bd ${T('Berg','Rock')}</th><th>F ${T('Bädd','Bed')}</th><th title="${T('Slant 1:Y per punkt — överstyr global om >0','Slope 1:Y per point — overrides global if >0')}">G ${T('Slant','Slope')}</th><th title="${T('Kringfyllningshöjd = F + rördia + överfyllning','Surround height = F + pipe dia + cover')}">A ${T('Kring','Surr.')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>${FB.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].i=+this.value;touchProj();save();go('fb')"></td>
       <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
@@ -1710,10 +1715,10 @@ function renderTR(){
       <div class="ch-wrap"><canvas id="ch-tr-seg"></canvas></div></div>
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Profilpunkter — klicka rad för tvärsnitt','Profile points — click row for section')}
-    <span style="margin-left:auto;font-size:9px;color:var(--ts);font-weight:400;text-transform:none">${T('I=Station · E=Schaktdjup · F=Bäddtjocklek · G=Slant · A=Kringh. · C/D=Rördim','I=Station · E=Exc.depth · F=Bed thickness · G=Slope · A=Surr.h · C/D=Pipe diam')}</span>
+    <span style="margin-left:auto;font-size:9px;color:var(--ts);font-weight:400;text-transform:none">${T('I=Station · E=Rördjup · F=Bäddtjocklek · G=Slant · A=Kringh. · C/D=Rördim','I=Station · E=Pipe depth · F=Bed thickness · G=Slope · A=Surr.h · C/D=Pipe diam')}</span>
   </div>
   <div class="tbl-wrap"><table class="dt">
-    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Jorddjup','Soil depth')}</th><th>D ${T('Bergdjup','Rock depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia 1','Dia 1')}</th><th>${T('Dia 2','Dia 2')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
+    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th title="${T('Rörbottendjup — schaktdjup = E + F','Pipe invert depth — exc. depth = E + F')}">E ${T('Rördjup','Pipe depth')}</th><th>D ${T('Bergdjup','Rock depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th title="${T('Kringfyllningshöjd = F + rördia + överfyllning','Surround height = F + pipe dia + cover')}">A ${T('Kring','Surr.')}</th><th>C ${T('Dia 1','Dia 1')}</th><th>${T('Dia 2','Dia 2')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>${TR.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" onchange="D('TR').pts[${i}].i=+this.value;touchProj();save();go('tr')"></td>
       <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" onchange="D('TR').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
