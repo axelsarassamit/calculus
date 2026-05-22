@@ -423,7 +423,7 @@ const CFG_BUD={
   risk:10,oh:12,vinst:8,ofor:5,
   rot:0,rot_pers:1,rot_max:50000
 };
-const PRC_GLOBAL={asfalt:100,veg:90,jord:0,berg:0,rustbadd:0,ytaLt:0,ytaGt:0,avtatn:25,badd:540,kring:490,restA:350,restB:0,spont:0,tatsom:120,geo:0};
+const PRC_GLOBAL={asfalt:100,veg:90,jord:0,berg:0,rustbadd:0,ytaLt:0,ytaGt:0,avtatn:25,badd:540,kring:490,restA:350,restB:0,spont:0,tatsom:120,geo1:30,geo2:60,geo3:95};
 const VPIPES=['400mm','200mm','160mm','110mm','90mm','75mm','63mm','50mm','40mm','32mm'];
 const DPIPES=['630mm','400mm','315mm','250mm','200mm','160mm','110mm'];
 const SPIPES=['315mm','160mm','110mm'];
@@ -522,7 +522,7 @@ function demoData(){
       prod:120,f_berg:5.0,
       risk:10,oh:12,vinst:8,ofor:5,
       rot:0,rot_pers:2,rot_max:50000
-    },prices:{...PRC_GLOBAL,asfalt:100,veg:90,jord:85,berg:680,avtatn:25,badd:540,kring:490,restA:350,spont:0,geo:0,tatsom:120,rustbadd:0,restB:0,ytaLt:0,ytaGt:0}}
+    },prices:{...PRC_GLOBAL,asfalt:100,veg:90,jord:85,berg:680,avtatn:25,badd:540,kring:490,restA:350,spont:0,geo1:30,geo2:60,geo3:95,tatsom:120,rustbadd:0,restB:0,ytaLt:0,ytaGt:0}}
   };
 }
 
@@ -712,7 +712,7 @@ function fbAll(){const FB=D('FB');if(!FB)return{segs:[],tot:zFV()};return calcSe
 function trAll(){const TR=D('TR');if(!TR)return{segs:[],tot:zFV()};return calcSections(TR.pts,TR.cfg,(pt)=>pt.c+pt.d+.1);}
 function vaAll(){
   const VA=D('VA');if(!VA)return{segs:[],tot:zVA()};
-  const c=VA.cfg,pr=D('BUD')?.prices||PRC_GLOBAL,segs=[];
+  const c=VA.cfg,pr=D('BUD')?.prices||PRC_GLOBAL,segs=[],geoVA=(c.geoType>0?(pr['geo'+c.geoType]||0):0);
   for(let i=0;i<VA.pts.length-1;i++){
     const p1=VA.pts[i],p2=VA.pts[i+1],L=Math.abs(p2.n-p1.n);
     if(L<=0)continue;
@@ -730,7 +730,7 @@ function vaAll(){
     let geo=0;if(c.geoType===1)geo=L*bw;else if(c.geoType>=2)geo=L*(bw+2*sLen+.3);
     const aa=c.asphalt>0?L*Math.max(at,c.roadW):0,va=c.veg>0?L*Math.max(at,c.roadW):0;
     const sp=c.spont>0?L*ad*c.spont:0,bergAvt=berg>0?L*at*.1:0;
-    const cost=jord*pr.jord+berg*pr.berg+bed*pr.badd+sur*pr.kring+remA*pr.restA+aa*pr.asfalt+va*pr.veg+bergAvt*pr.avtatn+sp*pr.spont;
+    const cost=jord*pr.jord+berg*pr.berg+bed*pr.badd+sur*pr.kring+remA*pr.restA+aa*pr.asfalt+va*pr.veg+bergAvt*pr.avtatn+sp*pr.spont+geo*geoVA;
     segs.push({f:p1.n,t:p2.n,L,ad,ab:bw,at,exc,jord,berg,bed,bedA,sur,remA,geo,aa,va,sp,bergAvt,bal:exc-(bed+sur+remA),cost,done:p1.done,doneR:p1.doneR,bw,tw:tw1});
   }
   return{segs,tot:sumSegsVA(segs)};
@@ -854,15 +854,41 @@ let _goTimer=null;
 function go(p){
   const pages={projects:renderProjects,start:renderStart,dashboard:renderDashboard,el:renderEL,fv:renderFV,fb:renderFB,tr:renderTR,va:renderVA,fvspec:renderFVSpec,rl:renderRL,sm:renderSM,budget:renderBudget};
   if(p===S.page){
-    // Same-page refresh: debounce + preserve scroll position & selected segment
     clearTimeout(_goTimer);
     const scrollY=window.scrollY;
+    // Save which input/select has focus so we can restore it after re-render
+    const ae=document.activeElement;
+    let _fp=null;
+    if(ae&&(ae.tagName==='INPUT'||ae.tagName==='SELECT')){
+      if(ae.id){_fp={id:ae.id};}
+      else{
+        const _tb=ae.closest('tbody'),_tr=ae.closest('tr'),_td=ae.closest('td');
+        if(_tb&&_tr&&_td){
+          const _allTb=Array.from(document.querySelectorAll('tbody'));
+          _fp={tbi:_allTb.indexOf(_tb),ri:Array.from(_tb.rows).indexOf(_tr),ci:Array.from(_tr.cells).indexOf(_td)};
+        }
+      }
+    }
     _goTimer=setTimeout(()=>{
       const m=document.getElementById('main');
       destroyCharts();
       m.innerHTML=(pages[p]||renderProjects)();
       window.scrollTo(0,scrollY);
       renderSidebar();renderBNav();
+      // Restore focus to the same input cell
+      if(_fp){
+        let _el=_fp.id?document.getElementById(_fp.id):null;
+        if(!_el&&_fp.tbi!=null){
+          const _tbs=document.querySelectorAll('tbody');
+          const _tb2=_tbs[_fp.tbi];
+          if(_tb2&&_fp.ri<_tb2.rows.length){
+            const _row=_tb2.rows[_fp.ri];
+            if(_row&&_fp.ci<_row.cells.length)
+              _el=_row.cells[_fp.ci].querySelector('input,select');
+          }
+        }
+        if(_el){_el.focus();try{_el.select();}catch{}}
+      }
       setTimeout(renderCharts,60);
     },300);
     return;
@@ -878,6 +904,14 @@ function go(p){
   setTimeout(renderCharts,60);
 }
 function openProject(id){S.cur=id;go('dashboard');}
+// Allow comma as decimal separator in number inputs (Swedish locale)
+document.addEventListener('keydown',function(e){
+  if(e.target.tagName==='INPUT'&&e.target.type==='number'&&e.key===','){
+    e.preventDefault();
+    const v=e.target.value,p=e.target.selectionStart||v.length;
+    if(!v.includes('.')){e.target.value=v.slice(0,p)+'.'+v.slice(p);e.target.setSelectionRange(p+1,p+1);e.target.dispatchEvent(new Event('input',{bubbles:true}));}
+  }
+});
 function toggleNav(){
   const s=document.getElementById('sidebar'),o=document.getElementById('overlay');
   s.classList.toggle('open');o.classList.toggle('open');
@@ -1188,8 +1222,8 @@ function renderEL(){
   <div class="fg">
     <div class="fi"><label>${T('Röravst. inre (m)','Inner spacing (m)')}</label><input type="number" value="${EL.cfg.spacingI}" step=".01" oninput="D('EL').cfg.spacingI=+this.value;touchProj();save();go('el')"></div>
     <div class="fi"><label>${T('Röravst. yttre (m)','Outer spacing (m)')}</label><input type="number" value="${EL.cfg.spacingL}" step=".01" oninput="D('EL').cfg.spacingL=+this.value;touchProj();save();go('el')"></div>
-    <div class="fi"><label>${T('Slant Jord H:1V','Soil slope H:1V')}</label><input type="number" value="${EL.cfg.slopeJord}" step=".25" oninput="D('EL').cfg.slopeJord=+this.value;touchProj();save();go('el')"></div>
-    <div class="fi"><label>${T('Slant Berg H:1V','Rock slope H:1V')}</label><input type="number" value="${EL.cfg.slopeBerg}" step=".1" oninput="D('EL').cfg.slopeBerg=+this.value;touchProj();save();go('el')"></div>
+    <div class="fi"><label>${T('Slant jord H:1V','Soil slope H:1V')}</label><input type="number" value="${EL.cfg.slopeJord}" step=".25" oninput="D('EL').cfg.slopeJord=+this.value;touchProj();save();go('el')"></div>
+    <div class="fi"><label>${T('Slant berg H:1V','Rock slope H:1V')}</label><input type="number" value="${EL.cfg.slopeBerg}" step=".1" oninput="D('EL').cfg.slopeBerg=+this.value;touchProj();save();go('el')"></div>
     <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${EL.cfg.asphalt}" step=".05" oninput="D('EL').cfg.asphalt=+this.value;touchProj();save();go('el')"></div>
     <div class="fi"><label>${T('Vegetation (m)','Vegetation (m)')}</label><input type="number" value="${EL.cfg.veg}" step=".05" oninput="D('EL').cfg.veg=+this.value;touchProj();save();go('el')"></div>
     <div class="fi"><label>${T('Kringf.höjd (m)','Surr. fill h (m)')}</label><input type="number" value="${EL.cfg.sfh}" step=".05" oninput="D('EL').cfg.sfh=+this.value;touchProj();save();go('el')"></div>
@@ -1306,6 +1340,7 @@ function renderFV(){
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--d)"></span>${T('Konfiguration','Configuration')}</div>
   <div class="fg">
+    <div class="fi"><label>${T('Slant H:1V (standard)','Slope H:1V (default)')}</label><input type="number" value="${FV.cfg.slope}" step=".25" oninput="D('FV').cfg.slope=+this.value;touchProj();save();go('fv')"></div>
     <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select oninput="D('FV').cfg.geoType=+this.value;touchProj();save();go('fv')">${[0,1,2,3].map(v=>`<option value="${v}" ${FV.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
     <div class="fi"><label>${T('Spontning','Sheet piling')}</label><select oninput="D('FV').cfg.spont=+this.value;touchProj();save();go('fv')">${[0,1,2].map(v=>`<option value="${v}" ${FV.cfg.spont===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
     <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${FV.cfg.asphalt}" step=".05" oninput="D('FV').cfg.asphalt=+this.value;touchProj();save();go('fv')"></div>
@@ -1588,9 +1623,9 @@ function renderVA(){
 
     <div class="va-cfg-group">
       <div class="va-cfg-group-title">📐 ${T('Schaktgeometri','Excavation geometry')}</div>
-      <div class="fi"><label title="${T('Schaktslant i jord. H:1V = horisontell per vertikal meter. Typvärde 0.2–0.5','Slope in soil. H:1V = horizontal per vertical metre. Typical 0.2–0.5')}">${T('Släntsättning jord H:1V','Soil slope H:1V')} <span style="opacity:.5">ℹ</span></label>
+      <div class="fi"><label title="${T('Schaktslant i jord. H:1V = horisontell per vertikal meter. Typvärde 0.2–0.5','Slope in soil. H:1V = horizontal per vertical metre. Typical 0.2–0.5')}">${T('Slant jord H:1V','Soil slope H:1V')} <span style="opacity:.5">ℹ</span></label>
         <input type="number" value="${VA2.cfg.slopeV}" step=".05" min="0" max="2" oninput="D('VA').cfg.slopeV=+this.value;touchProj();save();go('va')"></div>
-      <div class="fi"><label title="${T('Schaktslant i berg/hård mark. Typvärde 0.1–0.2','Slope in rock/hard ground. Typical 0.1–0.2')}">${T('Släntsättning berg H:1V','Rock slope H:1V')} <span style="opacity:.5">ℹ</span></label>
+      <div class="fi"><label title="${T('Schaktslant i berg/hård mark. Typvärde 0.1–0.2','Slope in rock/hard ground. Typical 0.1–0.2')}">${T('Slant berg H:1V','Rock slope H:1V')} <span style="opacity:.5">ℹ</span></label>
         <input type="number" value="${VA2.cfg.slopeH}" step=".05" min="0" max="2" oninput="D('VA').cfg.slopeH=+this.value;touchProj();save();go('va')"></div>
       <div class="fi"><label>${T('Vägbredd (m)','Road width (m)')}</label>
         <input type="number" value="${VA2.cfg.roadW}" step=".5" min="0" oninput="D('VA').cfg.roadW=+this.value;touchProj();save();go('va')"></div>
@@ -1905,6 +1940,8 @@ function renderBudget(){
     D('BUD').prices=_vap?{...PRC_GLOBAL,..._vap}:{...PRC_GLOBAL};
     save();
   }
+  // Migrate: add geo1/2/3 if missing (old projects only had 'geo')
+  if(D('BUD').prices.geo1===undefined){D('BUD').prices.geo1=D('BUD').prices.geo||30;D('BUD').prices.geo2=D('BUD').prices.geo!==undefined?D('BUD').prices.geo*2:60;D('BUD').prices.geo3=D('BUD').prices.geo!==undefined?Math.round(D('BUD').prices.geo*3.2):95;delete D('BUD').prices.geo;save();}
   // Remove legacy jord_r/berg_r from cfg if present (no longer used)
   if(D('BUD').cfg.jord_r!==undefined){delete D('BUD').cfg.jord_r;delete D('BUD').cfg.berg_r;save();}
   const cfg=D('BUD').cfg;
@@ -1923,8 +1960,10 @@ function renderBudget(){
   const depCost  = overskott * cfg.dep_r;
   const massCost = depCost;
   // Per-tab schakt costs from unit prices × volumes
-  const calcTab=(t)=>(t.jord||0)*(pr.jord||0)+(t.berg||0)*(pr.berg||0)+(t.bed||0)*(pr.badd||0)+(t.sur||0)*(pr.kring||0)+((t.remA||t.rem)||0)*(pr.restA||0)+(t.aa||0)*(pr.asfalt||0)+(t.va||0)*(pr.veg||0)+(t.bergAvt||0)*(pr.avtatn||0)+(t.sp||0)*(pr.spont||0)+(t.geo||0)*(pr.geo||0);
-  const elCost=calcTab(el),fvCost=calcTab(fv),fbCost=calcTab(fb),trCost=calcTab(tr),vaCost=va.cost;
+  const geoP=(gt)=>(gt>0?(pr['geo'+gt]||0):0);
+  const calcTab=(t,gt=0)=>(t.jord||0)*(pr.jord||0)+(t.berg||0)*(pr.berg||0)+(t.bed||0)*(pr.badd||0)+(t.sur||0)*(pr.kring||0)+((t.remA||t.rem)||0)*(pr.restA||0)+(t.aa||0)*(pr.asfalt||0)+(t.va||0)*(pr.veg||0)+(t.bergAvt||0)*(pr.avtatn||0)+(t.sp||0)*(pr.spont||0)+(t.geo||0)*geoP(gt);
+  const elGt=D('EL')?.cfg?.geoType||0,fvGt=D('FV')?.cfg?.geoType||0,fbGt=D('FB')?.cfg?.geoType||0,trGt=D('TR')?.cfg?.geoType||0;
+  const elCost=calcTab(el,elGt),fvCost=calcTab(fv,fvGt),fbCost=calcTab(fb,fbGt),trCost=calcTab(tr,trGt),vaCost=va.cost;
   const schaktTotal=elCost+fvCost+fbCost+trCost+vaCost;
   const direktCost = maskCost + arbCost + cfg.mat + cfg.etab + massCost + schaktTotal;
 
@@ -2068,7 +2107,9 @@ function renderBudget(){
     <div class="va-cfg-group-title" style="margin-bottom:8px">🔧 ${T('Specialarbeten — där tillämpligt','Special works — where applicable')}</div>
     <div class="fg" style="margin-bottom:16px">${[
       ['spont',  T('Spontning (kr/m²)',          'Sheet piling (SEK/m²)')],
-      ['geo',    T('Geotextil (kr/m²)',           'Geotextile (SEK/m²)')],
+      ['geo1',   T('Geotextil Typ 1 (kr/m²)',    'Geotextile Type 1 (SEK/m²)')],
+      ['geo2',   T('Geotextil Typ 2 (kr/m²)',    'Geotextile Type 2 (SEK/m²)')],
+      ['geo3',   T('Geotextil Typ 3 (kr/m²)',    'Geotextile Type 3 (SEK/m²)')],
     ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" oninput="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
 
     <div class="va-cfg-group-title" style="margin-bottom:8px">💧 ${T('VA-specifikt — Vatten & Avlopp','VA-specific — Water & Sewer only')}</div>
@@ -2140,10 +2181,10 @@ function renderBudget(){
     <p style="font-size:11px;color:var(--ts);margin-bottom:12px;padding:0 2px">${T('Kostnad per segment beräknas från enhetspriser × volymer. VA-kostnad inkluderar tätskikt/muff.','Cost per segment calculated from unit prices × volumes. VA cost includes seal/coupling.')}</p>
     ${(()=>{
       const tabDefs=[
-        {ico:'⚡',lbl:T('EL kanalisation','EL Canalisation'),segs:elSegs,cost:s=>calcTab(s),col:'var(--p)',nav:'el'},
-        {ico:'🔥',lbl:T('Fjärrvärme','District Heating'),segs:fvSegs,cost:s=>calcTab(s),col:'#ef4444',nav:'fv'},
-        {ico:'🏗️',lbl:T('Fyllnad mot byggnad','Fill against building'),segs:fbSegs,cost:s=>calcTab(s),col:'#f97316',nav:'fb'},
-        {ico:'🔵',lbl:T('Trumma','Culvert'),segs:trSegs,cost:s=>calcTab(s),col:'#06b6d4',nav:'tr'},
+        {ico:'⚡',lbl:T('EL kanalisation','EL Canalisation'),segs:elSegs,cost:s=>calcTab(s,elGt),col:'var(--p)',nav:'el'},
+        {ico:'🔥',lbl:T('Fjärrvärme','District Heating'),segs:fvSegs,cost:s=>calcTab(s,fvGt),col:'#ef4444',nav:'fv'},
+        {ico:'🏗️',lbl:T('Fyllnad mot byggnad','Fill against building'),segs:fbSegs,cost:s=>calcTab(s,fbGt),col:'#f97316',nav:'fb'},
+        {ico:'🔵',lbl:T('Trumma','Culvert'),segs:trSegs,cost:s=>calcTab(s,trGt),col:'#06b6d4',nav:'tr'},
         {ico:'💧',lbl:T('Vatten & Avlopp','Water & Sewer'),segs:vaSegs,cost:s=>s.cost,col:'var(--s)',nav:'va'},
       ];
       return tabDefs.filter(td=>td.segs.length>0).map(td=>{
