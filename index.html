@@ -1675,79 +1675,66 @@ function renderVA(){
   <div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Rör & konfiguration','Pipes & configuration')}</div>
 
   ${(()=>{
-    const VA2=D('VA');if(!VA2||!VA2.cfg)return'';
-    const pipes=VA2.cfg.pipes;
-    const totalA=pipes.reduce((s,d)=>s+Math.PI*(d/2)**2,0);
-    const sorted=[...pipes].map(d=>Math.round(d*1000)).sort((a,b)=>a-b);
-    return`<div class="va-pipe-strip">
-      <div class="ps-stat"><span class="ps-val">${pipes.length}</span><span class="ps-lbl">${T('Rör','Pipes')}</span></div>
-      <div class="ps-stat"><span class="ps-val">${(totalA*10000).toFixed(1)} cm²</span><span class="ps-lbl">${T('Total rörarea','Total pipe area')}</span></div>
-      <div class="ps-stat"><span class="ps-val">${pipes.length?sorted[0]+' – '+sorted[sorted.length-1]+' mm':'—'}</span><span class="ps-lbl">${T('Dimensionsspann','Diameter range')}</span></div>
-      <div style="flex:1;font-size:10px;color:var(--tm)">${sorted.length?sorted.map(mm=>'DN '+mm).join(' · '):T('Inga rör konfigurerade','No pipes configured')}</div>
-    </div>`;
-  })()}
-
-  ${(()=>{
-    const VA2=D('VA');if(!VA2||!VA2.cfg)return'';
-    const pipes=VA2.cfg.pipes;
-    return`<div class="va-pipe-builder">
-    <div class="va-pb-label">🔵 ${T('Aktiva rörledningar i schaktet','Active pipes in trench')}</div>
-    <div class="va-pipe-list">
-      ${pipes.length===0
-        ?`<span class="va-pipe-empty">${T('Inga rör tillagda — välj en standarddimension nedan','No pipes added — select a standard dimension below')}</span>`
-        :pipes.map((d,i)=>{const mm=Math.round(d*1000);const col=mm<=110?'#10b981':mm<=250?'#06b6d4':mm<=400?'#4f46e5':'#8b5cf6';return`<span class="va-pipe-tag" style="border-color:${col};color:${col}"><span class="ptdot" style="background:${col}"></span>DN ${mm}<button onclick="event.stopPropagation();D('VA').cfg.pipes.splice(${i},1);touchProj();save();go('va')" title="${T('Ta bort','Remove')}" style="color:${col}">×</button></span>`;}).join('')}
-    </div>
-
-    <div class="va-pb-label" style="margin-top:12px">⚡ ${T('Snabbval — klicka för att lägga till','Quick-add — click to add')}</div>
-    <div class="va-pipe-quick">
-      ${[50,63,75,90,110,125,160,200,250,315,400,500,600,800].map(mm=>`<button class="va-pipe-btn" onclick="D('VA').cfg.pipes.push(${(mm/1000).toFixed(3)});touchProj();save();go('va')">DN ${mm}</button>`).join('')}
-    </div>
-
-    <div class="va-custom-row">
-      <input id="va-cust-mm" type="number" placeholder="${T('Eget mått (mm)','Custom size (mm)')}" min="20" max="2000" step="1" onkeydown="if(event.key==='Enter'){const v=+(document.getElementById('va-cust-mm').value);if(v>0){D('VA').cfg.pipes.push(+(v/1000).toFixed(3));touchProj();save();go('va');}}">
-      <button class="btn bp" onclick="const v=+(document.getElementById('va-cust-mm').value);if(v>0){D('VA').cfg.pipes.push(+(v/1000).toFixed(3));touchProj();save();go('va')}">+ ${T('Eget mått','Custom')}</button>
-      <button class="btn bs" onclick="D('VA').cfg.pipes=[];touchProj();save();go('va')" style="color:var(--d)">${T('Rensa alla','Clear all')}</button>
-    </div>
-  </div>
-
-  <!-- ══ RÖRDJUP & KRINGFYLLNING (VA-spec integrerat) ══ -->
-  <div style="border-top:2px solid var(--i);margin-top:4px">
-  <div style="padding:8px 16px 4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-    <span style="font-weight:700;font-size:12px;color:var(--i)">📐 ${T('Rördjup & kringfyllning','Pipe depths & surround fill')}</span>
-    <span style="font-size:10px;color:var(--ts);flex:1">${T('Rör sida vid sida på olika djup — kringfyllning automatisk per rör (AMA)','Pipes side by side at different depths — surround fill automatic per pipe (AMA)')}</span>
-  </div>
-  <div style="padding:2px 16px 8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11px">
-    <label style="color:var(--ts)">BW (m):</label>
-    <input type="number" value="${specBW}" step=".05" min=".1" style="width:64px" onchange="D('VA').spec.bw=+this.value;touchProj();save();go('va')">
-    <label style="color:var(--ts)">${T('Bädd (m):','Bed (m):')}</label>
-    <input type="number" value="${specBadd}" step=".05" min="0" style="width:64px" onchange="D('VA').spec.badd=+this.value;touchProj();save();go('va')">
-    <span style="margin-left:8px;color:var(--ts)">${T('Kring ovan kron:','Surr. above crown:')} <strong style="color:var(--i)">${SET.kringAMA*100} cm</strong> (AMA) · <span onclick="go('settings')" style="cursor:pointer;color:var(--a);text-decoration:underline">${T('Ändra i inställningar','Change in settings')}</span></span>
-  </div>
-  ${(()=>{
-    if(!spec.pipes.length)return '<div style="padding:8px 16px 10px;color:var(--ts);font-size:12px">— '+T('Inga rör med djup konfigurerade. Lägg till via knappen nedan.','No pipes with depth configured. Add via button below.')+'</div>';
-    let tbl='<div class="tbl-wrap"><table class="dt"><thead><tr>'
+    if(!D('VA')||!D('VA').cfg)return'';
+    const sps=spec.pipes;
+    // Keep cfg.pipes in sync
+    D('VA').cfg.pipes=sps.map(p=>p.dia);
+    const totalA=sps.reduce((s,p)=>s+Math.PI*(p.dia/2)**2,0);
+    const dnList=sps.map(p=>Math.round(p.dia*1000)).sort((a,b)=>a-b);
+    // Stats strip
+    let h='<div class="va-pipe-strip">'
+      +'<div class="ps-stat"><span class="ps-val">'+sps.length+'</span><span class="ps-lbl">'+T('Rör','Pipes')+'</span></div>'
+      +'<div class="ps-stat"><span class="ps-val">'+(totalA*10000).toFixed(1)+' cm²</span><span class="ps-lbl">'+T('Total rörarea','Total pipe area')+'</span></div>'
+      +'<div class="ps-stat"><span class="ps-val">'+(sps.length?dnList[0]+' – '+dnList[dnList.length-1]+' mm':'—')+'</span><span class="ps-lbl">'+T('Dimensionsspann','Diameter range')+'</span></div>'
+      +'<div style="flex:1;font-size:10px;color:var(--tm)">'+(dnList.length?dnList.map(mm=>'DN '+mm).join(' · '):T('Inga rör konfigurerade','No pipes configured'))+'</div>'
+      +'</div>';
+    // Unified pipe table
+    h+='<div class="tbl-wrap"><table class="dt"><thead><tr>'
       +'<th>'+T('Namn','Name')+'</th>'
       +'<th>'+T('DN (mm)','DN (mm)')+'</th>'
-      +'<th title="'+T('Djup till rörcentrum från vägyta','Depth to pipe centreline from road surface')+'">m.c. (m) <span style="opacity:.5">ℹ</span></th>'
-      +'<th>'+T('Kringzon (m)','Surr. zone (m)')+'</th>'
+      +'<th title="'+T('Djup till rörcentrum från vägyta','Depth to pipe centreline from road surface')+'">'+T('Djup m.c.','Depth c/l')+' (m)</th>'
+      +'<th title="'+T('Rördiameter + kring ovan kron (AMA)','Pipe diameter + surround above crown (AMA)')+'">'+T('Kringzon (m)','Surr. zone (m)')+'</th>'
       +'<th></th>'
       +'</tr></thead><tbody>';
-    spec.pipes.forEach((p,i)=>{
-      tbl+='<tr>';
-      tbl+='<td><input type="text" value="'+p.name+'" onchange="D(\'VA\').spec.pipes['+i+'].name=this.value;touchProj();save();go(\'va\')"></td>';
-      tbl+='<td><input type="number" value="'+Math.round(p.dia*1000)+'" step="1" min="20" style="width:70px" onchange="D(\'VA\').spec.pipes['+i+'].dia=+this.value/1000;touchProj();save();go(\'va\')"></td>';
-      tbl+='<td><input type="text" inputmode="decimal" value="'+p.depth+'" style="width:70px" onchange="D(\'VA\').spec.pipes['+i+'].depth=parseFloat(this.value.replace(\',\',\'.\'))||0;touchProj();save();go(\'va\')"></td>';
-      tbl+='<td class="num" style="color:var(--i);font-weight:700">'+(p.dia+SET.kringAMA).toFixed(3)+'</td>';
-      tbl+='<td>'+(spec.pipes.length>1?'<button class="bd-btn" onclick="event.stopPropagation();D(\'VA\').spec.pipes.splice('+i+',1);touchProj();save();go(\'va\')">✕</button>':'')+'</td>';
-      tbl+='</tr>';
+    if(!sps.length){
+      h+='<tr><td colspan="5" style="text-align:center;color:var(--ts);font-size:12px;padding:14px">'+T('Inga rör tillagda — använd snabbval nedan','No pipes added — use quick-add below')+'</td></tr>';
+    } else {
+      sps.forEach((p,i)=>{
+        h+='<tr>'
+          +'<td><input type="text" value="'+p.name+'" onchange="D('VA').spec.pipes['+i+'].name=this.value;touchProj();save();go('va')"></td>'
+          +'<td><input type="number" value="'+Math.round(p.dia*1000)+'" step="1" min="20" style="width:70px" onchange="const d=D('VA');d.spec.pipes['+i+'].dia=+this.value/1000;d.cfg.pipes['+i+']=+this.value/1000;touchProj();save();go('va')"></td>'
+          +'<td><input type="text" inputmode="decimal" value="'+p.depth+'" style="width:70px" onchange="D('VA').spec.pipes['+i+'].depth=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('va')"></td>'
+          +'<td class="num" style="color:var(--i);font-weight:700">'+(p.dia+SET.kringAMA).toFixed(3)+'</td>'
+          +'<td>'+(sps.length>1?'<button class="bd-btn" onclick="event.stopPropagation();const d=D('VA');d.spec.pipes.splice('+i+',1);d.cfg.pipes.splice('+i+',1);touchProj();save();go('va')">&#x2715;</button>':'')+'</td>'
+          +'</tr>';
+      });
+    }
+    h+='</tbody></table></div>';
+    // Quick-add
+    h+='<div class="va-pb-label" style="margin-top:10px">⚡ '+T('Snabbval — klicka för att lägga till','Quick-add — click to add')+'</div><div class="va-pipe-quick">';
+    [50,63,75,90,110,125,160,200,250,315,400,500,600,800].forEach(mm=>{
+      const dia=(mm/1000).toFixed(3);
+      h+='<button class="va-pipe-btn" onclick="const d=D('VA');const dep=d.spec.pipes.length?Math.max(...d.spec.pipes.map(x=>x.depth))-0.5:2.0;d.spec.pipes.push({name:'DN'+mm+'',dia:'+dia+',depth:Math.max(0.5,dep)});d.cfg.pipes.push('+dia+');touchProj();save();go('va')">DN '+mm+'</button>';
     });
-    tbl+='</tbody></table></div>';
-    return tbl;
+    h+='</div>';
+    // Custom DN input
+    h+='<div class="va-custom-row">'
+      +'<input id="va-cust-mm" type="number" placeholder="'+T('Eget DN (mm)','Custom DN (mm)')+'" min="20" max="2000" step="1"'
+      +' onkeydown="if(event.key==='Enter'){const v=+document.getElementById('va-cust-mm').value;if(v>0){const d=D('VA');const dep=d.spec.pipes.length?Math.max(...d.spec.pipes.map(x=>x.depth))-0.5:2.0;d.spec.pipes.push({name:'DN'+v,dia:+(v/1000).toFixed(3),depth:Math.max(0.5,dep)});d.cfg.pipes.push(+(v/1000).toFixed(3));touchProj();save();go('va');}}">'
+      +'<button class="btn bp" onclick="const v=+document.getElementById('va-cust-mm').value;if(v>0){const d=D('VA');const dep=d.spec.pipes.length?Math.max(...d.spec.pipes.map(x=>x.depth))-0.5:2.0;d.spec.pipes.push({name:'DN'+v,dia:+(v/1000).toFixed(3),depth:Math.max(0.5,dep)});d.cfg.pipes.push(+(v/1000).toFixed(3));touchProj();save();go('va')}">+ '+T('Eget mått','Custom')+'</button>'
+      +'<button class="btn bs" onclick="const d=D('VA');d.spec.pipes=[];d.cfg.pipes=[];touchProj();save();go('va')" style="color:var(--d)">'+T('Rensa alla','Clear all')+'</button>'
+      +'</div>';
+    // BW / Badd / Kring row
+    h+='<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11px;border-top:1px solid var(--bd);margin-top:10px;padding-top:8px">'
+      +'<label style="color:var(--ts)">BW (m):</label>'
+      +'<input type="number" value="'+specBW+'" step=".05" min=".1" style="width:64px" onchange="D('VA').spec.bw=+this.value;touchProj();save();go('va')">'
+      +'<label style="color:var(--ts)">'+T('Bädd (m):','Bed (m):')+'</label>'
+      +'<input type="number" value="'+specBadd+'" step=".05" min="0" style="width:64px" onchange="D('VA').spec.badd=+this.value;touchProj();save();go('va')">'
+      +'<span style="color:var(--ts);margin-left:4px">'+T('Kring ovan kron:','Surr. above crown:')+' <strong style="color:var(--i)">'+SET.kringAMA*100+' cm</strong> (AMA)'
+      +' · <span onclick="go('settings')" style="cursor:pointer;color:var(--a);text-decoration:underline">'+T('Ändra i inställningar','Change in settings')+'</span></span>'
+      +'</div>';
+    return h;
   })()}
-  <div class="btn-row" style="padding:6px 16px 12px">
-    <button class="btn bp" onclick="const pp=D('VA').spec.pipes;pp.push({name:T('Rör','Pipe')+' '+(pp.length+1),dia:.16,depth:pp.length?Math.max(...pp.map(x=>x.depth))-0.7:2.5});touchProj();save();go('va')">+ ${T('Rör med djup','Pipe with depth')}</button>
-  </div>
-  </div>
 
   <div class="va-cfg-groups">
 
