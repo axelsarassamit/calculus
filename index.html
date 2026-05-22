@@ -836,7 +836,7 @@ function vaAll(){
       const frac=(p1.c||0)/Math.max(p1.r||d1,0.001);
       jord=exc*(1-frac);berg=Math.max(0,exc*frac);
     }
-    const bed=L*bw*(c.badd||0),bedA=L*bw;
+    const bed=L*bw*(SET?.baddDefault??c.badd??0.15),bedA=L*bw;
     const sur=Math.max(0,bw*c.sfh*L-bed),remA=Math.max(0,exc-bed-sur);
     const ad=(d1+d2)/2,at=(tw1+tw2)/2;
     const avgSl=(slV+slH)/2,sLen=Math.sqrt(ad**2+(ad*avgSl)**2);
@@ -1919,8 +1919,6 @@ function renderVA(){
         <span style="display:inline-flex;align-items:center;gap:2px"><input type="text" inputmode="decimal" value="${VA.cfg.slopeHX||1}" style="width:36px;text-align:center" onchange="const d=D('VA');d.cfg.slopeHX=parseFloat(this.value)||1;d.cfg.slopeH=+((d.cfg.slopeHY??d.cfg.slopeH??0)/(+this.value||1)).toFixed(3);touchProj();save();go('va')"><span style="color:var(--ts);font-weight:600;font-size:13px">&nbsp;:&nbsp;</span><input type="text" inputmode="decimal" value="${VA.cfg.slopeHY??VA.cfg.slopeH}" style="width:44px;text-align:center" onchange="const d=D('VA');d.cfg.slopeHY=parseFloat(this.value.replace(',','.'))||0;d.cfg.slopeH=+(parseFloat(this.value.replace(',','.'))/(d.cfg.slopeHX??1)).toFixed(3);touchProj();save();go('va')"></span></div>
       <div class="fi"><label>${T('Vägbredd (m)','Road width (m)')}</label>
         <input type="number" value="${VA.cfg.roadW}" step=".5" min="0" onchange="D('VA').cfg.roadW=+this.value;touchProj();save();go('va')"></div>
-      <div class="fi"><label title="${T('Bäddlagrets tjocklek under rörbotten. AMA-standard 0.10–0.20 m','Bedding layer thickness below pipe bottom. AMA standard 0.10–0.20 m')}">${T('Bädd (m)','Bedding (m)')} <span style="opacity:.5">ℹ</span></label>
-        <input type="number" value="${VA.cfg.badd??0.15}" step=".05" min="0" onchange="D('VA').cfg.badd=+this.value;touchProj();save();go('va')"></div>
     </div>
 
     <div class="va-cfg-group">
