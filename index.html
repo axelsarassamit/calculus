@@ -1260,7 +1260,7 @@ function renderEL(){
     <span style="margin-left:auto;font-size:9px;font-weight:400;text-transform:none;color:var(--ts)">${T('Klicka rad = visa tvärsnitt','Click row = show section')}</span>
   </div>
   <div class="tbl-wrap"><table class="dt">
-    <thead><tr><th>W(m)</th><th>${T('Jorddj.','Soil d.')} E</th><th>${T('Bergdj.','Rock d.')} D</th><th>H</th><th>⌀50</th><th>⌀110</th><th>⌀160</th><th>K</th><th>✓</th><th></th></tr></thead>
+    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Djup jord','Soil depth')}</th><th>D ${T('Djup berg','Rock depth')}</th><th>H ${T('Täckn.','Cover')}</th><th>⌀50</th><th>⌀110</th><th>⌀160</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>
     ${EL.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.w}" step="5" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].w=+this.value;touchProj();save();go('el')"></td>
@@ -1334,8 +1334,9 @@ function renderFV(){
     <p>${T('FV-rör levereras i par (tilledning + retur). Bottenbredden beräknas automatiskt från rördimensionerna + 20cm. Schaktet kräver noggrann kringfyllning för att skydda isoleringen mot mekanisk skada.','FV pipes come in pairs (supply + return). Bottom width is auto-calculated from pipe diameters + 20cm. Careful surrounding fill protects insulation from mechanical damage.')}</p>
     <ul style="margin-top:6px">
       <li><strong>BW</strong> = C (${T('ytterdia tilledning','outer dia supply')}) + D (${T('ytterdia retur','outer dia return')}) + 0.20m</li>
-      <li>${T('Djupspecifikation FV: schakt djupare/grundare än 1.0m redovisas separat','FV depth spec: excavation deeper/shallower than 1.0m is reported separately')} → <span class="badge-pill" onclick="go('fvspec')" style="cursor:pointer">FV-spec ›</span></li>
-      <li>${T('Slant G kan sättas per punkt — override av konfigurationsvärdet','Slope G can be set per point — overrides configuration value')}</li>
+      <li><strong>E</strong> = ${T('schaktdjup per punkt, interpoleras lineärt mellan punkter','excavation depth per point, linearly interpolated between points')}</li>
+      <li><strong>G</strong> = ${T('slant H:1V per punkt — override av konfigurationsvärdet','slope H:1V per point — overrides config value')}</li>
+      <li><strong>FV-spec</strong>: ${T('djupare/grundare än 1.0m redovisas separat','deeper/shallower than 1.0m reported separately')} → <span class="badge-pill" onclick="go('fvspec')" style="cursor:pointer">FV-spec ›</span></li>
     </ul>
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--d)"></span>${T('Konfiguration','Configuration')}</div>
@@ -1367,7 +1368,7 @@ function renderFV(){
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Profilpunkter — klicka rad för tvärsnitt','Profile points — click row for section')}</div>
   <div class="tbl-wrap"><table class="dt">
-    <thead><tr><th>I(m)</th><th>E</th><th>F(bädd)</th><th>G(slant)</th><th>A(kring)</th><th>C(dia)</th><th>D(dia)</th><th>K%</th><th>✓</th><th></th></tr></thead>
+    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Djup','Depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia tilledn.','Supply dia')}</th><th>D ${T('Dia retur','Return dia')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>${FV.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].i=+this.value;touchProj();save();go('fv')"></td>
       <td><input type="number" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].e=+this.value;touchProj();save();go('fv')"></td>
@@ -1412,9 +1413,10 @@ function renderFB(){
   <div class="infobox"><h4>ℹ️ ${T('Beräkningsprincip Fyllnad mot byggnad','Fill Against Building Calculation Principle')}</h4>
     <p>${T('Fyllnad mot byggnad avser schakt och fyllning utmed husgrunder och källarmurar. Arbetet utförs med försiktighet för att inte skada befintlig konstruktion. Bottenbredden styrs av rörledningarnas yttermått plus säkerhetsavstånd.','Fill against building refers to excavation and fill alongside building foundations and basement walls. Work is done carefully to avoid damaging existing structures. Bottom width is controlled by pipe outer dimensions plus safety margins.')}</p>
     <ul style="margin-top:6px">
-      <li>${T('BW = ytterdia tilledning (C) + ytterdia retur (D) + 0.20m','BW = outer dia supply pipe (C) + outer dia return pipe (D) + 0.20m')}</li>
-      <li>${T('Slänter är normalt flackare (0.1:1) pga risk för ras mot byggnaden','Slopes are normally shallower (0.1:1) due to collapse risk against the building')}</li>
-      <li>${T('Djupet E avser schaktdjup; F är bäddlagrets tjocklek','Depth E is excavation depth; F is bedding layer thickness')}</li>
+      <li><strong>BW</strong> = C (${T('ytterdia 1','outer dia 1')}) + D (${T('ytterdia 2','outer dia 2')}) + 0.20m</li>
+      <li><strong>E</strong> = ${T('schaktdjup per punkt','excavation depth per point')}</li>
+      <li><strong>F</strong> = ${T('bäddlagrets tjocklek under rörets underkant','bedding layer thickness below pipe bottom')}</li>
+      <li><strong>G</strong> = ${T('slant H:1V — normalt 0.1:1 pga risk för ras mot byggnad','slope H:1V — normally 0.1:1 due to collapse risk against building')}</li>
     </ul>
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--o)"></span>${T('Konfiguration','Configuration')}</div>
@@ -1448,7 +1450,7 @@ function renderFB(){
     <span style="margin-left:auto;font-size:9px;color:var(--ts);font-weight:400;text-transform:none">${T('I=Station · E=Schaktdjup · F=Bäddtjocklek · G=Slant · A=Kringh. · C/D=Rördim · K=Jordfraktion','I=Station · E=Exc.depth · F=Bed thickness · G=Slope · A=Surr.h · C/D=Pipe diam · K=Soil fraction')}</span>
   </div>
   <div class="tbl-wrap"><table class="dt">
-    <thead><tr><th>I(m)</th><th>E ${T('Djup','depth')}</th><th>F ${T('Bädd','bed')}</th><th>G ${T('Slant','slope')}</th><th>A ${T('Kring','surr.')}</th><th>C ${T('Dia1','dia1')}</th><th>D ${T('Dia2','dia2')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
+    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Djup','Depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia 1','Dia 1')}</th><th>D ${T('Dia 2','Dia 2')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>${FB.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].i=+this.value;touchProj();save();go('fb')"></td>
       <td><input type="number" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].e=+this.value;touchProj();save();go('fb')"></td>
@@ -1489,13 +1491,13 @@ function renderTR(){
   return`<div>
   <div class="ph"><h2>🔵 ${T('Trumma','Culvert')} — ${T('Ledningsschakt stora rör','Large pipe trench')}</h2>
   <div class="sub">${T('Betong- och plasttrummor DN200–DN400. Djupa schakt med breda bottnar och extra stabila bäddar.','Concrete and plastic culverts DN200–DN400. Deep trenches with wide bottoms and extra stable bedding.')}</div></div>
-  <div class="infobox"><h4>ℹ️ ${T('Beräkningsprincip Trumma','Culvert calculation principle')}</h4>
+  <div class="infobox"><h4>ℹ️ ${T('Beräkningsprincip Trumma','Culvert Calculation Principle')}</h4>
     <p>${T('Trumma-schakt avser vägtrummor och stora ledningar (DN200–DN400). Bottenbredden beräknas som ytterdiameter rör 1 + ytterdiameter rör 2 + 10cm. Schaktet kräver noggrant anpassad bädd och kringfyllning av godkänt material.','Culvert trench refers to road culverts and large pipes (DN200–DN400). Bottom width = outer diameter pipe 1 + outer diameter pipe 2 + 10cm. Trench requires carefully adapted bedding and surrounding fill of approved material.')}</p>
     <ul style="margin-top:6px">
-      <li>${T('BW = C (dia rör 1) + D (dia rör 2) + 0.10m','BW = C (dia pipe 1) + D (dia pipe 2) + 0.10m')}</li>
-      <li>${T('Slant standard 1:1 — kontrollera markförhållanden','Standard slope 1:1 — check ground conditions')}</li>
-      <li>${T('F = bäddlagrets tjocklek under rörets underkant','F = bedding layer thickness below pipe bottom')}</li>
-      <li>${T('A = kringfyllningshöjd upp till täcklager','A = surrounding fill height up to top layer')}</li>
+      <li><strong>BW</strong> = C (${T('dia rör 1','dia pipe 1')}) + D (${T('dia rör 2','dia pipe 2')}) + 0.10m</li>
+      <li><strong>E</strong> = ${T('schaktdjup per punkt','excavation depth per point')}</li>
+      <li><strong>F</strong> = ${T('bäddlagrets tjocklek under rörets underkant','bedding layer thickness below pipe bottom')}</li>
+      <li><strong>A</strong> = ${T('kringfyllningshöjd upp till täcklager','surrounding fill height up to top layer')}</li>
     </ul>
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Konfiguration','Configuration')}</div>
@@ -1529,7 +1531,7 @@ function renderTR(){
     <span style="margin-left:auto;font-size:9px;color:var(--ts);font-weight:400;text-transform:none">${T('I=Station · E=Schaktdjup · F=Bäddtjocklek · G=Slant · A=Kringh. · C/D=Rördim','I=Station · E=Exc.depth · F=Bed thickness · G=Slope · A=Surr.h · C/D=Pipe diam')}</span>
   </div>
   <div class="tbl-wrap"><table class="dt">
-    <thead><tr><th>I(m)</th><th>E ${T('Djup','depth')}</th><th>F ${T('Bädd','bed')}</th><th>G ${T('Slant','slope')}</th><th>A ${T('Kring','surr.')}</th><th>C ${T('Dia1','dia1')}</th><th>D ${T('Dia2','dia2')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
+    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Djup','Depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia 1','Dia 1')}</th><th>D ${T('Dia 2','Dia 2')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>${TR.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].i=+this.value;touchProj();save();go('tr')"></td>
       <td><input type="number" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].e=+this.value;touchProj();save();go('tr')"></td>
@@ -1690,7 +1692,7 @@ function renderVA(){
     <span style="margin-left:auto;font-size:9px;font-weight:400;text-transform:none;color:var(--ts)">${T('Klicka rad = visa tvärsnitt','Click row = show section')}</span>
   </div>
   <div class="tbl-wrap"><table class="dt">
-    <thead><tr><th>N(m)</th><th>R(dj)</th><th>C(berg)</th><th>BW</th><th>A(kring)</th><th>${T('Jord','Soil')} m³</th><th>${T('Berg','Rock')} m³</th><th>${T('Bädd','Bed')} m³</th><th>${T('Kring','Surr')} m³</th><th>✓</th><th></th></tr></thead>
+    <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>R ${T('Djup','Depth')}</th><th>C ${T('Bergdj.','Rock d.')}</th><th>BW</th><th>A ${T('Kring','Surr.')}</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th><th>✓</th><th></th></tr></thead>
     <tbody>${VA.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.n}" step="5" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].n=+this.value;touchProj();save();go('va')"></td>
       <td><input type="number" value="${p.r}" step=".1" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].r=+this.value;touchProj();save();go('va')"></td>
@@ -1947,7 +1949,7 @@ function renderBudget(){
   const cfg=D('BUD').cfg;
 
   // ── Auto-pull volumes from all calc types ──────────────────
-  const el=elAll().tot,fv=fvAll().tot,fb=fbAll().tot,tr=trAll().tot,va=vaAll().tot;
+  const {segs:elSegs,tot:el}=elAll(),{segs:fvSegs,tot:fv}=fvAll(),{segs:fbSegs,tot:fb}=fbAll(),{segs:trSegs,tot:tr}=trAll(),{segs:vaSegs,tot:va}=vaAll();
   const totJord = el.jord+fv.jord+fb.jord+tr.jord+va.jord;
   const totBerg = el.berg+fv.berg+fb.berg+tr.berg+va.berg;
   const totBal  = el.bal +fv.bal +fb.bal +tr.bal +va.bal;
