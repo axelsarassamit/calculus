@@ -1767,65 +1767,61 @@ function renderVA(){
   const specTotalH=specLayers.reduce((s,l)=>s+l.h,0);
   const specKLs=specLayers.filter(l=>l.type==='kring');
   const specSnitth=specKLs.length?specKLs.reduce((s,l)=>s+l.h,0)/specKLs.length:0;
-  // Build spec SVG with sloped walls — string concat avoids nested template literals
-  const svgW2=340,svgH2=220,svgSY2=14;  // svgSY2 = top margin (ground level)
-  const svgSlJ2=VA?VA.cfg.slopeV||0:0;   // soil slope H:1V (both sides for VA)
-  const svgTwM2=specBW+2*svgSlJ2*specTotalH;  // top width in metres
-  const svgPxM2=Math.min(
-    (svgH2-svgSY2-22)/Math.max(specTotalH,0.1),
-    (svgW2-40)/Math.max(svgTwM2,specBW,0.01),
-    75
-  );
-  const svgBwPx2=specBW*svgPxM2;   // BW in px
-  const svgCx2=svgW2/2;
-  // half-width in px at SVG y-coordinate yy (trapezoidal — wider near surface)
-  const svgHW2=(yy)=>{
-    const dFromSurf=Math.max(0,(yy-svgSY2)/svgPxM2);
-    const dFromBot=Math.max(0,specTotalH-dFromSurf);
-    return svgBwPx2/2+svgSlJ2*dFromBot*svgPxM2;
-  };
-  const svgBotY2=svgSY2+specTotalH*svgPxM2;  // y at trench bottom
-  let svgP2='',svgYY2=svgSY2;
-  for(const l of [...specLayers].reverse()){
-    const lh=Math.max(l.h*svgPxM2,2);
-    const y1=svgYY2,y2=svgYY2+lh;
-    // Rest fill: full sloped width; kring/badd: BW-wide zone around pipes
-    const x1l=(l.type==='rest'?svgCx2-svgHW2(y1):svgCx2-svgBwPx2/2).toFixed(1);
-    const x1r=(l.type==='rest'?svgCx2+svgHW2(y1):svgCx2+svgBwPx2/2).toFixed(1);
-    const x2l=(l.type==='rest'?svgCx2-svgHW2(y2):svgCx2-svgBwPx2/2).toFixed(1);
-    const x2r=(l.type==='rest'?svgCx2+svgHW2(y2):svgCx2+svgBwPx2/2).toFixed(1);
-    svgP2+='<polygon points="'+x1l+','+y1.toFixed(1)+' '+x1r+','+y1.toFixed(1)+' '+x2r+','+y2.toFixed(1)+' '+x2l+','+y2.toFixed(1)+'" fill="'+l.col+'" opacity=".85"/>';
-    if(l.h>0.08){
-      const lab=l.type==='badd'?T('Bädd','Bed'):l.type==='kring'?'Kring':'Rest';
-      svgP2+='<text x="'+svgCx2+'" y="'+(y1+lh/2+3.5).toFixed(1)+'" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">'+lab+' '+l.h.toFixed(2)+'m</text>';
-    }
-    svgYY2+=lh;
-  }
-  // Pipes at their depths within BW zone
+  // Build spec SVG — same dark style as svgSection(), string concat avoids nested template literals
+  const svgW2=380,svgH2=210,svgPx2=44,svgPt2=34;
+  const svgSlJ2=VA?VA.cfg.slopeV||0:0;
+  const svgMaxD2=specPipes.length?Math.max(...specPipes.map(p=>p.depth))+Math.max(...specPipes.map(p=>p.dia))/2+0.2:Math.max(specTotalH,0.5);
+  const svgTwM2=specBW+2*svgSlJ2*svgMaxD2;
+  const svgSc2=Math.min((svgW2-2*svgPx2)/Math.max(svgTwM2,0.01),(svgH2-svgPt2-24)/Math.max(svgMaxD2,0.01));
+  const svgCx2=svgW2/2,svgGy2=svgPt2,svgBy2=svgGy2+svgMaxD2*svgSc2;
+  const svgHbw2=specBW*svgSc2/2,svgHtw2=svgTwM2*svgSc2/2;
+  const svgBeddH2=Math.max(6,specTotBadd*svgSc2);
+  const svgKringH2=Math.max(8,specTotKring*svgSc2);
+  const svgPC2=['#6366f1','#06b6d4','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#f97316'];
+  let svgPipes2='';
   const svgN2=specPipes.length||1;
-  for(let pi2=0;pi2<specPipes.length;pi2++){
-    const sp2=specPipes[pi2];
-    const px2=svgCx2-svgBwPx2/2+(pi2+.5)/svgN2*svgBwPx2;
-    const py2=svgSY2+sp2.depth*svgPxM2;
-    const pR2=Math.min(Math.max(sp2.dia/2*svgPxM2,4),svgBwPx2/(2*svgN2)-2);
-    svgP2+='<circle cx="'+px2.toFixed(1)+'" cy="'+py2.toFixed(1)+'" r="'+pR2.toFixed(1)+'" fill="#1e3a8a" opacity=".95" stroke="#93c5fd" stroke-width="1.5"/>';
-    svgP2+='<text x="'+px2.toFixed(1)+'" y="'+(py2+pR2+10).toFixed(1)+'" text-anchor="middle" font-size="8" fill="var(--ts)" font-weight="600">DN'+Math.round(sp2.dia*1000)+'</text>';
-  }
-  const specSVG='<svg width="'+svgW2+'" height="'+svgH2+'" style="display:block;margin:0 auto">'
+  specPipes.forEach((sp2,i)=>{
+    const r2=Math.max(3,sp2.dia*svgSc2/2);
+    const cpx2=svgCx2-svgHbw2+(i+.5)/svgN2*(svgHbw2*2);
+    const cpy2=svgGy2+sp2.depth*svgSc2;
+    if(cpy2-r2>svgGy2&&cpy2+r2<svgBy2+4){
+      svgPipes2+='<circle cx="'+cpx2.toFixed(1)+'" cy="'+cpy2.toFixed(1)+'" r="'+r2.toFixed(1)+'" fill="'+svgPC2[i%svgPC2.length]+'" opacity=".85" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>';
+      svgPipes2+='<text x="'+cpx2.toFixed(1)+'" y="'+(cpy2+r2+9).toFixed(1)+'" text-anchor="middle" font-size="7" fill="rgba(255,255,255,.55)" font-family="Inter,sans-serif">'+Math.round(sp2.dia*1000)+'</text>';
+    }
+  });
+  const specSVG='<svg width="'+svgW2+'" height="'+svgH2+'" style="border-radius:12px;background:#0b1425;display:block;width:100%;max-width:'+svgW2+'px" viewBox="0 0 '+svgW2+' '+svgH2+'">'
+    +'<defs>'
+    +'<linearGradient id="skyVA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f2040"/><stop offset="1" stop-color="#1e3a5f"/></linearGradient>'
+    +'<linearGradient id="soilVA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d2b1f" stop-opacity=".6"/><stop offset="1" stop-color="#2d1b0e" stop-opacity=".3"/></linearGradient>'
+    +'<pattern id="hatchVA" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="rgba(99,102,241,.12)" stroke-width="3"/></pattern>'
+    +'</defs>'
+    // Sky + soil background
+    +'<rect x="0" y="0" width="'+svgW2+'" height="'+svgGy2+'" fill="url(#skyVA)"/>'
+    +'<rect x="0" y="'+svgGy2+'" width="'+svgW2+'" height="'+(svgH2-svgGy2)+'" fill="url(#soilVA)"/>'
+    // Soil hatch outside trench
+    +'<rect x="0" y="'+svgGy2+'" width="'+(svgCx2-svgHtw2).toFixed(1)+'" height="'+(svgH2-svgGy2)+'" fill="url(#hatchVA)"/>'
+    +'<rect x="'+(svgCx2+svgHtw2).toFixed(1)+'" y="'+svgGy2+'" width="'+(svgW2-svgCx2-svgHtw2).toFixed(1)+'" height="'+(svgH2-svgGy2)+'" fill="url(#hatchVA)"/>'
     // Ground line
-    +'<line x1="0" y1="'+svgSY2+'" x2="'+svgW2+'" y2="'+svgSY2+'" stroke="#84cc16" stroke-width="1" stroke-dasharray="5,3" opacity=".5"/>'
-    // Trapezoidal trench outline (both sides sloped)
-    +'<polygon points="'+(svgCx2-svgHW2(svgSY2)).toFixed(1)+','+svgSY2+' '+(svgCx2+svgHW2(svgSY2)).toFixed(1)+','+svgSY2+' '+(svgCx2+svgBwPx2/2).toFixed(1)+','+svgBotY2.toFixed(1)+' '+(svgCx2-svgBwPx2/2).toFixed(1)+','+svgBotY2.toFixed(1)+'" fill="none" stroke="var(--bd)" stroke-width="2"/>'
-    +svgP2
-    // Slope label on right wall
-    +(svgSlJ2>0?'<text x="'+(svgCx2+svgHW2(svgSY2)+4).toFixed(1)+'" y="'+(svgSY2+specTotalH*svgPxM2*0.4).toFixed(1)+'" font-size="8" fill="#c084fc" dominant-baseline="middle">'+svgSlJ2+'H:1V</text>':'')
+    +'<line x1="0" y1="'+svgGy2+'" x2="'+svgW2+'" y2="'+svgGy2+'" stroke="#84cc16" stroke-width="1.5" stroke-dasharray="6,4" opacity=".5"/>'
+    // Trapezoidal trench (wider at top = ground)
+    +'<polygon points="'+(svgCx2-svgHtw2).toFixed(1)+','+svgGy2+' '+(svgCx2+svgHtw2).toFixed(1)+','+svgGy2+' '+(svgCx2+svgHbw2).toFixed(1)+','+svgBy2.toFixed(1)+' '+(svgCx2-svgHbw2).toFixed(1)+','+svgBy2.toFixed(1)+'" fill="rgba(15,20,40,.92)" stroke="rgba(99,102,241,.5)" stroke-width="1.5"/>'
+    // Kring zone
+    +'<polygon points="'+(svgCx2-svgHbw2).toFixed(1)+','+(svgBy2-svgBeddH2-svgKringH2).toFixed(1)+' '+(svgCx2+svgHbw2).toFixed(1)+','+(svgBy2-svgBeddH2-svgKringH2).toFixed(1)+' '+(svgCx2+svgHbw2).toFixed(1)+','+(svgBy2-svgBeddH2).toFixed(1)+' '+(svgCx2-svgHbw2).toFixed(1)+','+(svgBy2-svgBeddH2).toFixed(1)+'" fill="rgba(6,182,212,.2)" stroke="rgba(6,182,212,.3)" stroke-width=".5"/>'
+    // Bädd
+    +'<rect x="'+(svgCx2-svgHbw2).toFixed(1)+'" y="'+(svgBy2-svgBeddH2).toFixed(1)+'" width="'+(svgHbw2*2).toFixed(1)+'" height="'+svgBeddH2.toFixed(1)+'" fill="rgba(245,158,11,.55)" stroke="rgba(245,158,11,.4)" stroke-width=".5" rx="2"/>'
+    // Pipes at their actual depths
+    +svgPipes2
     // TW label
-    +(svgSlJ2>0?'<text x="'+svgCx2+'" y="'+(svgSY2-3)+'" text-anchor="middle" font-size="8" fill="#94a3b8">TW '+svgTwM2.toFixed(2)+'m</text>':'')
-    // Height ruler on left
-    +'<line x1="'+(svgCx2-svgBwPx2/2-12).toFixed(1)+'" y1="'+svgSY2+'" x2="'+(svgCx2-svgBwPx2/2-12).toFixed(1)+'" y2="'+svgBotY2.toFixed(1)+'" stroke="var(--ts)" stroke-width="1" stroke-dasharray="3,2"/>'
-    +'<text x="'+(svgCx2-svgBwPx2/2-14).toFixed(1)+'" y="'+(svgSY2+specTotalH*svgPxM2/2).toFixed(1)+'" text-anchor="middle" font-size="8" fill="var(--ts)" transform="rotate(-90,'+(svgCx2-svgBwPx2/2-14).toFixed(1)+','+(svgSY2+specTotalH*svgPxM2/2).toFixed(1)+')">'+specTotalH.toFixed(2)+'m</text>'
-    // BW label at bottom
-    +'<text x="'+svgCx2+'" y="'+(svgBotY2+14).toFixed(1)+'" text-anchor="middle" font-size="9" fill="var(--ts)">BW = '+specBW+'m</text>'
+    +'<line x1="'+(svgCx2-svgHtw2+2).toFixed(1)+'" y1="'+(svgGy2+10).toFixed(1)+'" x2="'+(svgCx2+svgHtw2-2).toFixed(1)+'" y2="'+(svgGy2+10).toFixed(1)+'" stroke="#c084fc" stroke-width="1" marker-end="url(#a)"/>'
+    +'<text x="'+svgCx2+'" y="'+(svgGy2-6)+'" text-anchor="middle" font-size="10" fill="#c084fc" font-family="Inter,sans-serif" font-weight="700">TW '+svgTwM2.toFixed(2)+'m</text>'
+    // BW label
+    +'<text x="'+svgCx2+'" y="'+(svgBy2+16).toFixed(1)+'" text-anchor="middle" font-size="10" fill="#fbbf24" font-family="Inter,sans-serif" font-weight="700">BW '+specBW+'m</text>'
+    // D label (right side vertical ruler)
+    +'<line x1="'+(svgCx2+svgHbw2+8).toFixed(1)+'" y1="'+svgGy2+'" x2="'+(svgCx2+svgHbw2+8).toFixed(1)+'" y2="'+svgBy2.toFixed(1)+'" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>'
+    +'<text x="'+(svgCx2+svgHbw2+14).toFixed(1)+'" y="'+((svgGy2+svgBy2)/2).toFixed(1)+'" font-size="10" fill="#94a3b8" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">D '+svgMaxD2.toFixed(2)+'m</text>'
+    // Layer labels (left of BW zone)
+    +'<text x="'+(svgCx2-svgHbw2-4).toFixed(1)+'" y="'+(svgBy2-svgBeddH2/2).toFixed(1)+'" text-anchor="end" font-size="8" fill="#fbbf24" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">Bädd</text>'
+    +'<text x="'+(svgCx2-svgHbw2-4).toFixed(1)+'" y="'+(svgBy2-svgBeddH2-svgKringH2/2).toFixed(1)+'" text-anchor="end" font-size="8" fill="#06b6d4" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">Kring</text>'
     +'</svg>';
   return`<div>
   <div class="ph"><h2>💧 ${T('Vatten och Avlopp','Water & Sewer')}</h2>
