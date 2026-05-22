@@ -1728,15 +1728,6 @@ function renderVA(){
       +'<button class="btn bp" onclick="const v=+document.getElementById(\'va-cust-mm\').value;if(v>0){const d=D(\'VA\');const dep=d.spec.pipes.length?Math.max(...d.spec.pipes.map(x=>x.depth))-0.5:2.0;d.spec.pipes.push({name:\'DN\'+v,dia:+(v/1000).toFixed(3),depth:Math.max(0.5,dep)});d.cfg.pipes.push(+(v/1000).toFixed(3));touchProj();save();go(\'va\')}">+ '+T('Eget mått','Custom')+'</button>'
       +'<button class="btn bs" onclick="const d=D(\'VA\');d.spec.pipes=[];d.cfg.pipes=[];touchProj();save();go(\'va\')" style="color:var(--d)">'+T('Rensa alla','Clear all')+'</button>'
       +'</div>';
-    // BW / Badd / Kring row
-    h+='<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11px;border-top:1px solid var(--bd);margin-top:10px;padding-top:8px">'
-      +'<label style="color:var(--ts)">BW (m):</label>'
-      +'<input type="number" value="'+specBW+'" step=".05" min=".1" style="width:64px" onchange="D(\'VA\').spec.bw=+this.value;touchProj();save();go(\'va\')">'
-      +'<label style="color:var(--ts)">'+T('Bädd (m):','Bed (m):')+'</label>'
-      +'<input type="number" value="'+specBadd+'" step=".05" min="0" style="width:64px" onchange="D(\'VA\').spec.badd=+this.value;touchProj();save();go(\'va\')">'
-      +'<span style="color:var(--ts);margin-left:4px">'+T('Kring ovan kron:','Surr. above crown:')+' <strong style="color:var(--i)">'+SET.kringAMA*100+' cm</strong> (AMA)'
-      +' \xb7 <span onclick="go(\'settings\')" style="cursor:pointer;color:var(--a);text-decoration:underline">'+T('Ändra i inställningar','Change in settings')+'</span></span>'
-      +'</div>';
     return h;
   })()}
 
