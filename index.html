@@ -404,6 +404,7 @@ a{color:inherit;text-decoration:none}
 ═══════════════════════════════════════════════════════════════ */
 const LS='ama_v6';
 let S={projects:{},cur:null,page:'projects',lang:'sv',dark:false,selSeg:0};
+let SET={kringAMA:.3,baddDefault:.15}; // AMA/global technical defaults
 let Charts={},modalMode='new';
 
 /* ═══════════════════════════════════════════════════════════════
@@ -531,6 +532,7 @@ function demoData(){
 ═══════════════════════════════════════════════════════════════ */
 function save(){
   try{localStorage.setItem(LS,JSON.stringify({projects:S.projects,cur:S.cur,lang:S.lang,dark:S.dark}));}catch(e){}
+  try{localStorage.setItem('calcSettings',JSON.stringify(SET));}catch(e){}
 }
 function load(){
   try{
@@ -545,6 +547,7 @@ function load(){
     S.projects.demo=demo;S.cur=null;
   }
   if(S.dark)document.documentElement.setAttribute('data-theme','dark');
+  try{const ss=localStorage.getItem('calcSettings');if(ss)SET={...SET,...JSON.parse(ss)};}catch(e){}
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -834,6 +837,8 @@ function renderSidebar(){
     <div class="ni ${S.page==='rl'?'a':''}" onclick="go('rl')">📏 ${T('Rörlängder','Pipe lengths')}</div>
     <div class="ni ${S.page==='sm'?'a':''}" onclick="go('sm')">📊 ${T('Sammanställning','Summary')}</div>
     <div class="ni ${S.page==='budget'?'a':''}" onclick="go('budget')">💰 ${T('Budget','Budget')}</div>
+    <div class="proj-divider"></div>
+    <div class="ni ${S.page==='settings'?'a':''}" onclick="go('settings')">⚙️ ${T('Inställningar','Settings')}</div>
     `;
   }
   document.getElementById('sidebar').innerHTML=`
@@ -861,7 +866,7 @@ function renderSidebar(){
     <button class="theme-btn" onclick="tgTheme()">${S.dark?'☀️':'🌙'} ${S.dark?T('Ljust läge','Light mode'):T('Mörkt läge','Dark mode')}</button>
   </div>`;
 }
-function navIco(p){return{dashboard:'🏠',projects:'📁',start:'📚',el:'⚡',fv:'🔥',fb:'🏗️',tr:'🔵',va:'💧',fvspec:'📋',vaspec:'📐',rl:'📏',sm:'📊',budget:'💰'}[p]||'📄';}
+function navIco(p){return{dashboard:'🏠',projects:'📁',start:'📚',el:'⚡',fv:'🔥',fb:'🏗️',tr:'🔵',va:'💧',fvspec:'📋',vaspec:'📐',rl:'📏',sm:'📊',budget:'💰',settings:'⚙️'}[p]||'📄';}
 
 /* ═══════════════════════════════════════════════════════════════
    BOTTOM NAV (mobile)
@@ -879,7 +884,7 @@ function renderBNav(){
 ═══════════════════════════════════════════════════════════════ */
 let _goTimer=null;
 function go(p){
-  const pages={projects:renderProjects,start:renderStart,dashboard:renderDashboard,el:renderEL,fv:renderFV,fb:renderFB,tr:renderTR,va:renderVA,fvspec:renderFVSpec,vaspec:renderVASpec,rl:renderRL,sm:renderSM,budget:renderBudget};
+  const pages={projects:renderProjects,start:renderStart,dashboard:renderDashboard,el:renderEL,fv:renderFV,fb:renderFB,tr:renderTR,va:renderVA,fvspec:renderFVSpec,vaspec:renderVASpec,rl:renderRL,sm:renderSM,budget:renderBudget,settings:renderSettings};
   if(p===S.page){
     clearTimeout(_goTimer);
     const scrollY=window.scrollY;
@@ -1827,8 +1832,8 @@ function renderVASpec(){
     layers.push({name:T('Bädd djupaste rör','Bedding deepest pipe'),type:'badd',h:badd,col:'#d97706'});
     for(let i=0;i<pipes.length;i++){
       const p=pipes[i];
-      const kh=p.dia+p.sfh;
-      const kringTop=p.depth-p.dia/2-p.sfh;
+      const kh=p.dia+SET.kringAMA;
+      const kringTop=p.depth-p.dia/2-SET.kringAMA;
       layers.push({name:`${T('Kringfyllning','Surround fill')} — ${p.name} DN${Math.round(p.dia*1000)}`,type:'kring',h:kh,col:'#10b981',pipe:p});
       if(i<pipes.length-1){
         const nxt=pipes[i+1];
@@ -1837,7 +1842,7 @@ function renderVASpec(){
       }
     }
     const sh=pipes[pipes.length-1];
-    const restAbove=sh.depth-sh.dia/2-sh.sfh;
+    const restAbove=sh.depth-sh.dia/2-SET.kringAMA;
     if(restAbove>0.005) layers.push({name:T('Restfyllning ovan','Rest fill above'),type:'rest',h:restAbove,col:'#64748b'});
   }
 
@@ -1863,7 +1868,7 @@ function renderVASpec(){
     }
     if(l.pipe){
       const pR=Math.min(l.pipe.dia/2*pxM,bwPx/2-3);
-      const pY=yy+l.pipe.sfh*pxM+pR;
+      const pY=yy+SET.kringAMA*pxM+pR;
       svgParts+=`<circle cx="${cx}" cy="${pY.toFixed(1)}" r="${pR.toFixed(1)}" fill="#1e3a8a" opacity=".9" stroke="#93c5fd" stroke-width="1.5"/>`;
       svgParts+=`<text x="${(cx+pR+5).toFixed(1)}" y="${(pY+3).toFixed(1)}" font-size="8" fill="var(--ts)">DN${Math.round(l.pipe.dia*1000)}</text>`;
     }
@@ -1884,8 +1889,8 @@ function renderVASpec(){
     <p>${T('Varje rör ges en separat kringfyllningszon (= rördiameter + kring ovan krön). Restfyllning beräknas automatiskt i mellanzonerna och ovan det grundaste röret. Djup anges till rörcentrum (m.c.) från vägyta.','Each pipe gets a separate surround fill zone (= pipe diameter + surround above crown). Rest fill is computed automatically for gaps between zones and above the shallowest pipe. Depth is to pipe centreline (c/l) from road surface.')}</p>
     <ul style="margin-top:6px">
       <li><strong>m.c.</strong> = ${T('djup till rörcentrum från vägyta','depth to pipe centreline from road surface')}</li>
-      <li><strong>${T('Kring ovan kron','Surr. above crown')}</strong> ≥ 0.3 m (${T('AMA-krav','AMA requirement')})</li>
-      <li><strong>snitthöjd kringfylln</strong> = ${T('medelhöjd kringfyllning för alla rör','average surround fill height across all pipes')}</li>
+      <li><strong>${T('Kring ovan kron','Surr. above crown')}</strong> = <strong>${SET.kringAMA*100} cm</strong> — ${T('AMA-standard, automatiskt för alla rör. Ändra under','AMA standard, applied automatically to all pipes. Change under')} <span class="badge-pill" onclick="go('settings')" style="cursor:pointer">⚙️ ${T('Inställningar','Settings')}</span></li>
+      <li><strong>snitthöjd kringfylln</strong> = ${T('medelhöjd kringfyllning för alla rör (rördiameter + kring ovan kron)','average surround fill height across all pipes (pipe diameter + surround above crown)')}</li>
     </ul>
   </div>
 
@@ -1904,26 +1909,27 @@ function renderVASpec(){
   </div>
 
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Rörledningar — djup och kringfyllningszoner','Pipes — depth and surround fill zones')}</div>
+  <div style="padding:8px 16px;font-size:12px;color:var(--ts);border-bottom:1px solid var(--bd)">
+    ${T('Kring ovan kron','Surr. above crown')}: <strong style="color:var(--i)">${SET.kringAMA*100} cm</strong> (AMA-standard) · ${T('Kringzon höjd = rördiameter + kring ovan kron','Zone height = pipe Ø + surround above crown')} · <span onclick="go('settings')" style="cursor:pointer;color:var(--a);text-decoration:underline">⚙️ ${T('Ändra i Inställningar','Change in Settings')}</span>
+  </div>
   <div class="tbl-wrap"><table class="dt">
     <thead><tr>
       <th>${T('Rörnamn','Pipe name')}</th>
       <th>${T('Dim (mm)','Dim (mm)')}</th>
       <th>${T('Djup m.c. (m)','Depth c/l (m)')}</th>
-      <th>${T('Kring ovan kron (m)','Surr. above crown (m)')}</th>
-      <th>${T('Kringzon höjd (m)','Kring zone height (m)')}</th>
+      <th>${T('Kringzon höjd (m)','Zone height (m)')}</th>
       <th></th>
     </tr></thead>
     <tbody>${spec.pipes.map((p,i)=>`<tr>
       <td><input type="text" value="${p.name}" onclick="event.stopPropagation()" oninput="D('VA').spec.pipes[${i}].name=this.value;touchProj();save();go('vaspec')"></td>
       <td><input type="number" value="${Math.round(p.dia*1000)}" step="1" min="20" onclick="event.stopPropagation()" oninput="D('VA').spec.pipes[${i}].dia=+this.value/1000;touchProj();save();go('vaspec')"></td>
       <td><input type="text" inputmode="decimal" value="${p.depth}" step=".1" onclick="event.stopPropagation()" oninput="D('VA').spec.pipes[${i}].depth=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('vaspec')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.sfh}" step=".05" min="0" onclick="event.stopPropagation()" oninput="D('VA').spec.pipes[${i}].sfh=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('vaspec')"></td>
-      <td class="num" style="font-weight:700;color:var(--i)">${(p.dia+p.sfh).toFixed(3)}</td>
+      <td class="num" style="font-weight:700;color:var(--i)">${(p.dia+SET.kringAMA).toFixed(3)}</td>
       <td>${spec.pipes.length>1?`<button class="bd-btn" onclick="event.stopPropagation();D('VA').spec.pipes.splice(${i},1);touchProj();save();go('vaspec')">✕</button>`:''}</td>
     </tr>`).join('')}</tbody>
   </table></div>
   <div class="btn-row">
-    <button class="btn bp" onclick="const pp=D('VA').spec.pipes;pp.push({name:'Rör '+(pp.length+1),dia:.16,depth:Math.max(...pp.map(x=>x.depth))-0.7,sfh:.4});touchProj();save();go('vaspec')">+ ${T('Lägg till rör','Add pipe')}</button>
+    <button class="btn bp" onclick="const pp=D('VA').spec.pipes;pp.push({name:'Rör '+(pp.length+1),dia:.16,depth:Math.max(...pp.map(x=>x.depth))-0.7});touchProj();save();go('vaspec')">+ ${T('Lägg till rör','Add pipe')}</button>
   </div></div>
 
   ${layers.length?`
@@ -1956,6 +1962,51 @@ function renderVASpec(){
       <td class="num"><strong>${(totalH*bw*totalL).toFixed(1)}</strong></td>
     </tr></tfoot>
   </table></div></div>`:''}
+  </div>`;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: INSTÄLLNINGAR (GLOBAL SETTINGS)
+═══════════════════════════════════════════════════════════════ */
+function renderSettings(){
+  return`<div>
+  <div class="ph"><h2>⚙️ ${T('Inställningar','Settings')}</h2>
+  <div class="sub">${T('Globala standardvärden och AMA/MER-tekniska parametrar som gäller för alla projekt.','Global defaults and AMA/MER technical parameters applied across all projects.')}</div></div>
+
+  <!-- AMA Fyllning -->
+  <div class="cd"><div class="ct"><span class="dot" style="background:#10b981"></span>${T('AMA-standard — Kringfyllning','AMA standard — Surround fill')}</div>
+  <div class="fg">
+    <div class="fi"><label title="${T('Minsta höjd av kringfyllning ovan rörtopp enligt AMA/MER. Standard 0,30 m. Används automatiskt i VA-spec.','Minimum height of surround fill above pipe crown per AMA/MER. Standard 0.30 m. Applied automatically in VA-spec.')}">${T('Kring ovan rörtopp (m)','Surround above crown (m)')} <span style="opacity:.5">ℹ</span></label>
+      <input type="number" value="${SET.kringAMA}" step=".05" min="0" max="2"
+        oninput="SET.kringAMA=+this.value;save();go('settings')">
+      <span style="font-size:11px;color:var(--ts);margin-left:6px">${T('AMA-krav: ≥ 0,30 m','AMA requirement: ≥ 0.30 m')}</span>
+    </div>
+  </div>
+  <div style="padding:0 16px 12px;font-size:12px;color:var(--ts)">
+    ${T('Denna inställning används i','This setting is used in')} <span class="badge-pill" onclick="go('vaspec')" style="cursor:pointer">📐 VA-spec</span> ${T('för att automatiskt beräkna kringfyllningszonen för varje rör. Kringzon = rördiameter + kring ovan kron.','to automatically calculate the surround fill zone for each pipe. Kring zone = pipe diameter + surround above crown.')}
+  </div></div>
+
+  <!-- AMA Bädd -->
+  <div class="cd"><div class="ct"><span class="dot" style="background:#d97706"></span>${T('AMA-standard — Bädd','AMA standard — Bedding')}</div>
+  <div class="fg">
+    <div class="fi"><label title="${T('Standard bäddtjocklek under rörens underkant. AMA: 0,10–0,20 m beroende på rördimension.','Standard bedding thickness below pipe bottom. AMA: 0.10–0.20 m depending on pipe diameter.')}">${T('Bäddtjocklek standard (m)','Bedding thickness standard (m)')} <span style="opacity:.5">ℹ</span></label>
+      <input type="number" value="${SET.baddDefault}" step=".05" min="0" max="1"
+        oninput="SET.baddDefault=+this.value;save();go('settings')">
+      <span style="font-size:11px;color:var(--ts);margin-left:6px">${T('Typvärde: 0,10–0,20 m','Typical: 0.10–0.20 m')}</span>
+    </div>
+  </div>
+  <div style="padding:0 16px 12px;font-size:12px;color:var(--ts)">
+    ${T('Används som standardvärde för bädd i VA-spec och nya VA-projekt.','Used as default bedding value in VA-spec and new VA projects.')}
+  </div></div>
+
+  <!-- Reset -->
+  <div class="cd"><div class="ct"><span class="dot" style="background:var(--d)"></span>${T('Återställ standardvärden','Reset to defaults')}</div>
+  <div style="padding:12px 16px">
+    <button class="btn" style="background:var(--d);color:#fff" onclick="SET={kringAMA:.3,baddDefault:.15};save();go('settings')">${T('Återställ AMA-standardvärden','Reset AMA defaults')}</button>
+    <span style="font-size:12px;color:var(--ts);margin-left:12px">${T('kring ovan kron = 0,30 m · bädd = 0,15 m','surround above crown = 0.30 m · bedding = 0.15 m')}</span>
+  </div></div>
+
   </div>`;
 }
 
