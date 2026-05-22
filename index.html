@@ -833,7 +833,6 @@ function renderSidebar(){
     <div class="proj-divider"></div>
     <div class="nav-sec">${T('Spec','Spec')}</div>
     <div class="ni ${S.page==='fvspec'?'a':''}" onclick="go('fvspec')">📋 FV-spec</div>
-    <div class="ni ${S.page==='vaspec'?'a':''}" onclick="go('vaspec')">📐 VA-spec</div>
     <div class="ni ${S.page==='rl'?'a':''}" onclick="go('rl')">📏 ${T('Rörlängder','Pipe lengths')}</div>
     <div class="ni ${S.page==='sm'?'a':''}" onclick="go('sm')">📊 ${T('Sammanställning','Summary')}</div>
     <div class="ni ${S.page==='budget'?'a':''}" onclick="go('budget')">💰 ${T('Budget','Budget')}</div>
@@ -1151,12 +1150,12 @@ function renderStart(){
   <div class="calc-box"><h3>🧮 ${T('Interaktiv Schaktkalkylator','Interactive Excavation Calculator')}</h3>
     <p style="font-size:12px;color:var(--ts);margin-bottom:14px">${T('Beräkna schaktvolym direkt — se hur slänter och djup påverkar resultatet i realtid.','Calculate excavation volume directly — see how slopes and depth affect the result in real time.')}</p>
     <div class="fg" style="grid-template-columns:repeat(auto-fill,minmax(110px,1fr))">
-      <div class="fi"><label>${T('Längd (m)','Length (m)')}</label><input type="number" id="sc_l" value="10" step="0.5" oninput="calcSchakt()"></div>
-      <div class="fi"><label>${T('Bottenbredd BW','Bottom width BW')} (m)</label><input type="number" id="sc_bw" value="1.1" step="0.05" oninput="calcSchakt()"></div>
-      <div class="fi"><label>${T('Djup D (m)','Depth D (m)')}</label><input type="number" id="sc_d" value="2.0" step="0.1" oninput="calcSchakt()"></div>
-      <div class="fi"><label>${T('Slantlutning H:1V','Slope H:1V')}</label><input type="number" id="sc_sl" value="0.5" step="0.25" oninput="calcSchakt()"></div>
-      <div class="fi"><label>${T('Bädddjup (m)','Bed depth (m)')}</label><input type="number" id="sc_badd" value="0.15" step="0.05" oninput="calcSchakt()"></div>
-      <div class="fi"><label>${T('Kringf.höjd (m)','Surr.fill h (m)')}</label><input type="number" id="sc_kring" value="0.4" step="0.05" oninput="calcSchakt()"></div>
+      <div class="fi"><label>${T('Längd (m)','Length (m)')}</label><input type="number" id="sc_l" value="10" step="0.5" onchange="calcSchakt()"></div>
+      <div class="fi"><label>${T('Bottenbredd BW','Bottom width BW')} (m)</label><input type="number" id="sc_bw" value="1.1" step="0.05" onchange="calcSchakt()"></div>
+      <div class="fi"><label>${T('Djup D (m)','Depth D (m)')}</label><input type="number" id="sc_d" value="2.0" step="0.1" onchange="calcSchakt()"></div>
+      <div class="fi"><label>${T('Slantlutning H:1V','Slope H:1V')}</label><input type="number" id="sc_sl" value="0.5" step="0.25" onchange="calcSchakt()"></div>
+      <div class="fi"><label>${T('Bädddjup (m)','Bed depth (m)')}</label><input type="number" id="sc_badd" value="0.15" step="0.05" onchange="calcSchakt()"></div>
+      <div class="fi"><label>${T('Kringf.höjd (m)','Surr.fill h (m)')}</label><input type="number" id="sc_kring" value="0.4" step="0.05" onchange="calcSchakt()"></div>
     </div>
     <div class="formula" id="sc_formula">TW = BW + 2 × D × Slant = –</div>
     <div class="calc-result" id="sc_result">
@@ -1252,16 +1251,16 @@ function renderEL(){
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--p)"></span>${T('Konfiguration','Configuration')}</div>
   <div class="fg">
-    <div class="fi"><label>${T('Röravst. inre (m)','Inner spacing (m)')}</label><input type="number" value="${EL.cfg.spacingI}" step=".01" oninput="D('EL').cfg.spacingI=+this.value;touchProj();save();go('el')"></div>
-    <div class="fi"><label>${T('Röravst. yttre (m)','Outer spacing (m)')}</label><input type="number" value="${EL.cfg.spacingL}" step=".01" oninput="D('EL').cfg.spacingL=+this.value;touchProj();save();go('el')"></div>
-    <div class="fi"><label>${T('Slant jord H:1V','Soil slope H:1V')}</label><input type="number" value="${EL.cfg.slopeJord}" step=".25" oninput="D('EL').cfg.slopeJord=+this.value;touchProj();save();go('el')"></div>
-    <div class="fi"><label>${T('Slant berg H:1V','Rock slope H:1V')}</label><input type="number" value="${EL.cfg.slopeBerg}" step=".1" oninput="D('EL').cfg.slopeBerg=+this.value;touchProj();save();go('el')"></div>
-    <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${EL.cfg.asphalt}" step=".05" oninput="D('EL').cfg.asphalt=+this.value;touchProj();save();go('el')"></div>
-    <div class="fi"><label>${T('Vegetation (m)','Vegetation (m)')}</label><input type="number" value="${EL.cfg.veg}" step=".05" oninput="D('EL').cfg.veg=+this.value;touchProj();save();go('el')"></div>
-    <div class="fi"><label>${T('Kringf.höjd (m)','Surr. fill h (m)')}</label><input type="number" value="${EL.cfg.sfh}" step=".05" oninput="D('EL').cfg.sfh=+this.value;touchProj();save();go('el')"></div>
-    <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select oninput="D('EL').cfg.geoType=+this.value;touchProj();save();go('el')">
+    <div class="fi"><label>${T('Röravst. inre (m)','Inner spacing (m)')}</label><input type="number" value="${EL.cfg.spacingI}" step=".01" onchange="D('EL').cfg.spacingI=+this.value;touchProj();save();go('el')"></div>
+    <div class="fi"><label>${T('Röravst. yttre (m)','Outer spacing (m)')}</label><input type="number" value="${EL.cfg.spacingL}" step=".01" onchange="D('EL').cfg.spacingL=+this.value;touchProj();save();go('el')"></div>
+    <div class="fi"><label>${T('Slant jord H:1V','Soil slope H:1V')}</label><input type="number" value="${EL.cfg.slopeJord}" step=".25" onchange="D('EL').cfg.slopeJord=+this.value;touchProj();save();go('el')"></div>
+    <div class="fi"><label>${T('Slant berg H:1V','Rock slope H:1V')}</label><input type="number" value="${EL.cfg.slopeBerg}" step=".1" onchange="D('EL').cfg.slopeBerg=+this.value;touchProj();save();go('el')"></div>
+    <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${EL.cfg.asphalt}" step=".05" onchange="D('EL').cfg.asphalt=+this.value;touchProj();save();go('el')"></div>
+    <div class="fi"><label>${T('Vegetation (m)','Vegetation (m)')}</label><input type="number" value="${EL.cfg.veg}" step=".05" onchange="D('EL').cfg.veg=+this.value;touchProj();save();go('el')"></div>
+    <div class="fi"><label>${T('Kringf.höjd (m)','Surr. fill h (m)')}</label><input type="number" value="${EL.cfg.sfh}" step=".05" onchange="D('EL').cfg.sfh=+this.value;touchProj();save();go('el')"></div>
+    <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select onchange="D('EL').cfg.geoType=+this.value;touchProj();save();go('el')">
       ${[0,1,2,3].map(v=>`<option value="${v}" ${EL.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
-    <div class="fi"><label>${T('Spontning','Sheet piling')}</label><select oninput="D('EL').cfg.spont=+this.value;touchProj();save();go('el')">
+    <div class="fi"><label>${T('Spontning','Sheet piling')}</label><select onchange="D('EL').cfg.spont=+this.value;touchProj();save();go('el')">
       ${[0,1,2].map(v=>`<option value="${v}" ${EL.cfg.spont===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
   </div></div>
   ${pcBar(tot.done,tot.total,T('Utfört schakt','Completed exc.'))}
@@ -1295,14 +1294,14 @@ function renderEL(){
     <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Jorddjup','Soil depth')}</th><th>D ${T('Bergdjup','Rock depth')}</th><th>H ${T('Täckn.','Cover')}</th><th>⌀50</th><th>⌀110</th><th>⌀160</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>
     ${EL.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
-      <td><input type="number" value="${p.w}" step="5" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].w=+this.value;touchProj();save();go('el')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('el')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.d}" step=".1" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].d=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('el')"></td>
-      <td><input type="number" value="${p.h}" step="1" min="0" max="1" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].h=+this.value;touchProj();save();go('el')"></td>
-      <td><input type="number" value="${p.n50}" step="1" min="0" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].n50=+this.value;touchProj();save();go('el')"></td>
-      <td><input type="number" value="${p.n110}" step="1" min="0" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].n110=+this.value;touchProj();save();go('el')"></td>
-      <td><input type="number" value="${p.n160}" step="1" min="0" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].n160=+this.value;touchProj();save();go('el')"></td>
-      <td><input type="number" value="${p.k}" step="1" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].k=+this.value;touchProj();save();go('el')"></td>
+      <td><input type="number" value="${p.w}" step="5" onclick="event.stopPropagation()" onchange="D('EL').pts[${i}].w=+this.value;touchProj();save();go('el')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" onchange="D('EL').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('el')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.d}" step=".1" onclick="event.stopPropagation()" onchange="D('EL').pts[${i}].d=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('el')"></td>
+      <td><input type="number" value="${p.h}" step="1" min="0" max="1" onclick="event.stopPropagation()" onchange="D('EL').pts[${i}].h=+this.value;touchProj();save();go('el')"></td>
+      <td><input type="number" value="${p.n50}" step="1" min="0" onclick="event.stopPropagation()" onchange="D('EL').pts[${i}].n50=+this.value;touchProj();save();go('el')"></td>
+      <td><input type="number" value="${p.n110}" step="1" min="0" onclick="event.stopPropagation()" onchange="D('EL').pts[${i}].n110=+this.value;touchProj();save();go('el')"></td>
+      <td><input type="number" value="${p.n160}" step="1" min="0" onclick="event.stopPropagation()" onchange="D('EL').pts[${i}].n160=+this.value;touchProj();save();go('el')"></td>
+      <td><input type="number" value="${p.k}" step="1" onclick="event.stopPropagation()" onchange="D('EL').pts[${i}].k=+this.value;touchProj();save();go('el')"></td>
       <td><input type="checkbox" ${p.done?'checked':''} onclick="event.stopPropagation()" onchange="D('EL').pts[${i}].done=this.checked?1:0;touchProj();save();go('el')"></td>
       <td>${EL.pts.length>2?`<button class="bd-btn" onclick="event.stopPropagation();D('EL').pts.splice(${i},1);touchProj();save();go('el')">✕</button>`:''}</td>
     </tr>`).join('')}
@@ -1373,12 +1372,12 @@ function renderFV(){
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--d)"></span>${T('Konfiguration','Configuration')}</div>
   <div class="fg">
-    <div class="fi"><label>${T('Slant jord H:1V','Soil slope H:1V')}</label><input type="number" value="${FV.cfg.slopeJord??FV.cfg.slope??1}" step=".25" oninput="D('FV').cfg.slopeJord=+this.value;touchProj();save();go('fv')"></div>
-    <div class="fi"><label>${T('Slant berg H:1V','Rock slope H:1V')}</label><input type="number" value="${FV.cfg.slopeBerg??FV.cfg.slope??.2}" step=".1" oninput="D('FV').cfg.slopeBerg=+this.value;touchProj();save();go('fv')"></div>
-    <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select oninput="D('FV').cfg.geoType=+this.value;touchProj();save();go('fv')">${[0,1,2,3].map(v=>`<option value="${v}" ${FV.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
-    <div class="fi"><label>${T('Spontning','Sheet piling')}</label><select oninput="D('FV').cfg.spont=+this.value;touchProj();save();go('fv')">${[0,1,2].map(v=>`<option value="${v}" ${FV.cfg.spont===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
-    <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${FV.cfg.asphalt}" step=".05" oninput="D('FV').cfg.asphalt=+this.value;touchProj();save();go('fv')"></div>
-    <div class="fi"><label>${T('Vegetation (m)','Vegetation (m)')}</label><input type="number" value="${FV.cfg.veg}" step=".05" oninput="D('FV').cfg.veg=+this.value;touchProj();save();go('fv')"></div>
+    <div class="fi"><label>${T('Slant jord H:1V','Soil slope H:1V')}</label><input type="number" value="${FV.cfg.slopeJord??FV.cfg.slope??1}" step=".25" onchange="D('FV').cfg.slopeJord=+this.value;touchProj();save();go('fv')"></div>
+    <div class="fi"><label>${T('Slant berg H:1V','Rock slope H:1V')}</label><input type="number" value="${FV.cfg.slopeBerg??FV.cfg.slope??.2}" step=".1" onchange="D('FV').cfg.slopeBerg=+this.value;touchProj();save();go('fv')"></div>
+    <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select onchange="D('FV').cfg.geoType=+this.value;touchProj();save();go('fv')">${[0,1,2,3].map(v=>`<option value="${v}" ${FV.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
+    <div class="fi"><label>${T('Spontning','Sheet piling')}</label><select onchange="D('FV').cfg.spont=+this.value;touchProj();save();go('fv')">${[0,1,2].map(v=>`<option value="${v}" ${FV.cfg.spont===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
+    <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${FV.cfg.asphalt}" step=".05" onchange="D('FV').cfg.asphalt=+this.value;touchProj();save();go('fv')"></div>
+    <div class="fi"><label>${T('Vegetation (m)','Vegetation (m)')}</label><input type="number" value="${FV.cfg.veg}" step=".05" onchange="D('FV').cfg.veg=+this.value;touchProj();save();go('fv')"></div>
   </div></div>
   ${pcBar(tot.done,tot.total,T('Utfört FV-schakt','FV completed'))}
   <div class="mg">
@@ -1403,15 +1402,15 @@ function renderFV(){
   <div class="tbl-wrap"><table class="dt">
     <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Jorddjup','Soil depth')}</th><th>D ${T('Bergdjup','Rock depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia tilledn.','Supply dia')}</th><th>${T('Dia retur','Return dia')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>${FV.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
-      <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].i=+this.value;touchProj();save();go('fv')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.bd||0}" step=".1" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].bd=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.f}" step=".05" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].f=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.g}" step=".25" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].g=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].a=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.c}" step=".01" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].c=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.d}" step=".01" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].d=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.k}" step=".1" min="0" max="1" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].k=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
+      <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" onchange="D('FV').pts[${i}].i=+this.value;touchProj();save();go('fv')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" onchange="D('FV').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.bd||0}" step=".1" onclick="event.stopPropagation()" onchange="D('FV').pts[${i}].bd=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.f}" step=".05" onclick="event.stopPropagation()" onchange="D('FV').pts[${i}].f=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.g}" step=".25" onclick="event.stopPropagation()" onchange="D('FV').pts[${i}].g=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.a}" step=".05" onclick="event.stopPropagation()" onchange="D('FV').pts[${i}].a=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.c}" step=".01" onclick="event.stopPropagation()" onchange="D('FV').pts[${i}].c=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.d}" step=".01" onclick="event.stopPropagation()" onchange="D('FV').pts[${i}].d=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.k}" step=".1" min="0" max="1" onclick="event.stopPropagation()" onchange="D('FV').pts[${i}].k=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
       <td><input type="checkbox" ${p.done?'checked':''} onclick="event.stopPropagation()" onchange="D('FV').pts[${i}].done=this.checked?1:0;touchProj();save();go('fv')"></td>
       <td>${FV.pts.length>2?`<button class="bd-btn" onclick="event.stopPropagation();D('FV').pts.splice(${i},1);touchProj();save();go('fv')">✕</button>`:''}</td>
     </tr>`).join('')}</tbody>
@@ -1455,12 +1454,12 @@ function renderFB(){
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--o)"></span>${T('Konfiguration','Configuration')}</div>
   <div class="fg">
-    <div class="fi"><label>${T('Slant jord H:1V','Soil slope H:1V')}</label><input type="number" value="${FB.cfg.slopeJord??FB.cfg.slope??.5}" step=".1" oninput="D('FB').cfg.slopeJord=+this.value;touchProj();save();go('fb')"></div>
-    <div class="fi"><label>${T('Slant berg H:1V','Rock slope H:1V')}</label><input type="number" value="${FB.cfg.slopeBerg??FB.cfg.slope??.1}" step=".1" oninput="D('FB').cfg.slopeBerg=+this.value;touchProj();save();go('fb')"></div>
-    <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${FB.cfg.asphalt}" step=".05" oninput="D('FB').cfg.asphalt=+this.value;touchProj();save();go('fb')"></div>
-    <div class="fi"><label>${T('Vegetation (m)','Vegetation (m)')}</label><input type="number" value="${FB.cfg.veg}" step=".05" oninput="D('FB').cfg.veg=+this.value;touchProj();save();go('fb')"></div>
-    <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select oninput="D('FB').cfg.geoType=+this.value;touchProj();save();go('fb')">${[0,1,2,3].map(v=>`<option value="${v}" ${FB.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
-    <div class="fi"><label>${T('Spontning','Sheet piling')}</label><select oninput="D('FB').cfg.spont=+this.value;touchProj();save();go('fb')">${[0,1,2].map(v=>`<option value="${v}" ${FB.cfg.spont===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
+    <div class="fi"><label>${T('Slant jord H:1V','Soil slope H:1V')}</label><input type="number" value="${FB.cfg.slopeJord??FB.cfg.slope??.5}" step=".1" onchange="D('FB').cfg.slopeJord=+this.value;touchProj();save();go('fb')"></div>
+    <div class="fi"><label>${T('Slant berg H:1V','Rock slope H:1V')}</label><input type="number" value="${FB.cfg.slopeBerg??FB.cfg.slope??.1}" step=".1" onchange="D('FB').cfg.slopeBerg=+this.value;touchProj();save();go('fb')"></div>
+    <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${FB.cfg.asphalt}" step=".05" onchange="D('FB').cfg.asphalt=+this.value;touchProj();save();go('fb')"></div>
+    <div class="fi"><label>${T('Vegetation (m)','Vegetation (m)')}</label><input type="number" value="${FB.cfg.veg}" step=".05" onchange="D('FB').cfg.veg=+this.value;touchProj();save();go('fb')"></div>
+    <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select onchange="D('FB').cfg.geoType=+this.value;touchProj();save();go('fb')">${[0,1,2,3].map(v=>`<option value="${v}" ${FB.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
+    <div class="fi"><label>${T('Spontning','Sheet piling')}</label><select onchange="D('FB').cfg.spont=+this.value;touchProj();save();go('fb')">${[0,1,2].map(v=>`<option value="${v}" ${FB.cfg.spont===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
   </div></div>
   ${pcBar(tot.done,tot.total,T('Utfört Fyllnad-schakt','Fyllnad completed'))}
   <div class="mg">
@@ -1487,15 +1486,15 @@ function renderFB(){
   <div class="tbl-wrap"><table class="dt">
     <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Jorddjup','Soil depth')}</th><th>D ${T('Bergdjup','Rock depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia 1','Dia 1')}</th><th>${T('Dia 2','Dia 2')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>${FB.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
-      <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].i=+this.value;touchProj();save();go('fb')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.bd||0}" step=".1" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].bd=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.f}" step=".05" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].f=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.g}" step=".25" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].g=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].a=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.c}" step=".01" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].c=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.d}" step=".01" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].d=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.k}" step=".1" min="0" max="1" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].k=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
+      <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].i=+this.value;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.bd||0}" step=".1" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].bd=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.f}" step=".05" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].f=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.g}" step=".25" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].g=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.a}" step=".05" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].a=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.c}" step=".01" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].c=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.d}" step=".01" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].d=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.k}" step=".1" min="0" max="1" onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].k=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
       <td><input type="checkbox" ${p.done?'checked':''} onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].done=this.checked?1:0;touchProj();save();go('fb')"></td>
       <td>${FB.pts.length>2?`<button class="bd-btn" onclick="event.stopPropagation();D('FB').pts.splice(${i},1);touchProj();save();go('fb')">✕</button>`:''}</td>
     </tr>`).join('')}</tbody>
@@ -1538,12 +1537,12 @@ function renderTR(){
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Konfiguration','Configuration')}</div>
   <div class="fg">
-    <div class="fi"><label>${T('Slant jord H:1V','Soil slope H:1V')}</label><input type="number" value="${TR.cfg.slopeJord??TR.cfg.slope??1}" step=".25" oninput="D('TR').cfg.slopeJord=+this.value;touchProj();save();go('tr')"></div>
-    <div class="fi"><label>${T('Slant berg H:1V','Rock slope H:1V')}</label><input type="number" value="${TR.cfg.slopeBerg??TR.cfg.slope??.2}" step=".1" oninput="D('TR').cfg.slopeBerg=+this.value;touchProj();save();go('tr')"></div>
-    <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${TR.cfg.asphalt}" step=".05" oninput="D('TR').cfg.asphalt=+this.value;touchProj();save();go('tr')"></div>
-    <div class="fi"><label>${T('Vegetation (m)','Vegetation (m)')}</label><input type="number" value="${TR.cfg.veg}" step=".05" oninput="D('TR').cfg.veg=+this.value;touchProj();save();go('tr')"></div>
-    <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select oninput="D('TR').cfg.geoType=+this.value;touchProj();save();go('tr')">${[0,1,2,3].map(v=>`<option value="${v}" ${TR.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
-    <div class="fi"><label>${T('Spontning','Sheet piling')}</label><select oninput="D('TR').cfg.spont=+this.value;touchProj();save();go('tr')">${[0,1,2].map(v=>`<option value="${v}" ${TR.cfg.spont===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
+    <div class="fi"><label>${T('Slant jord H:1V','Soil slope H:1V')}</label><input type="number" value="${TR.cfg.slopeJord??TR.cfg.slope??1}" step=".25" onchange="D('TR').cfg.slopeJord=+this.value;touchProj();save();go('tr')"></div>
+    <div class="fi"><label>${T('Slant berg H:1V','Rock slope H:1V')}</label><input type="number" value="${TR.cfg.slopeBerg??TR.cfg.slope??.2}" step=".1" onchange="D('TR').cfg.slopeBerg=+this.value;touchProj();save();go('tr')"></div>
+    <div class="fi"><label>${T('Asfalt (m)','Asphalt (m)')}</label><input type="number" value="${TR.cfg.asphalt}" step=".05" onchange="D('TR').cfg.asphalt=+this.value;touchProj();save();go('tr')"></div>
+    <div class="fi"><label>${T('Vegetation (m)','Vegetation (m)')}</label><input type="number" value="${TR.cfg.veg}" step=".05" onchange="D('TR').cfg.veg=+this.value;touchProj();save();go('tr')"></div>
+    <div class="fi"><label>${T('Geotextil typ','Geotextile type')}</label><select onchange="D('TR').cfg.geoType=+this.value;touchProj();save();go('tr')">${[0,1,2,3].map(v=>`<option value="${v}" ${TR.cfg.geoType===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
+    <div class="fi"><label>${T('Spontning','Sheet piling')}</label><select onchange="D('TR').cfg.spont=+this.value;touchProj();save();go('tr')">${[0,1,2].map(v=>`<option value="${v}" ${TR.cfg.spont===v?'selected':''}>Typ ${v}</option>`).join('')}</select></div>
   </div></div>
   ${pcBar(tot.done,tot.total,T('Utfört Trumma-schakt','Culvert completed'))}
   <div class="mg">
@@ -1570,15 +1569,15 @@ function renderTR(){
   <div class="tbl-wrap"><table class="dt">
     <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Jorddjup','Soil depth')}</th><th>D ${T('Bergdjup','Rock depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia 1','Dia 1')}</th><th>${T('Dia 2','Dia 2')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>${TR.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
-      <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].i=+this.value;touchProj();save();go('tr')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.bd||0}" step=".1" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].bd=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.f}" step=".05" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].f=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.g}" step=".25" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].g=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].a=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.c}" step=".005" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].c=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.d}" step=".005" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].d=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.k}" step=".1" min="0" max="1" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].k=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
+      <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" onchange="D('TR').pts[${i}].i=+this.value;touchProj();save();go('tr')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" onchange="D('TR').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.bd||0}" step=".1" onclick="event.stopPropagation()" onchange="D('TR').pts[${i}].bd=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.f}" step=".05" onclick="event.stopPropagation()" onchange="D('TR').pts[${i}].f=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.g}" step=".25" onclick="event.stopPropagation()" onchange="D('TR').pts[${i}].g=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.a}" step=".05" onclick="event.stopPropagation()" onchange="D('TR').pts[${i}].a=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.c}" step=".005" onclick="event.stopPropagation()" onchange="D('TR').pts[${i}].c=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.d}" step=".005" onclick="event.stopPropagation()" onchange="D('TR').pts[${i}].d=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.k}" step=".1" min="0" max="1" onclick="event.stopPropagation()" onchange="D('TR').pts[${i}].k=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
       <td><input type="checkbox" ${p.done?'checked':''} onclick="event.stopPropagation()" onchange="D('TR').pts[${i}].done=this.checked?1:0;touchProj();save();go('tr')"></td>
       <td>${TR.pts.length>2?`<button class="bd-btn" onclick="event.stopPropagation();D('TR').pts.splice(${i},1);touchProj();save();go('tr')">✕</button>`:''}</td>
     </tr>`).join('')}</tbody>
@@ -1606,6 +1605,57 @@ function renderVA(){
   if(!curProj())return emptyProj();
   const{segs,tot}=vaAll();const VA=D('VA');const mx=Math.max(tot.exc,1);
   const seg=segs[S.selSeg]||segs[0];
+  // ── VA-spec integration (rör i olika djup) ──
+  if(VA&&!VA.spec)VA.spec={pipes:[{name:'Vatten',dia:.315,depth:2.5},{name:'Spillvatten',dia:.16,depth:1.8}],bw:1.1,badd:.15};
+  const spec=VA?VA.spec:{pipes:[],bw:1.1,badd:.15};
+  const specBW=spec.bw||1.1,specBadd=spec.badd||.15;
+  const specPipes=[...spec.pipes].map((p,oi)=>({...p,oi})).sort((a,b)=>b.depth-a.depth);
+  const specLayers=[];
+  if(specPipes.length>0){
+    specLayers.push({type:'badd',h:specBadd,col:'#d97706'});
+    for(let si=0;si<specPipes.length;si++){
+      const sp=specPipes[si];const kh=sp.dia+SET.kringAMA;
+      const kTop=sp.depth-sp.dia/2-SET.kringAMA;
+      specLayers.push({type:'kring',h:kh,col:'#10b981',pipe:sp});
+      if(si<specPipes.length-1){const nxt=specPipes[si+1];const gap=kTop-(nxt.depth+nxt.dia/2);if(gap>0.005)specLayers.push({type:'rest',h:gap,col:'#94a3b8'});}
+    }
+    const shs=specPipes[specPipes.length-1];
+    const ra=shs.depth-shs.dia/2-SET.kringAMA;
+    if(ra>0.005)specLayers.push({type:'rest',h:ra,col:'#64748b'});
+  }
+  const specTotBadd=specLayers.filter(l=>l.type==='badd').reduce((s,l)=>s+l.h,0);
+  const specTotKring=specLayers.filter(l=>l.type==='kring').reduce((s,l)=>s+l.h,0);
+  const specTotRest=specLayers.filter(l=>l.type==='rest').reduce((s,l)=>s+l.h,0);
+  const specTotalH=specLayers.reduce((s,l)=>s+l.h,0);
+  const specKLs=specLayers.filter(l=>l.type==='kring');
+  const specSnitth=specKLs.length?specKLs.reduce((s,l)=>s+l.h,0)/specKLs.length:0;
+  // Build spec SVG using string concat (avoids nested template literals)
+  const svgW2=300,svgH2=210,svgM2=20;
+  const svgPxM2=Math.min((svgH2-30)/Math.max(specTotalH,0.1),70);
+  const svgBwPx2=Math.min((svgW2-2*svgM2)*.5,110);
+  const svgCx2=svgW2/2;
+  let svgP2='',svgYY2=10;
+  for(const l of [...specLayers].reverse()){
+    const lh=Math.max(l.h*svgPxM2,2);
+    svgP2+='<rect x="'+(svgCx2-svgBwPx2/2).toFixed(1)+'" y="'+svgYY2.toFixed(1)+'" width="'+svgBwPx2+'" height="'+lh.toFixed(1)+'" fill="'+l.col+'" opacity=".8"/>';
+    if(l.h>0.1){const lab=l.type==='badd'?T('Bädd','Bed'):l.type==='kring'?'Kring':'Rest';svgP2+='<text x="'+svgCx2+'" y="'+(svgYY2+lh/2+3.5).toFixed(1)+'" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">'+lab+' '+l.h.toFixed(2)+'m</text>';}
+    svgYY2+=lh;
+  }
+  const svgN2=specPipes.length||1;
+  for(let pi2=0;pi2<specPipes.length;pi2++){
+    const sp2=specPipes[pi2];
+    const px2=svgCx2-svgBwPx2/2+(pi2+.5)/svgN2*svgBwPx2;
+    const py2=10+sp2.depth*svgPxM2;
+    const pR2=Math.min(Math.max(sp2.dia/2*svgPxM2,4),svgBwPx2/(2*svgN2)-2);
+    svgP2+='<circle cx="'+px2.toFixed(1)+'" cy="'+py2.toFixed(1)+'" r="'+pR2.toFixed(1)+'" fill="#1e3a8a" opacity=".95" stroke="#93c5fd" stroke-width="1.5"/>';
+    svgP2+='<text x="'+px2.toFixed(1)+'" y="'+(py2+pR2+10).toFixed(1)+'" text-anchor="middle" font-size="8" fill="var(--ts)" font-weight="600">DN'+Math.round(sp2.dia*1000)+'</text>';
+  }
+  const specSVG='<svg width="'+svgW2+'" height="'+svgH2+'" style="display:block;margin:0 auto">'
+    +'<rect x="'+(svgCx2-svgBwPx2/2).toFixed(1)+'" y="8" width="'+svgBwPx2+'" height="'+(svgYY2-8).toFixed(1)+'" fill="none" stroke="var(--bd)" stroke-width="2" rx="1"/>'
+    +svgP2
+    +'<line x1="'+(svgCx2-svgBwPx2/2-12).toFixed(1)+'" y1="10" x2="'+(svgCx2-svgBwPx2/2-12).toFixed(1)+'" y2="'+svgYY2.toFixed(1)+'" stroke="var(--ts)" stroke-width="1" stroke-dasharray="3,2"/>'
+    +'<text x="'+(svgCx2-svgBwPx2/2-14).toFixed(1)+'" y="'+(svgYY2/2+4).toFixed(1)+'" text-anchor="middle" font-size="8" fill="var(--ts)" transform="rotate(-90,'+(svgCx2-svgBwPx2/2-14).toFixed(1)+','+(svgYY2/2).toFixed(1)+')">'+specTotalH.toFixed(2)+'m</text>'
+    +'<text x="'+svgCx2+'" y="'+(svgYY2+14).toFixed(1)+'" text-anchor="middle" font-size="9" fill="var(--ts)">BW = '+specBW+'m</text></svg>';
   return`<div>
   <div class="ph"><h2>💧 ${T('Vatten och Avlopp','Water & Sewer')}</h2>
   <div class="sub">${T('Vatten- och avloppsledningar med fullständig volymsberäkning.','Water and sewer pipes with full volume calculation.')}</div></div>
@@ -1617,7 +1667,7 @@ function renderVA(){
       <li><strong>F</strong> = ${T('bäddlagrets tjocklek under rörens underkant (AMA-standard)','bedding layer thickness below pipe bottom (AMA standard)')}</li>
       <li><strong>A</strong> = ${T('kringfyllningshöjd upp till täcklager','surrounding fill height up to top layer')}</li>
       <li>${T('Kostnad beräknas i Budget från enhetspriser × volymer per segment','Cost is calculated in Budget from unit prices × volumes per segment')}</li>
-      <li><strong>VA-spec</strong>: ${T('rör i olika djup — separat kring/restfyllning per rör','pipes at different depths — separate fill per pipe')} → <span class="badge-pill" onclick="go('vaspec')" style="cursor:pointer">VA-spec ›</span></li>
+      <li><strong>${T('Rördjup & kringfyllning','Pipe depths & surround fill')}</strong>: ${T('Konfigurera rör på olika djup i schaktet direkt under Rör & konfiguration nedan — tvärsnittet visar kring- och restfyllning automatiskt.','Configure pipes at different depths directly under Pipes & configuration below — cross-section shows surround and rest fill automatically.')}</li>
     </ul>
   </div>
   <!-- ══ RÖR & KONFIGURATION ══ -->
@@ -1660,47 +1710,86 @@ function renderVA(){
     </div>
   </div>
 
+  <!-- ══ RÖRDJUP & KRINGFYLLNING (VA-spec integrerat) ══ -->
+  <div style="border-top:2px solid var(--i);margin-top:4px">
+  <div style="padding:8px 16px 4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <span style="font-weight:700;font-size:12px;color:var(--i)">📐 ${T('Rördjup & kringfyllning','Pipe depths & surround fill')}</span>
+    <span style="font-size:10px;color:var(--ts);flex:1">${T('Rör sida vid sida på olika djup — kringfyllning automatisk per rör (AMA)','Pipes side by side at different depths — surround fill automatic per pipe (AMA)')}</span>
+  </div>
+  <div style="padding:2px 16px 8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11px">
+    <label style="color:var(--ts)">BW (m):</label>
+    <input type="number" value="${specBW}" step=".05" min=".1" style="width:64px" onchange="D('VA').spec.bw=+this.value;touchProj();save();go('va')">
+    <label style="color:var(--ts)">${T('Bädd (m):','Bed (m):')}</label>
+    <input type="number" value="${specBadd}" step=".05" min="0" style="width:64px" onchange="D('VA').spec.badd=+this.value;touchProj();save();go('va')">
+    <span style="margin-left:8px;color:var(--ts)">${T('Kring ovan kron:','Surr. above crown:')} <strong style="color:var(--i)">${SET.kringAMA*100} cm</strong> (AMA) · <span onclick="go('settings')" style="cursor:pointer;color:var(--a);text-decoration:underline">${T('Ändra i inställningar','Change in settings')}</span></span>
+  </div>
+  ${(()=>{
+    if(!spec.pipes.length)return '<div style="padding:8px 16px 10px;color:var(--ts);font-size:12px">— '+T('Inga rör med djup konfigurerade. Lägg till via knappen nedan.','No pipes with depth configured. Add via button below.')+'</div>';
+    let tbl='<div class="tbl-wrap"><table class="dt"><thead><tr>'
+      +'<th>'+T('Namn','Name')+'</th>'
+      +'<th>'+T('DN (mm)','DN (mm)')+'</th>'
+      +'<th title="'+T('Djup till rörcentrum från vägyta','Depth to pipe centreline from road surface')+'">m.c. (m) <span style="opacity:.5">ℹ</span></th>'
+      +'<th>'+T('Kringzon (m)','Surr. zone (m)')+'</th>'
+      +'<th></th>'
+      +'</tr></thead><tbody>';
+    spec.pipes.forEach((p,i)=>{
+      tbl+='<tr>';
+      tbl+='<td><input type="text" value="'+p.name+'" onchange="D(\'VA\').spec.pipes['+i+'].name=this.value;touchProj();save();go(\'va\')"></td>';
+      tbl+='<td><input type="number" value="'+Math.round(p.dia*1000)+'" step="1" min="20" style="width:70px" onchange="D(\'VA\').spec.pipes['+i+'].dia=+this.value/1000;touchProj();save();go(\'va\')"></td>';
+      tbl+='<td><input type="text" inputmode="decimal" value="'+p.depth+'" style="width:70px" onchange="D(\'VA\').spec.pipes['+i+'].depth=parseFloat(this.value.replace(\',\',\'.\'))||0;touchProj();save();go(\'va\')"></td>';
+      tbl+='<td class="num" style="color:var(--i);font-weight:700">'+(p.dia+SET.kringAMA).toFixed(3)+'</td>';
+      tbl+='<td>'+(spec.pipes.length>1?'<button class="bd-btn" onclick="event.stopPropagation();D(\'VA\').spec.pipes.splice('+i+',1);touchProj();save();go(\'va\')">✕</button>':'')+'</td>';
+      tbl+='</tr>';
+    });
+    tbl+='</tbody></table></div>';
+    return tbl;
+  })()}
+  <div class="btn-row" style="padding:6px 16px 12px">
+    <button class="btn bp" onclick="const pp=D('VA').spec.pipes;pp.push({name:T('Rör','Pipe')+' '+(pp.length+1),dia:.16,depth:pp.length?Math.max(...pp.map(x=>x.depth))-0.7:2.5});touchProj();save();go('va')">+ ${T('Rör med djup','Pipe with depth')}</button>
+  </div>
+  </div>
+
   <div class="va-cfg-groups">
 
     <div class="va-cfg-group">
       <div class="va-cfg-group-title">📐 ${T('Schaktgeometri','Excavation geometry')}</div>
       <div class="fi"><label title="${T('Schaktslant i jord. H:1V = horisontell per vertikal meter. Typvärde 0.2–0.5','Slope in soil. H:1V = horizontal per vertical metre. Typical 0.2–0.5')}">${T('Slant jord H:1V','Soil slope H:1V')} <span style="opacity:.5">ℹ</span></label>
-        <input type="number" value="${VA2.cfg.slopeV}" step=".05" min="0" max="2" oninput="D('VA').cfg.slopeV=+this.value;touchProj();save();go('va')"></div>
+        <input type="number" value="${VA2.cfg.slopeV}" step=".05" min="0" max="2" onchange="D('VA').cfg.slopeV=+this.value;touchProj();save();go('va')"></div>
       <div class="fi"><label title="${T('Schaktslant i berg/hård mark. Typvärde 0.1–0.2','Slope in rock/hard ground. Typical 0.1–0.2')}">${T('Slant berg H:1V','Rock slope H:1V')} <span style="opacity:.5">ℹ</span></label>
-        <input type="number" value="${VA2.cfg.slopeH}" step=".05" min="0" max="2" oninput="D('VA').cfg.slopeH=+this.value;touchProj();save();go('va')"></div>
+        <input type="number" value="${VA2.cfg.slopeH}" step=".05" min="0" max="2" onchange="D('VA').cfg.slopeH=+this.value;touchProj();save();go('va')"></div>
       <div class="fi"><label>${T('Vägbredd (m)','Road width (m)')}</label>
-        <input type="number" value="${VA2.cfg.roadW}" step=".5" min="0" oninput="D('VA').cfg.roadW=+this.value;touchProj();save();go('va')"></div>
+        <input type="number" value="${VA2.cfg.roadW}" step=".5" min="0" onchange="D('VA').cfg.roadW=+this.value;touchProj();save();go('va')"></div>
       <div class="fi"><label title="${T('Bäddlagrets tjocklek under rörbotten. AMA-standard 0.10–0.20 m','Bedding layer thickness below pipe bottom. AMA standard 0.10–0.20 m')}">${T('Bädd (m)','Bedding (m)')} <span style="opacity:.5">ℹ</span></label>
-        <input type="number" value="${VA2.cfg.badd??0.15}" step=".05" min="0" oninput="D('VA').cfg.badd=+this.value;touchProj();save();go('va')"></div>
+        <input type="number" value="${VA2.cfg.badd??0.15}" step=".05" min="0" onchange="D('VA').cfg.badd=+this.value;touchProj();save();go('va')"></div>
     </div>
 
     <div class="va-cfg-group">
       <div class="va-cfg-group-title">🏗️ ${T('Överbyggnad','Road surface')}</div>
       <div class="fi"><label title="${T('Asfalt- och beläggningsdjup. Typvärde 0.08–0.14 m','Asphalt/pavement depth. Typical 0.08–0.14 m')}">${T('Asfaltdjup (m)','Asphalt depth (m)')} <span style="opacity:.5">ℹ</span></label>
-        <input type="number" value="${VA2.cfg.asphalt}" step=".01" min="0" oninput="D('VA').cfg.asphalt=+this.value;touchProj();save();go('va')"></div>
+        <input type="number" value="${VA2.cfg.asphalt}" step=".01" min="0" onchange="D('VA').cfg.asphalt=+this.value;touchProj();save();go('va')"></div>
       <div class="fi"><label>${T('Vegetationsskikt (m)','Vegetation layer (m)')}</label>
-        <input type="number" value="${VA2.cfg.veg}" step=".05" min="0" oninput="D('VA').cfg.veg=+this.value;touchProj();save();go('va')"></div>
+        <input type="number" value="${VA2.cfg.veg}" step=".05" min="0" onchange="D('VA').cfg.veg=+this.value;touchProj();save();go('va')"></div>
       <div class="fi"><label title="${T('Höjd på kringfyllning ovan rörtoppyta. AMA typvärde 0.3–0.6 m','Height of surround fill above pipe crown. AMA typical 0.3–0.6 m')}">${T('Kringfyllningshöjd (m)','Surround fill height (m)')} <span style="opacity:.5">ℹ</span></label>
-        <input type="number" value="${VA2.cfg.sfh}" step=".05" min="0" oninput="D('VA').cfg.sfh=+this.value;touchProj();save();go('va')"></div>
+        <input type="number" value="${VA2.cfg.sfh}" step=".05" min="0" onchange="D('VA').cfg.sfh=+this.value;touchProj();save();go('va')"></div>
     </div>
 
     <div class="va-cfg-group">
       <div class="va-cfg-group-title">🪨 ${T('Markförhållanden','Ground conditions')}</div>
       <div class="fi"><label>${T('Geotextiltyp','Geotextile type')}</label>
-        <select oninput="D('VA').cfg.geoType=+this.value;touchProj();save();go('va')">
+        <select onchange="D('VA').cfg.geoType=+this.value;touchProj();save();go('va')">
           <option value="0" ${VA2.cfg.geoType===0?'selected':''}>Typ 0 — ${T('Ingen','None')}</option>
           <option value="1" ${VA2.cfg.geoType===1?'selected':''}>Typ 1 — ${T('Enkel','Single layer')}</option>
           <option value="2" ${VA2.cfg.geoType===2?'selected':''}>Typ 2 — ${T('Dubbel (standard)','Double (standard)')}</option>
           <option value="3" ${VA2.cfg.geoType===3?'selected':''}>Typ 3 — ${T('Tung/special','Heavy/special')}</option>
         </select></div>
       <div class="fi"><label>${T('Spontning','Sheet piling')}</label>
-        <select oninput="D('VA').cfg.spont=+this.value;touchProj();save();go('va')">
+        <select onchange="D('VA').cfg.spont=+this.value;touchProj();save();go('va')">
           <option value="0" ${VA2.cfg.spont===0?'selected':''}>Typ 0 — ${T('Ingen spontning','No sheet piling')}</option>
           <option value="1" ${VA2.cfg.spont===1?'selected':''}>Typ 1 — ${T('Enkel spontning','Single sheet piling')}</option>
           <option value="2" ${VA2.cfg.spont===2?'selected':''}>Typ 2 — ${T('Dubbel spontning','Double sheet piling')}</option>
         </select></div>
       <div class="fi"><label>${T('Rustbädd','Foundation bedding')}</label>
-        <select oninput="D('VA').cfg.rb=+this.value;touchProj();save();go('va')">
+        <select onchange="D('VA').cfg.rb=+this.value;touchProj();save();go('va')">
           <option value="0" ${VA2.cfg.rb===0?'selected':''}>0 — ${T('Ingen rustbädd','No foundation bed')}</option>
           <option value="1" ${VA2.cfg.rb===1?'selected':''}>1 — ${T('Rustbädd ingår','Foundation bed included')}</option>
         </select></div>
@@ -1718,8 +1807,15 @@ function renderVA(){
     ${mc(tot.remA,T('Restfyll A','Rest A'),'m³','c4',pct(tot.remA,mx))}
   </div>
   <div class="cg2">
-    <div class="cd"><div class="ct"><span class="dot" style="background:#06b6d4"></span>${T('Tvärsnitt','Cross-section')} ${S.selSeg+1}</div>
-      <div class="svg-box" id="va-svg">${seg?svgSection(seg.ab,seg.tw,seg.ad,VA.cfg.pipes,'VA'):T('–','–')}</div></div>
+    <div class="cd"><div class="ct"><span class="dot" style="background:#06b6d4"></span>${T('Tvärsnitt — kringfyllning','Cross-section — surround fill')}</div>
+      <div style="padding:4px 0">${spec.pipes.length?specSVG:'<div style="padding:20px;text-align:center;color:var(--ts);font-size:12px">📂 '+T('Lägg till rör med djup i Rör \u0026 konfiguration','Add pipes with depth in Pipes \u0026 configuration')+'</div>'}</div>
+      ${specLayers.length?('<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:8px 12px;border-top:1px solid var(--bd);text-align:center">'
+        +'<div><div style="font-weight:700;font-size:14px;color:var(--i)">'+specSnitth.toFixed(2)+'m</div><div style="font-size:9px;color:var(--ts)">'+T('Snitthöjd kring','Avg kring h.')+'</div></div>'
+        +'<div><div style="font-weight:700;font-size:14px;color:#d97706">'+(specTotBadd*specBW*Math.max(tot.l,1)).toFixed(1)+' m³</div><div style="font-size:9px;color:var(--ts)">'+T('Bädd','Bedding')+'</div></div>'
+        +'<div><div style="font-weight:700;font-size:14px;color:#10b981">'+(specTotKring*specBW*Math.max(tot.l,1)).toFixed(1)+' m³</div><div style="font-size:9px;color:var(--ts)">'+T('Kringfyllning','Surr. fill')+'</div></div>'
+        +'<div><div style="font-weight:700;font-size:14px;color:#64748b">'+(specTotRest*specBW*Math.max(tot.l,1)).toFixed(1)+' m³</div><div style="font-size:9px;color:var(--ts)">'+T('Restfyllning','Rest fill')+'</div></div>'
+        +'</div>'):''}
+    </div>
     <div class="cd"><div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Volymfördelning','Volume split')}</div>
       <div class="ch-wrap"><canvas id="ch-va-pie"></canvas></div></div>
   </div>
@@ -1735,11 +1831,11 @@ function renderVA(){
   <div class="tbl-wrap"><table class="dt">
     <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>R ${T('Jorddjup','Soil depth')}</th><th>D ${T('Bergdjup','Rock depth')}</th><th>BW</th><th>A ${T('Kring','Surr.')}</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th><th>✓</th><th></th></tr></thead>
     <tbody>${VA.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
-      <td><input type="number" value="${p.n}" step="5" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].n=+this.value;touchProj();save();go('va')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.r}" step=".1" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].r=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('va')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.c}" step=".1" min="0" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].c=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('va')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.bw}" step=".05" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].bw=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('va')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].a=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('va')"></td>
+      <td><input type="number" value="${p.n}" step="5" onclick="event.stopPropagation()" onchange="D('VA').pts[${i}].n=+this.value;touchProj();save();go('va')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.r}" step=".1" onclick="event.stopPropagation()" onchange="D('VA').pts[${i}].r=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('va')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.c}" step=".1" min="0" onclick="event.stopPropagation()" onchange="D('VA').pts[${i}].c=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('va')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.bw}" step=".05" onclick="event.stopPropagation()" onchange="D('VA').pts[${i}].bw=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('va')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.a}" step=".05" onclick="event.stopPropagation()" onchange="D('VA').pts[${i}].a=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('va')"></td>
       ${segs[i]?`<td class="num">${segs[i].jord.toFixed(1)}</td><td class="num">${segs[i].berg.toFixed(1)}</td><td class="num">${segs[i].bed.toFixed(1)}</td><td class="num">${segs[i].sur.toFixed(1)}</td>`:'<td colspan="4">–</td>'}
       <td><input type="checkbox" ${p.done?'checked':''} onclick="event.stopPropagation()" onchange="D('VA').pts[${i}].done=this.checked?1:0;touchProj();save();go('va')"></td>
       <td>${VA.pts.length>2?`<button class="bd-btn" onclick="event.stopPropagation();D('VA').pts.splice(${i},1);touchProj();save();go('va')">✕</button>`:''}</td>
@@ -1903,9 +1999,9 @@ function renderVASpec(){
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--i)"></span>${T('Schaktkonfiguration','Trench configuration')}</div>
   <div class="fg">
     <div class="fi"><label>${T('Bottenbredd BW (m)','Bottom width BW (m)')}</label>
-      <input type="number" value="${bw}" step=".05" min=".1" oninput="D('VA').spec.bw=+this.value;touchProj();save();go('vaspec')"></div>
+      <input type="number" value="${bw}" step=".05" min=".1" onchange="D('VA').spec.bw=+this.value;touchProj();save();go('vaspec')"></div>
     <div class="fi"><label>${T('Bädd djupaste rör (m)','Bedding deepest pipe (m)')}</label>
-      <input type="number" value="${badd}" step=".05" min="0" oninput="D('VA').spec.badd=+this.value;touchProj();save();go('vaspec')"></div>
+      <input type="number" value="${badd}" step=".05" min="0" onchange="D('VA').spec.badd=+this.value;touchProj();save();go('vaspec')"></div>
     <div class="fi"><label>${T('Schaktlängd (m) — från VA','Trench length (m) — from VA')}</label>
       <input type="number" value="${totalL.toFixed(1)}" readonly style="opacity:.6;cursor:default"></div>
   </div></div>
@@ -1926,9 +2022,9 @@ function renderVASpec(){
       <th></th>
     </tr></thead>
     <tbody>${spec.pipes.map((p,i)=>`<tr>
-      <td><input type="text" value="${p.name}" onclick="event.stopPropagation()" oninput="D('VA').spec.pipes[${i}].name=this.value;touchProj();save();go('vaspec')"></td>
-      <td><input type="number" value="${Math.round(p.dia*1000)}" step="1" min="20" onclick="event.stopPropagation()" oninput="D('VA').spec.pipes[${i}].dia=+this.value/1000;touchProj();save();go('vaspec')"></td>
-      <td><input type="text" inputmode="decimal" value="${p.depth}" step=".1" onclick="event.stopPropagation()" oninput="D('VA').spec.pipes[${i}].depth=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('vaspec')"></td>
+      <td><input type="text" value="${p.name}" onclick="event.stopPropagation()" onchange="D('VA').spec.pipes[${i}].name=this.value;touchProj();save();go('vaspec')"></td>
+      <td><input type="number" value="${Math.round(p.dia*1000)}" step="1" min="20" onclick="event.stopPropagation()" onchange="D('VA').spec.pipes[${i}].dia=+this.value/1000;touchProj();save();go('vaspec')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.depth}" step=".1" onclick="event.stopPropagation()" onchange="D('VA').spec.pipes[${i}].depth=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('vaspec')"></td>
       <td class="num" style="font-weight:700;color:var(--i)">${(p.dia+SET.kringAMA).toFixed(3)}</td>
       <td>${spec.pipes.length>1?`<button class="bd-btn" onclick="event.stopPropagation();D('VA').spec.pipes.splice(${i},1);touchProj();save();go('vaspec')">✕</button>`:''}</td>
     </tr>`).join('')}</tbody>
@@ -1984,7 +2080,7 @@ function renderSettings(){
   <div class="fg">
     <div class="fi"><label title="${T('Minsta höjd av kringfyllning ovan rörtopp enligt AMA/MER. Standard 0,30 m. Används automatiskt i VA-spec.','Minimum height of surround fill above pipe crown per AMA/MER. Standard 0.30 m. Applied automatically in VA-spec.')}">${T('Kring ovan rörtopp (m)','Surround above crown (m)')} <span style="opacity:.5">ℹ</span></label>
       <input type="number" value="${SET.kringAMA}" step=".05" min="0" max="2"
-        oninput="SET.kringAMA=+this.value;save();go('settings')">
+        onchange="SET.kringAMA=+this.value;save();go('settings')">
       <span style="font-size:11px;color:var(--ts);margin-left:6px">${T('AMA-krav: ≥ 0,30 m','AMA requirement: ≥ 0.30 m')}</span>
     </div>
   </div>
@@ -1997,7 +2093,7 @@ function renderSettings(){
   <div class="fg">
     <div class="fi"><label title="${T('Standard bäddtjocklek under rörens underkant. AMA: 0,10–0,20 m beroende på rördimension.','Standard bedding thickness below pipe bottom. AMA: 0.10–0.20 m depending on pipe diameter.')}">${T('Bäddtjocklek standard (m)','Bedding thickness standard (m)')} <span style="opacity:.5">ℹ</span></label>
       <input type="number" value="${SET.baddDefault}" step=".05" min="0" max="1"
-        oninput="SET.baddDefault=+this.value;save();go('settings')">
+        onchange="SET.baddDefault=+this.value;save();go('settings')">
       <span style="font-size:11px;color:var(--ts);margin-left:6px">${T('Typvärde: 0,10–0,20 m','Typical: 0.10–0.20 m')}</span>
     </div>
   </div>
@@ -2080,8 +2176,8 @@ function renderRL(){
   </table></div></div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--s)"></span>${T('Kontrollmätning','Inspection measurement')}</div>
   <div class="fg">
-    <div class="fi"><label>${T('Totalt utfört (m)','Total completed (m)')}</label><input type="number" value="${RL.totUtfort}" step=".1" oninput="D('RL').totUtfort=+this.value;touchProj();save();go('rl')"></div>
-    <div class="fi"><label>${T('Kontroll utfört (m)','Inspection done (m)')}</label><input type="number" value="${RL.kontrollUtfort}" step=".1" oninput="D('RL').kontrollUtfort=+this.value;touchProj();save();go('rl')"></div>
+    <div class="fi"><label>${T('Totalt utfört (m)','Total completed (m)')}</label><input type="number" value="${RL.totUtfort}" step=".1" onchange="D('RL').totUtfort=+this.value;touchProj();save();go('rl')"></div>
+    <div class="fi"><label>${T('Kontroll utfört (m)','Inspection done (m)')}</label><input type="number" value="${RL.kontrollUtfort}" step=".1" onchange="D('RL').kontrollUtfort=+this.value;touchProj();save();go('rl')"></div>
   </div>
   ${pcBar(RL.kontrollUtfort,RL.totUtfort,T('Kontroll utfört','Inspection completed'))}
   </div>
@@ -2168,7 +2264,7 @@ function budAddArb(){const b=D('BUD').cfg;b.arb.push({n:T('Ny anställd','New em
 function budDelMask(i){D('BUD').cfg.mask.splice(i,1);budSave();}
 function budDelArb(i){D('BUD').cfg.arb.splice(i,1);budSave();}
 function budField(path,val,step,label){
-  return`<div class="bud-factor-item"><label>${label}</label><input type="number" value="${val}" step="${step}" oninput="D('BUD').cfg.${path}=+this.value;budSave()"></div>`;
+  return`<div class="bud-factor-item"><label>${label}</label><input type="number" value="${val}" step="${step}" onchange="D('BUD').cfg.${path}=+this.value;budSave()"></div>`;
 }
 
 function renderBudget(){
@@ -2246,18 +2342,18 @@ function renderBudget(){
   // ── Mask rows ──────────────────────────────────────────────
   const maskRows = cfg.mask.map((m,i)=>`
     <div class="bud-row">
-      <input value="${m.n}" oninput="D('BUD').cfg.mask[${i}].n=this.value;budSave()" style="font-size:12px;font-weight:600">
-      <input type="number" value="${m.r}" step="50" placeholder="${T('kr/h','SEK/h')}" oninput="D('BUD').cfg.mask[${i}].r=+this.value;budSave()">
-      <input type="number" value="${m.h}" step="1"  placeholder="${T('Timmar','Hours')}"  oninput="D('BUD').cfg.mask[${i}].h=+this.value;budSave()">
+      <input value="${m.n}" onchange="D('BUD').cfg.mask[${i}].n=this.value;budSave()" style="font-size:12px;font-weight:600">
+      <input type="number" value="${m.r}" step="50" placeholder="${T('kr/h','SEK/h')}" onchange="D('BUD').cfg.mask[${i}].r=+this.value;budSave()">
+      <input type="number" value="${m.h}" step="1"  placeholder="${T('Timmar','Hours')}"  onchange="D('BUD').cfg.mask[${i}].h=+this.value;budSave()">
       <span class="row-total">${fmtSEK(m.r*m.h)}</span>
       <button class="bud-del" onclick="budDelMask(${i})">✕</button>
     </div>`).join('');
 
   const arbRows = cfg.arb.map((a,i)=>`
     <div class="bud-row">
-      <input value="${a.n}" oninput="D('BUD').cfg.arb[${i}].n=this.value;budSave()" style="font-size:12px;font-weight:600">
-      <input type="number" value="${a.r}" step="10" placeholder="${T('kr/h','SEK/h')}" oninput="D('BUD').cfg.arb[${i}].r=+this.value;budSave()">
-      <input type="number" value="${a.h}" step="1"  placeholder="${T('Timmar','Hours')}"  oninput="D('BUD').cfg.arb[${i}].h=+this.value;budSave()">
+      <input value="${a.n}" onchange="D('BUD').cfg.arb[${i}].n=this.value;budSave()" style="font-size:12px;font-weight:600">
+      <input type="number" value="${a.r}" step="10" placeholder="${T('kr/h','SEK/h')}" onchange="D('BUD').cfg.arb[${i}].r=+this.value;budSave()">
+      <input type="number" value="${a.h}" step="1"  placeholder="${T('Timmar','Hours')}"  onchange="D('BUD').cfg.arb[${i}].h=+this.value;budSave()">
       <span class="row-total">${fmtSEK(a.r*a.h)}</span>
       <button class="bud-del" onclick="budDelArb(${i})">✕</button>
     </div>`).join('');
@@ -2305,9 +2401,9 @@ function renderBudget(){
     <div class="ct"><span class="dot" style="background:var(--a)"></span>${T('Direkta kostnader','Direct costs')}</div>
     <div class="fg" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
       <div class="fi"><label>${T('Materialkostnader (kr)','Material costs (SEK)')}</label>
-        <input type="number" value="${cfg.mat}" step="10000" oninput="D('BUD').cfg.mat=+this.value;budSave()"></div>
+        <input type="number" value="${cfg.mat}" step="10000" onchange="D('BUD').cfg.mat=+this.value;budSave()"></div>
       <div class="fi"><label>${T('Etableringskostnader (kr)','Establishment costs (SEK)')}</label>
-        <input type="number" value="${cfg.etab}" step="5000" oninput="D('BUD').cfg.etab=+this.value;budSave()"></div>
+        <input type="number" value="${cfg.etab}" step="5000" onchange="D('BUD').cfg.etab=+this.value;budSave()"></div>
     </div>
   </div>
 
@@ -2316,7 +2412,7 @@ function renderBudget(){
     <div class="ct"><span class="dot" style="background:var(--o)"></span>${T('Deponering överskottsmassor','Surplus disposal')} <span style="margin-left:auto;font-weight:800;font-size:12px;color:var(--o)">${fmtSEK(depCost)}</span></div>
     <div class="fg" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));margin-bottom:10px">
       <div class="fi"><label>${T('Deponering överskott (kr/m³)','Surplus disposal (SEK/m³)')}</label>
-        <input type="number" value="${cfg.dep_r}" step="5" oninput="D('BUD').cfg.dep_r=+this.value;budSave()"></div>
+        <input type="number" value="${cfg.dep_r}" step="5" onchange="D('BUD').cfg.dep_r=+this.value;budSave()"></div>
     </div>
     <div style="font-size:11px;padding:8px 10px;background:var(--sa);border-radius:var(--rss);border:1px solid var(--bd)">
       <span style="color:var(--tm)">${T('Deponering:','Disposal:')}</span> <strong>${overskott.toFixed(0)} m³ × ${cfg.dep_r} = ${fmtSEK(depCost)}</strong>
@@ -2335,13 +2431,13 @@ function renderBudget(){
       ['jord',   T('Jordschakt (kr/m³)',      'Soil excavation (SEK/m³)')],
       ['berg',   T('Bergschakt (kr/m³)',      'Rock excavation (SEK/m³)')],
       ['avtatn', T('Avtagning berg (kr/m²)',  'Rock stripping (SEK/m²)')],
-    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" oninput="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
+    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" onchange="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
 
     <div class="va-cfg-group-title" style="margin-bottom:8px">🏗️ ${T('Ytbeläggning — alla typer','Surface restoration — all types')}</div>
     <div class="fg" style="margin-bottom:16px">${[
       ['asfalt', T('Asfalt (kr/m²)',          'Asphalt (SEK/m²)')],
       ['veg',    T('Vegetation (kr/m²)',       'Vegetation (SEK/m²)')],
-    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" oninput="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
+    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" onchange="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
 
     <div class="va-cfg-group-title" style="margin-bottom:8px">📦 ${T('Fyllning — alla typer','Fill & bedding — all types')}</div>
     <div class="fg" style="margin-bottom:16px">${[
@@ -2350,7 +2446,7 @@ function renderBudget(){
       ['restA',    T('Restfyllning A (kr/m³)',    'Remaining fill A (SEK/m³)')],
       ['restB',    T('Restfyllning B (kr/m³)',    'Remaining fill B (SEK/m³)')],
       ['rustbadd', T('Rustbädd (kr/m³)',          'Foundation bed (SEK/m³)')],
-    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" oninput="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
+    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" onchange="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
 
     <div class="va-cfg-group-title" style="margin-bottom:8px">🔧 ${T('Specialarbeten — där tillämpligt','Special works — where applicable')}</div>
     <div class="fg" style="margin-bottom:16px">${[
@@ -2358,18 +2454,18 @@ function renderBudget(){
       ['geo1',   T('Geotextil Typ 1 (kr/m²)',    'Geotextile Type 1 (SEK/m²)')],
       ['geo2',   T('Geotextil Typ 2 (kr/m²)',    'Geotextile Type 2 (SEK/m²)')],
       ['geo3',   T('Geotextil Typ 3 (kr/m²)',    'Geotextile Type 3 (SEK/m²)')],
-    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" oninput="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
+    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" onchange="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
 
     <div class="va-cfg-group-title" style="margin-bottom:8px">💧 ${T('VA-specifikt — Vatten & Avlopp','VA-specific — Water & Sewer only')}</div>
     <div class="fg">${[
       ['tatsom', T('Tätskikt/muff (kr/m)',       'Seal/coupling (SEK/m)')],
-    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" oninput="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
+    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" onchange="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
 
     <div class="va-cfg-group-title" style="margin-bottom:8px;margin-top:16px">🔥 ${T('FV-specifikt — Fjärrvärme (djupklass)','FV-specific — District Heating (depth class)')}</div>
     <div class="fg">${[
       ['ytaLt', T('Yta <1m djup (kr/m³)',        'Area <1m deep (SEK/m³)')],
       ['ytaGt', T('Yta >1m djup (kr/m³)',        'Area >1m deep (SEK/m³)')],
-    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" oninput="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
+    ].map(([k,lbl])=>`<div class="fi"><label>${lbl}</label><input type="number" value="${pr[k]||0}" step="5" onchange="D('BUD').prices['${k}']=+this.value;touchProj();save();go('budget')"></div>`).join('')}</div>
   </div>
 
   <!-- ══ SCHAKTKOSTNAD PER TYP ══ -->
@@ -2525,11 +2621,11 @@ function renderBudget(){
       </div>
       <div class="rot-input">
         <label>${T('Antal personer','Number of persons')}</label>
-        <input type="number" value="${cfg.rot_pers}" min="1" step="1" oninput="D('BUD').cfg.rot_pers=+this.value;budSave()">
+        <input type="number" value="${cfg.rot_pers}" min="1" step="1" onchange="D('BUD').cfg.rot_pers=+this.value;budSave()">
       </div>
       <div class="rot-input">
         <label>${T('Max ROT per person (kr)','Max ROT per person (SEK)')}</label>
-        <input type="number" value="${cfg.rot_max}" step="5000" oninput="D('BUD').cfg.rot_max=+this.value;budSave()">
+        <input type="number" value="${cfg.rot_max}" step="5000" onchange="D('BUD').cfg.rot_max=+this.value;budSave()">
       </div>
     </div>
     ${cfg.rot?`<div class="rot-result">
