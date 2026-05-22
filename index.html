@@ -738,6 +738,7 @@ function elAll(){
   for(let i=0;i<pts.length-1;i++){
     const p1=pts[i],p2=pts[i+1],L=Math.abs(p2.w-p1.w);
     if(L<=0||!p1.h)continue;
+    if(!(p1.e>0)||!(p2.e>0))continue; // skip if either endpoint has no depth
     const bw1=elBW(p1),bw2=elBW(p2);
     const tw1J=p1.e*c.slopeJord*2+bw1,tw2J=p2.e*c.slopeJord*2+bw2;
     const tw1B=p1.d>0?p1.d*c.slopeBerg*2+bw1+1:0,tw2B=p2.d>0?p2.d*c.slopeBerg*2+bw2+1:0;
@@ -763,6 +764,7 @@ function calcSections(pts,cfg,getBW,sideMult=2){
   for(let i=0;i<pts.length-1;i++){
     const p1=pts[i],p2=pts[i+1],L=Math.abs(p2.i-p1.i);
     if(L<=0)continue;
+    if(!(p1.e>0)||!(p2.e>0))continue; // skip if either endpoint has no depth
     const bw1=getBW(p1),bw2=getBW(p2);
     const slJ=cfg.spont>=2?0:(p1.g||cfg.slopeJord||cfg.slope||.5);
     const slB=cfg.spont>=2?0:(cfg.slopeBerg||slJ);
@@ -814,6 +816,7 @@ function vaAll(){
   for(let i=0;i<VA.pts.length-1;i++){
     const p1=VA.pts[i],p2=VA.pts[i+1],L=Math.abs(p2.n-p1.n);
     if(L<=0)continue;
+    if(!(p1.r>0)||!(p2.r>0))continue; // skip if either endpoint has no soil depth
     const bw=p1.bw||1.1;
     const d1=p1.r+p1.d+p1.e+c.rb+p1.a,d2=p2.r+p2.d+p2.e+c.rb+p2.a;
     const slV=c.spont>=2?0:(p1.f||c.slopeV),slH=c.spont>=2?0:(p1.h||c.slopeH);
