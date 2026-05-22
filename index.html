@@ -614,6 +614,9 @@ function svgSection(bw,tw,d,pipes=[],label='',animated=false){
   const beddH=Math.max(6,0.15*sc);
   const kringH=Math.max(8,0.4*sc);
   const anim=animated?'style="transition:all .4s ease"':'';
+  const slope=d>0?(tw-bw)/(2*d):0;
+  const slopeLabel=slope>0.01?`1:${slope.toFixed(1)}`:'';
+  const wallMidX=(cx+htw+cx+hbw)/2+4,wallMidY=(gy+by)/2;
   return`<svg width="${W}" height="${H}" style="border-radius:12px;background:#0b1425;display:block;width:100%;max-width:${W}px" viewBox="0 0 ${W} ${H}">
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f2040"/><stop offset="1" stop-color="#1e3a5f"/></linearGradient>
@@ -645,6 +648,9 @@ function svgSection(bw,tw,d,pipes=[],label='',animated=false){
   <!-- D label -->
   <line x1="${(cx+hbw+8).toFixed(1)}" y1="${gy}" x2="${(cx+hbw+8).toFixed(1)}" y2="${by.toFixed(1)}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
   <text x="${(cx+hbw+14).toFixed(1)}" y="${((gy+by)/2).toFixed(1)}" font-size="10" fill="#94a3b8" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">D ${d.toFixed(2)}m</text>
+  <!-- Slope annotation -->
+  ${slopeLabel?`<line x1="${(cx+hbw).toFixed(1)}" y1="${by.toFixed(1)}" x2="${(cx+htw).toFixed(1)}" y2="${gy}" stroke="#c084fc" stroke-width="1.2" stroke-dasharray="4,3" opacity=".6"/>
+  <text x="${wallMidX.toFixed(1)}" y="${wallMidY.toFixed(1)}" font-size="9" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600" dominant-baseline="middle">${slopeLabel}</text>`:''}
   <!-- Layer labels -->
   <text x="${(cx-hbw-4).toFixed(1)}" y="${(by-beddH/2).toFixed(1)}" text-anchor="end" font-size="8" fill="#fbbf24" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">Bädd</text>
   <text x="${(cx-hbw-4).toFixed(1)}" y="${(by-beddH-kringH/2).toFixed(1)}" text-anchor="end" font-size="8" fill="#06b6d4" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">Kring</text>
@@ -1412,16 +1418,16 @@ function updateSegSVG(){
     const el=document.getElementById('fv-svg');if(el)el.innerHTML=svgSection(seg.bw1,seg.tw1,seg.ad,[.125,.125],'',true);
   }else if(p==='fb'){
     const {segs}=fbAll();const FB=D('FB');const seg=segs[S.selSeg];if(!seg)return;
-    const pt=FB.pts[S.selSeg]||FB.pts[0];
-    const el=document.getElementById('fb-svg');if(el)el.innerHTML=svgSection(seg.bw1,seg.tw1,seg.ad,[pt.c,pt.d],'',true);
+    const fbSps=FB.spec?.pipes||[];const fbSlJ=FB.cfg.slopeJord||1;
+    const el=document.getElementById('fb-svg');if(el)el.innerHTML=svgSectionFB(seg.bw1,seg.tw1,seg.ad,fbSps,fbSlJ,'');
   }else if(p==='tr'){
     const {segs}=trAll();const TR=D('TR');const seg=segs[S.selSeg];if(!seg)return;
     const pt=TR.pts[S.selSeg]||TR.pts[0];
     const el=document.getElementById('tr-svg');if(el)el.innerHTML=svgSection(seg.bw1,seg.tw1,seg.ad,[pt.c,pt.d],'',true);
   }else if(p==='va'){
-    const {segs}=vaAll();const seg=segs[S.selSeg];if(!seg)return;
-    const pipes=D('VA').cfg.pipes||[];
-    const el=document.getElementById('va-svg');if(el)el.innerHTML=svgSection(seg.ab,seg.tw,seg.ad,pipes,'',true);
+    const {segs}=vaAll();const VA2=D('VA');const seg=segs[S.selSeg];if(!seg)return;
+    const vaPipes=(VA2.spec?.pipes||[]).map(p=>p.dia);
+    const el=document.getElementById('va-svg');if(el)el.innerHTML=svgSection(seg.ab||seg.bw||VA2.spec?.bw||1,seg.tw||seg.ab||1,seg.ad||2,vaPipes,'',true);
   }
 }
 
@@ -1822,6 +1828,9 @@ function renderVA(){
     // Layer labels (left of BW zone)
     +'<text x="'+(svgCx2-svgHbw2-4).toFixed(1)+'" y="'+(svgBy2-svgBeddH2/2).toFixed(1)+'" text-anchor="end" font-size="8" fill="#fbbf24" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">Bädd</text>'
     +'<text x="'+(svgCx2-svgHbw2-4).toFixed(1)+'" y="'+(svgBy2-svgBeddH2-svgKringH2/2).toFixed(1)+'" text-anchor="end" font-size="8" fill="#06b6d4" font-family="Inter,sans-serif" dominant-baseline="middle" font-weight="600">Kring</text>'
+    // Slope annotation (right wall)
+    +(svgSlJ2>0.01?'<line x1="'+(svgCx2+svgHbw2).toFixed(1)+'" y1="'+svgBy2.toFixed(1)+'" x2="'+(svgCx2+svgHtw2).toFixed(1)+'" y2="'+svgGy2+'" stroke="#c084fc" stroke-width="1.2" stroke-dasharray="4,3" opacity=".6"/>'
+      +'<text x="'+((svgCx2+svgHtw2+svgCx2+svgHbw2)/2+4).toFixed(1)+'" y="'+((svgGy2+svgBy2)/2).toFixed(1)+'" font-size="9" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600" dominant-baseline="middle">1:'+svgSlJ2.toFixed(1)+'</text>':'')
     +'</svg>';
   return`<div>
   <div class="ph"><h2>💧 ${T('Vatten och Avlopp','Water & Sewer')}</h2>
@@ -1955,7 +1964,7 @@ function renderVA(){
   </div>
   <div class="cg2">
     <div class="cd"><div class="ct"><span class="dot" style="background:#06b6d4"></span>${T('Tvärsnitt — kringfyllning','Cross-section — surround fill')}</div>
-      <div style="padding:4px 0">${spec.pipes.length?specSVG:'<div style="padding:20px;text-align:center;color:var(--ts);font-size:12px">📂 '+T('Lägg till rör med djup i Rör \u0026 konfiguration','Add pipes with depth in Pipes \u0026 configuration')+'</div>'}</div>
+      <div id="va-svg" style="padding:4px 0">${spec.pipes.length?specSVG:'<div style="padding:20px;text-align:center;color:var(--ts);font-size:12px">📂 '+T('Lägg till rör med djup i Rör \u0026 konfiguration','Add pipes with depth in Pipes \u0026 configuration')+'</div>'}</div>
       ${specLayers.length?('<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:8px 12px;border-top:1px solid var(--bd);text-align:center">'
         +'<div><div style="font-weight:700;font-size:14px;color:var(--i)">'+specSnitth.toFixed(2)+'m</div><div style="font-size:9px;color:var(--ts)">'+T('Snitthöjd kring','Avg kring h.')+'</div></div>'
         +'<div><div style="font-weight:700;font-size:14px;color:#d97706">'+(specTotBadd*specBW*Math.max(tot.l,1)).toFixed(1)+' m³</div><div style="font-size:9px;color:var(--ts)">'+T('Bädd','Bedding')+'</div></div>'
