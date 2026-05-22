@@ -413,7 +413,7 @@ const CFG_EL={spacingI:.05,spacingL:.05,slopeJord:1,slopeBerg:.2,asphalt:.1,veg:
 const CFG_FV={slopeJord:1,slopeBerg:.2,asphalt:.1,veg:.2,geoType:2,spont:0};
 const CFG_FB={slopeJord:.5,slopeBerg:.1,asphalt:.1,veg:.2,geoType:2,spont:0};
 const CFG_TR={slopeJord:1,slopeBerg:.2,asphalt:.1,veg:.2,geoType:2,spont:0};
-const CFG_VA={slopeV:.25,slopeH:.2,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,pipes:[.3,.16]};
+const CFG_VA={slopeV:.25,slopeH:.2,asphalt:.1,veg:.3,geoType:2,spont:0,rb:0,roadW:2,sfh:.55,badd:.15,pipes:[.3,.16]};
 const CFG_BUD={
   mask:[{n:'Grävmaskin 20t',r:1800,h:0},{n:'Hjullastare',r:1200,h:0},{n:'Lastbil (schakttransport)',r:900,h:0}],
   arb:[{n:'Maskinist',r:420,h:0},{n:'Grovarbetare',r:340,h:0},{n:'Arbetsledare',r:580,h:0}],
@@ -733,11 +733,23 @@ function vaAll(){
     const bw=p1.bw||1.1;
     const d1=p1.r+p1.d+p1.e+c.rb+p1.a,d2=p2.r+p2.d+p2.e+c.rb+p2.a;
     const slV=c.spont>=2?0:(p1.f||c.slopeV),slH=c.spont>=2?0:(p1.h||c.slopeH);
-    const tw1=bw+d1*(slV+slH),tw2=bw+d2*(slV+slH);
+    const bd1=Math.min(p1.c||0,d1),bd2=Math.min(p2.c||0,d2);
+    // Symmetric two-slope geometry: rock zone uses slopeH, soil zone slopeV
+    const tw1=bw+2*(bd1>0?bd1*slH+(d1-bd1)*slV:d1*slV);
+    const tw2=bw+2*(bd2>0?bd2*slH+(d2-bd2)*slV:d2*slV);
     const exc=((bw+tw1)/2*d1+(bw+tw2)/2*d2)/2*L;
-    const frac=(p1.c||0)/Math.max(p1.r,1);
-    const jord=exc*(1-frac),berg=Math.max(0,exc-jord);
-    const bed=L*bw*(p1.d+p2.d)/2,bedA=L*bw;
+    // Jord/berg split: geometric when bd>0, else K% fraction
+    let jord,berg;
+    if(bd1>0||bd2>0){
+      const hy1=bw+2*bd1*slH,hy2=bw+2*bd2*slH;
+      const excB=((bw+hy1)/2*bd1+(bw+hy2)/2*bd2)/2*L;
+      const excJ=((hy1+tw1)/2*(d1-bd1)+(hy2+tw2)/2*(d2-bd2))/2*L;
+      jord=excJ;berg=excB;
+    } else {
+      const frac=(p1.c||0)/Math.max(p1.r||d1,0.001);
+      jord=exc*(1-frac);berg=Math.max(0,exc*frac);
+    }
+    const bed=L*bw*(c.badd||0),bedA=L*bw;
     const sur=Math.max(0,bw*c.sfh*L-bed),remA=Math.max(0,exc-bed-sur);
     const ad=(d1+d2)/2,at=(tw1+tw2)/2;
     const avgSl=(slV+slH)/2,sLen=Math.sqrt(ad**2+(ad*avgSl)**2);
@@ -1651,6 +1663,8 @@ function renderVA(){
         <input type="number" value="${VA2.cfg.slopeH}" step=".05" min="0" max="2" oninput="D('VA').cfg.slopeH=+this.value;touchProj();save();go('va')"></div>
       <div class="fi"><label>${T('Vägbredd (m)','Road width (m)')}</label>
         <input type="number" value="${VA2.cfg.roadW}" step=".5" min="0" oninput="D('VA').cfg.roadW=+this.value;touchProj();save();go('va')"></div>
+      <div class="fi"><label title="${T('Bäddlagrets tjocklek under rörbotten. AMA-standard 0.10–0.20 m','Bedding layer thickness below pipe bottom. AMA standard 0.10–0.20 m')}">${T('Bädd (m)','Bedding (m)')} <span style="opacity:.5">ℹ</span></label>
+        <input type="number" value="${VA2.cfg.badd??0.15}" step=".05" min="0" oninput="D('VA').cfg.badd=+this.value;touchProj();save();go('va')"></div>
     </div>
 
     <div class="va-cfg-group">
