@@ -1264,8 +1264,8 @@ function renderEL(){
     <tbody>
     ${EL.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.w}" step="5" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].w=+this.value;touchProj();save();go('el')"></td>
-      <td><input type="number" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].e=+this.value;touchProj();save();go('el')"></td>
-      <td><input type="number" value="${p.d}" step=".1" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].d=+this.value;touchProj();save();go('el')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('el')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.d}" step=".1" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].d=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('el')"></td>
       <td><input type="number" value="${p.h}" step="1" min="0" max="1" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].h=+this.value;touchProj();save();go('el')"></td>
       <td><input type="number" value="${p.n50}" step="1" min="0" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].n50=+this.value;touchProj();save();go('el')"></td>
       <td><input type="number" value="${p.n110}" step="1" min="0" onclick="event.stopPropagation()" oninput="D('EL').pts[${i}].n110=+this.value;touchProj();save();go('el')"></td>
@@ -1371,13 +1371,13 @@ function renderFV(){
     <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Djup','Depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia tilledn.','Supply dia')}</th><th>D ${T('Dia retur','Return dia')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>${FV.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].i=+this.value;touchProj();save();go('fv')"></td>
-      <td><input type="number" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].e=+this.value;touchProj();save();go('fv')"></td>
-      <td><input type="number" value="${p.f}" step=".05" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].f=+this.value;touchProj();save();go('fv')"></td>
-      <td><input type="number" value="${p.g}" step=".25" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].g=+this.value;touchProj();save();go('fv')"></td>
-      <td><input type="number" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].a=+this.value;touchProj();save();go('fv')"></td>
-      <td><input type="number" value="${p.c}" step=".01" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].c=+this.value;touchProj();save();go('fv')"></td>
-      <td><input type="number" value="${p.d}" step=".01" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].d=+this.value;touchProj();save();go('fv')"></td>
-      <td><input type="number" value="${p.k}" step=".1" min="0" max="1" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].k=+this.value;touchProj();save();go('fv')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.f}" step=".05" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].f=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.g}" step=".25" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].g=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].a=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.c}" step=".01" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].c=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.d}" step=".01" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].d=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.k}" step=".1" min="0" max="1" onclick="event.stopPropagation()" oninput="D('FV').pts[${i}].k=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fv')"></td>
       <td><input type="checkbox" ${p.done?'checked':''} onclick="event.stopPropagation()" onchange="D('FV').pts[${i}].done=this.checked?1:0;touchProj();save();go('fv')"></td>
       <td>${FV.pts.length>2?`<button class="bd-btn" onclick="event.stopPropagation();D('FV').pts.splice(${i},1);touchProj();save();go('fv')">✕</button>`:''}</td>
     </tr>`).join('')}</tbody>
@@ -1453,13 +1453,13 @@ function renderFB(){
     <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Djup','Depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia 1','Dia 1')}</th><th>D ${T('Dia 2','Dia 2')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>${FB.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].i=+this.value;touchProj();save();go('fb')"></td>
-      <td><input type="number" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].e=+this.value;touchProj();save();go('fb')"></td>
-      <td><input type="number" value="${p.f}" step=".05" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].f=+this.value;touchProj();save();go('fb')"></td>
-      <td><input type="number" value="${p.g}" step=".25" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].g=+this.value;touchProj();save();go('fb')"></td>
-      <td><input type="number" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].a=+this.value;touchProj();save();go('fb')"></td>
-      <td><input type="number" value="${p.c}" step=".01" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].c=+this.value;touchProj();save();go('fb')"></td>
-      <td><input type="number" value="${p.d}" step=".01" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].d=+this.value;touchProj();save();go('fb')"></td>
-      <td><input type="number" value="${p.k}" step=".1" min="0" max="1" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].k=+this.value;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.f}" step=".05" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].f=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.g}" step=".25" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].g=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].a=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.c}" step=".01" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].c=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.d}" step=".01" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].d=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.k}" step=".1" min="0" max="1" onclick="event.stopPropagation()" oninput="D('FB').pts[${i}].k=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('fb')"></td>
       <td><input type="checkbox" ${p.done?'checked':''} onclick="event.stopPropagation()" onchange="D('FB').pts[${i}].done=this.checked?1:0;touchProj();save();go('fb')"></td>
       <td>${FB.pts.length>2?`<button class="bd-btn" onclick="event.stopPropagation();D('FB').pts.splice(${i},1);touchProj();save();go('fb')">✕</button>`:''}</td>
     </tr>`).join('')}</tbody>
@@ -1534,13 +1534,13 @@ function renderTR(){
     <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>E ${T('Djup','Depth')}</th><th>F ${T('Bädd','Bed')}</th><th>G ${T('Slant','Slope')}</th><th>A ${T('Kring','Surr.')}</th><th>C ${T('Dia 1','Dia 1')}</th><th>D ${T('Dia 2','Dia 2')}</th><th>K%</th><th>✓</th><th></th></tr></thead>
     <tbody>${TR.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.i}" step="5" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].i=+this.value;touchProj();save();go('tr')"></td>
-      <td><input type="number" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].e=+this.value;touchProj();save();go('tr')"></td>
-      <td><input type="number" value="${p.f}" step=".05" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].f=+this.value;touchProj();save();go('tr')"></td>
-      <td><input type="number" value="${p.g}" step=".25" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].g=+this.value;touchProj();save();go('tr')"></td>
-      <td><input type="number" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].a=+this.value;touchProj();save();go('tr')"></td>
-      <td><input type="number" value="${p.c}" step=".005" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].c=+this.value;touchProj();save();go('tr')"></td>
-      <td><input type="number" value="${p.d}" step=".005" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].d=+this.value;touchProj();save();go('tr')"></td>
-      <td><input type="number" value="${p.k}" step=".1" min="0" max="1" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].k=+this.value;touchProj();save();go('tr')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.e}" step=".1" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].e=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.f}" step=".05" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].f=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.g}" step=".25" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].g=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].a=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.c}" step=".005" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].c=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.d}" step=".005" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].d=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.k}" step=".1" min="0" max="1" onclick="event.stopPropagation()" oninput="D('TR').pts[${i}].k=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('tr')"></td>
       <td><input type="checkbox" ${p.done?'checked':''} onclick="event.stopPropagation()" onchange="D('TR').pts[${i}].done=this.checked?1:0;touchProj();save();go('tr')"></td>
       <td>${TR.pts.length>2?`<button class="bd-btn" onclick="event.stopPropagation();D('TR').pts.splice(${i},1);touchProj();save();go('tr')">✕</button>`:''}</td>
     </tr>`).join('')}</tbody>
@@ -1695,10 +1695,10 @@ function renderVA(){
     <thead><tr><th>${T('Punkt (m)','Point (m)')}</th><th>R ${T('Djup','Depth')}</th><th>C ${T('Bergdj.','Rock d.')}</th><th>BW</th><th>A ${T('Kring','Surr.')}</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th><th>✓</th><th></th></tr></thead>
     <tbody>${VA.pts.map((p,i)=>`<tr class="seg-row ${p.done?'done-row':''} ${i===S.selSeg?'sel-row':''}" onclick="selectSeg(${i})">
       <td><input type="number" value="${p.n}" step="5" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].n=+this.value;touchProj();save();go('va')"></td>
-      <td><input type="number" value="${p.r}" step=".1" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].r=+this.value;touchProj();save();go('va')"></td>
-      <td><input type="number" value="${p.c}" step=".1" min="0" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].c=+this.value;touchProj();save();go('va')"></td>
-      <td><input type="number" value="${p.bw}" step=".05" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].bw=+this.value;touchProj();save();go('va')"></td>
-      <td><input type="number" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].a=+this.value;touchProj();save();go('va')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.r}" step=".1" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].r=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('va')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.c}" step=".1" min="0" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].c=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('va')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.bw}" step=".05" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].bw=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('va')"></td>
+      <td><input type="text" inputmode="decimal" value="${p.a}" step=".05" onclick="event.stopPropagation()" oninput="D('VA').pts[${i}].a=parseFloat(this.value.replace(',','.'))||0;touchProj();save();go('va')"></td>
       ${segs[i]?`<td class="num">${segs[i].jord.toFixed(1)}</td><td class="num">${segs[i].berg.toFixed(1)}</td><td class="num">${segs[i].bed.toFixed(1)}</td><td class="num">${segs[i].sur.toFixed(1)}</td>`:'<td colspan="4">–</td>'}
       <td><input type="checkbox" ${p.done?'checked':''} onclick="event.stopPropagation()" onchange="D('VA').pts[${i}].done=this.checked?1:0;touchProj();save();go('va')"></td>
       <td>${VA.pts.length>2?`<button class="bd-btn" onclick="event.stopPropagation();D('VA').pts.splice(${i},1);touchProj();save();go('va')">✕</button>`:''}</td>
