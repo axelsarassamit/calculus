@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>AMA/MER Kalkyl Pro</title>
+<title>Calculus Pro</title>
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4f46e5">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Kalkyl Pro">
+<meta name="apple-mobile-web-app-title" content="Calculus Pro">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -542,6 +542,7 @@ function load(){
     if(d&&d.projects){
       S.projects=d.projects;S.cur=d.cur;
       S.lang=d.lang||'sv';S.dark=!!d.dark;
+      document.documentElement.lang=S.lang;
     }
   }catch(e){}
   if(!Object.keys(S.projects).length){
@@ -938,7 +939,7 @@ function renderSidebar(){
   document.getElementById('sidebar').innerHTML=`
   <div class="side-logo">
     <span class="ico">⛏️</span>
-    <div><h1>AMA/MER Kalkyl</h1><div class="sub">v6 Pro — ${T('Schakt & Fyllning','Excavation')}</div></div>
+    <div><h1>Calculus Pro</h1><div class="sub">${T('Schakt & Fyllning','Excavation & Filling')}</div></div>
   </div>
   <div class="side-scroll">
     <div class="nav-sec">${T('Navigering','Navigation')}</div>
@@ -1043,7 +1044,7 @@ function toggleNav(){
   s.classList.toggle('open');o.classList.toggle('open');
 }
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('open');}
-function setL(l){S.lang=l;save();go(S.page);}
+function setL(l){S.lang=l;document.documentElement.lang=l;document.title='Calculus Pro';save();go(S.page);}
 function tgTheme(){
   S.dark=!S.dark;
   document.documentElement.setAttribute('data-theme',S.dark?'dark':'');
@@ -1217,8 +1218,8 @@ function renderDashboard(){
 function renderStart(){
   return`<div>
   <div class="hero">
-    <h1>⛏️ AMA/MER ${T('Kalkyl Pro','Calc Pro')}</h1>
-    <p>${T('Komplett kalkylsystem för schakt, fyllning och ledningsarbeten enligt AMA/MER. Allt på ett ställe — tydligt, snabbt och mobilanpassat.','Complete calculation system for excavation, backfill and pipe works per AMA/MER standards.')}</p>
+    <h1>⛏️ Calculus Pro</h1>
+    <p>${T('Komplett kalkylsystem för schakt, fyllning och ledningsarbeten enligt AMA/MER. Allt på ett ställe — tydligt, snabbt och mobilanpassat.','Complete calculation system for excavation, backfill and pipe works per AMA/MER standards. All in one place — clear, fast and mobile-friendly.')}</p>
     <div class="tags"><span class="tag">AMA Anläggning</span><span class="tag">MER Anläggning</span><span class="tag">Schaktkalkyl</span><span class="tag">VA · EL · FV</span></div>
   </div>
   <div class="theory-grid">
@@ -2975,20 +2976,20 @@ function xPDF(){
   if(!curProj())return;
   const el=elAll().tot,fv=fvAll().tot,va=vaAll().tot,proj=curProj();
   const w=window.open('');
-  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>AMA/MER – ${proj.name}</title>
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Calculus Pro – ${proj.name}</title>
   <style>body{font-family:Arial,sans-serif;margin:30px;font-size:12px;color:#0f172a}h1{color:#4f46e5;margin-bottom:4px}
   .sub{color:#64748b;font-size:11px;margin-bottom:20px}table{border-collapse:collapse;width:100%;margin:12px 0}
   th{background:#4f46e5;color:#fff;padding:7px;text-align:left}td{padding:5px;border-bottom:1px solid #e2e8f0}
   tfoot td{font-weight:700;background:#f1f5f9}.m{display:inline-block;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;margin:4px;text-align:center;min-width:100px}
   .v{font-size:20px;font-weight:800;color:#4f46e5}.l{font-size:9px;color:#64748b;text-transform:uppercase}</style></head>
-  <body><h1>⛏️ AMA/MER Kalkylrapport</h1>
-  <div class="sub">${proj.name} · ${proj.desc||''} · Genererad: ${new Date().toLocaleDateString('sv-SE')} · AMA/MER Kalkyl Pro v6</div>
+  <body><h1>⛏️ Calculus Pro — ${T('Kalkylrapport','Calculation Report')}</h1>
+  <div class="sub">${proj.name} · ${proj.desc||''} · ${new Date().toLocaleDateString(S.lang==='sv'?'sv-SE':'en-GB')} · Calculus Pro</div>
   <div class="m"><div class="v">${(el.exc+fv.exc+va.exc).toFixed(0)}</div><div class="l">Total schakt m³</div></div>
   <div class="m"><div class="v">${(el.jord+fv.jord+va.jord).toFixed(0)}</div><div class="l">Jordschakt m³</div></div>
   <table><tr><th>Typ</th><th>Längd</th><th>Schakt m³</th><th>Jord m³</th><th>Berg m³</th><th>Bädd m³</th><th>Kring m³</th></tr>
   ${[['EL kanalisation',el],['Fjärrvärme',fv],['Vatten & Avlopp',va]].map(([n,t])=>`<tr><td>${n}</td><td>${t.l?.toFixed(1)||0}m</td><td>${t.exc.toFixed(1)}</td><td>${t.jord.toFixed(1)}</td><td>${t.berg.toFixed(1)}</td><td>${t.bed.toFixed(1)}</td><td>${t.sur.toFixed(1)}</td></tr>`).join('')}
   </table>
-  <p style="color:#94a3b8;margin-top:20px;font-size:10px">Tryck Ctrl+P för att spara som PDF · AMA/MER Kalkyl Pro v6</p>
+  <p style="color:#94a3b8;margin-top:20px;font-size:10px">${T('Tryck Ctrl+P för att spara som PDF','Press Ctrl+P to save as PDF')} · Calculus Pro</p>
   </body></html>`);
   w.document.close();toast('📕 Utskrift öppnad');
 }

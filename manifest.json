@@ -1,7 +1,7 @@
 {
-  "name": "AMA/MER Kalkyl Pro",
-  "short_name": "Kalkyl Pro",
-  "description": "Schakt- och fyllningskalkyl för mark & VA-entreprenad",
+  "name": "Calculus Pro",
+  "short_name": "Calculus Pro",
+  "description": "Excavation and filling calculations for civil & VA contracting / Schakt- och fyllningskalkyl för mark & VA-entreprenad",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#0f172a",
