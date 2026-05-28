@@ -392,7 +392,7 @@ a{color:inherit;text-decoration:none}
     <div class="sub" id="modal-sub">Fyll i projektinformation och välj mall</div>
     <div id="modal-body"></div>
     <div class="modal-btns">
-      <button class="btn bs" onclick="closeModal()">Avbryt</button>
+      <button class="btn bs" id="modal-cancel" onclick="closeModal()">Avbryt</button>
       <button class="btn bp" id="modal-ok" onclick="modalOk()">Skapa projekt</button>
     </div>
   </div>
@@ -921,7 +921,7 @@ function renderSidebar(){
     <div class="proj-divider"></div>
     <div class="nav-sec">${proj.name}</div>
     <div class="ni ${S.page==='dashboard'?'a':''}" onclick="go('dashboard')">${navIco('dashboard')} ${T('Översikt','Dashboard')}</div>
-    <div class="ni ${S.page==='el'?'a':''}" onclick="go('el')">⚡ EL kanalisation</div>
+    <div class="ni ${S.page==='el'?'a':''}" onclick="go('el')">⚡ ${T('EL kanalisation','EL Canalisation')}</div>
     <div class="ni ${S.page==='fv'?'a':''}" onclick="go('fv')">🔥 ${T('Fjärrvärme','District Heating')}</div>
     <div class="ni ${S.page==='fb'?'a':''}" onclick="go('fb')">🏗️ ${T('Fyllnad mot byggnad','Fill against building')}</div>
     <div class="ni ${S.page==='tr'?'a':''}" onclick="go('tr')">🔵 ${T('Trumma','Culvert')}</div>
@@ -1060,6 +1060,7 @@ function showNewProject(){
   document.getElementById('modal-title').textContent=T('Nytt projekt','New project');
   document.getElementById('modal-sub').textContent=T('Fyll i info och välj mall','Fill in info and choose template');
   document.getElementById('modal-ok').textContent=T('Skapa projekt','Create project');
+  document.getElementById('modal-cancel').textContent=T('Avbryt','Cancel');
   modalMode='new';_modalTemplate='empty';
   document.getElementById('modal-body').innerHTML=`
   <div class="fi"><label>${T('Projektnamn','Project name')} *</label><input type="text" id="mn" placeholder="${T('t.ex. Storgatan 2025','e.g. Main Street 2025')}" maxlength="60"></div>
@@ -1135,8 +1136,8 @@ function renderProjects(){
   </div>
   <div class="cd"><div class="ct"><span class="dot" style="background:var(--p)"></span>${T('Hur projekt fungerar','How projects work')}</div>
     <div style="font-size:13px;color:var(--ts);line-height:1.8;max-width:600px">
-      <p>Varje projekt lagrar egna beräkningsdata för EL kanalisation, Fjärrvärme, Fyllnad mot byggnad, Trumma, Vatten och Avlopp och Rörlängder. Data sparas automatiskt i webbläsaren och är separat per projekt.</p>
-      <p style="margin-top:8px">Klicka på <strong>Demo Projekt</strong> för att se ett komplett exempel med förifylld data från kalkylbladet.</p>
+      <p>${T('Varje projekt lagrar egna beräkningsdata för EL kanalisation, Fjärrvärme, Fyllnad mot byggnad, Trumma, Vatten och Avlopp och Rörlängder. Data sparas automatiskt i webbläsaren och är separat per projekt.','Each project stores its own calculation data for EL Canalisation, District Heating, Fill Against Building, Culvert, Water & Sewer and Pipe Lengths. Data is saved automatically in the browser and is separate per project.')}</p>
+      <p style="margin-top:8px">${T('Klicka på','Click')} <strong>${T('Demo Projekt','Demo Project')}</strong> ${T('för att se ett komplett exempel med förifylld data från kalkylbladet.','to see a complete example with pre-filled data from the spreadsheet.')}</p>
     </div>
   </div></div>`;
 }
@@ -1220,7 +1221,7 @@ function renderStart(){
   <div class="hero">
     <h1>⛏️ Calculus Pro</h1>
     <p>${T('Komplett kalkylsystem för schakt, fyllning och ledningsarbeten enligt AMA/MER. Allt på ett ställe — tydligt, snabbt och mobilanpassat.','Complete calculation system for excavation, backfill and pipe works per AMA/MER standards. All in one place — clear, fast and mobile-friendly.')}</p>
-    <div class="tags"><span class="tag">AMA Anläggning</span><span class="tag">MER Anläggning</span><span class="tag">Schaktkalkyl</span><span class="tag">VA · EL · FV</span></div>
+    <div class="tags"><span class="tag">${T('AMA Anläggning','AMA Construction')}</span><span class="tag">${T('MER Anläggning','MER Construction')}</span><span class="tag">${T('Schaktkalkyl','Excavation Calc')}</span><span class="tag">VA · EL · FV</span></div>
   </div>
   <div class="theory-grid">
     <div class="theory-card"><div class="icon">📘</div><h3>${T('Vad är AMA?','What is AMA?')}</h3>
@@ -1557,7 +1558,7 @@ function renderFB(){
     <p>${T('Schakt mot husgrund har alltid vertikal vägg mot byggnaden (vänster) och slantad schaktvägg på den fria sidan (höger). Bottenbredden styrs av konfigurerade rörledningar plus 0.20m säkerhetsavstånd.','Excavation against building always has a vertical wall toward the building (left) and sloped excavation on the open side (right). Bottom width is controlled by configured pipes plus 0.20m safety margin.')}</p>
     <ul style="margin-top:6px">
       <li><strong>BW</strong> = ${T('summa rördiametrar','sum of pipe diameters')} + 0.20m</li>
-      <li><strong>TW</strong> = BW + ${T('Slant 1:Y × schaktdjup (en sida)','Slope 1:Y × depth (one side only)')}</li>
+      <li><strong>TW</strong> = BW + ${T('Slant 1:Y × schaktdjup (en sida)','Slope 1:Y × excavation depth (one side only)')}</li>
       <li><strong>Slant 1:Y</strong>: ${T('Y = meter ut per 1m djup. Ex: 1:0.5 = 0.5m ut. Normalt 0.1–0.5 mot byggnad.','Y = metres out per 1m down. E.g. 1:0.5 = 0.5m out. Normally 0.1–0.5 against building.')}</li>
       <li><strong>G</strong> = ${T('slant-override per punkt (överstyr global slant)','slope override per point (overrides global slope)')}</li>
     </ul>
@@ -2055,8 +2056,8 @@ function renderFVSpec(){
   const clsMERCode=(s)=>s.ad<=1?'DCB.1111':s.ad<=2?'DCB.1112':'DCB.1113';
   return`<div>
   <div class="ph"><h2>📋 FV-spec — ${T('Djupspecifikation','Depth specification')}</h2>
-  <div class="sub">${T('Uppdelning av FV-schakt per djupklass enligt MER Anläggning DCB.111.','FV excavation split by depth class per MER Anläggning DCB.111.')}</div></div>
-  <div class="infobox"><h4>ℹ️ ${T('MER Anläggning — djupklasser DCB.111','MER Anläggning — depth classes DCB.111')}</h4>
+  <div class="sub">${T('Uppdelning av FV-schakt per djupklass enligt MER Anläggning DCB.111.','FV excavation split by depth class per MER Construction DCB.111.')}</div></div>
+  <div class="infobox"><h4>ℹ️ ${T('MER Anläggning — djupklasser DCB.111','MER Construction — depth classes DCB.111')}</h4>
     <p>${T('Schaktdjup (E) = rörbottendjup + bädd. Tre klasser per MER:','Excavation depth (E) = pipe invert depth + bedding. Three classes per MER:')}</p>
     <ul style="margin-top:4px">
       <li><strong>DCB.1111</strong> — E ≤ 1.0 m</li>
@@ -2431,10 +2432,10 @@ function renderSM(){
   <div class="tbl-wrap"><table class="dt">
     <thead><tr><th>${T('Schakttyp','Excavation type')}</th><th>${T('Längd m','Length m')}</th><th>${T('Schakt m³','Exc m³')}</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th><th>${T('Rest m³','Rest m³')}</th><th>${T('Geo m²','Geo m²')}</th><th>${T('Balans m³','Balance m³')}</th></tr></thead>
     <tbody>
-      <tr onclick="go('el')" style="cursor:pointer"><td style="text-align:left;font-weight:700">⚡ EL kanalisation</td><td>${el.l.toFixed(1)}</td><td class="num">${el.exc.toFixed(1)}</td><td class="num">${el.jord.toFixed(1)}</td><td class="num">${el.berg.toFixed(1)}</td><td class="num">${el.bed.toFixed(1)}</td><td class="num">${el.sur.toFixed(1)}</td><td class="num">${el.remA.toFixed(1)}</td><td class="num">${el.geo.toFixed(1)}</td><td class="num ${el.bal<0?'bad':''}">${el.bal.toFixed(1)}</td></tr>
-      <tr onclick="go('fv')" style="cursor:pointer"><td style="text-align:left;font-weight:700">🔥 Fjärrvärme</td><td>${fv.l.toFixed(1)}</td><td class="num">${fv.exc.toFixed(1)}</td><td class="num">${fv.jord.toFixed(1)}</td><td class="num">${fv.berg.toFixed(1)}</td><td class="num">${fv.bed.toFixed(1)}</td><td class="num">${fv.sur.toFixed(1)}</td><td class="num">${fv.rem.toFixed(1)}</td><td class="num">${fv.geo.toFixed(1)}</td><td class="num ${fv.bal<0?'bad':''}">${fv.bal.toFixed(1)}</td></tr>
-      <tr onclick="go('fb')" style="cursor:pointer"><td style="text-align:left;font-weight:700">🏗️ Fyllnad</td><td>${fb.l.toFixed(1)}</td><td class="num">${fb.exc.toFixed(1)}</td><td class="num">${fb.jord.toFixed(1)}</td><td class="num">${fb.berg.toFixed(1)}</td><td class="num">${fb.bed.toFixed(1)}</td><td class="num">${fb.sur.toFixed(1)}</td><td class="num">${fb.rem.toFixed(1)}</td><td class="num">${fb.geo.toFixed(1)}</td><td class="num ${fb.bal<0?'bad':''}">${fb.bal.toFixed(1)}</td></tr>
-      <tr onclick="go('tr')" style="cursor:pointer"><td style="text-align:left;font-weight:700">🔵 Trumma</td><td>${tr.l.toFixed(1)}</td><td class="num">${tr.exc.toFixed(1)}</td><td class="num">${tr.jord.toFixed(1)}</td><td class="num">${tr.berg.toFixed(1)}</td><td class="num">${tr.bed.toFixed(1)}</td><td class="num">${tr.sur.toFixed(1)}</td><td class="num">${tr.rem.toFixed(1)}</td><td class="num">${tr.geo.toFixed(1)}</td><td class="num ${tr.bal<0?'bad':''}">${tr.bal.toFixed(1)}</td></tr>
+      <tr onclick="go('el')" style="cursor:pointer"><td style="text-align:left;font-weight:700">⚡ ${T('EL kanalisation','EL Canalisation')}</td><td>${el.l.toFixed(1)}</td><td class="num">${el.exc.toFixed(1)}</td><td class="num">${el.jord.toFixed(1)}</td><td class="num">${el.berg.toFixed(1)}</td><td class="num">${el.bed.toFixed(1)}</td><td class="num">${el.sur.toFixed(1)}</td><td class="num">${el.remA.toFixed(1)}</td><td class="num">${el.geo.toFixed(1)}</td><td class="num ${el.bal<0?'bad':''}">${el.bal.toFixed(1)}</td></tr>
+      <tr onclick="go('fv')" style="cursor:pointer"><td style="text-align:left;font-weight:700">🔥 ${T('Fjärrvärme','District Heating')}</td><td>${fv.l.toFixed(1)}</td><td class="num">${fv.exc.toFixed(1)}</td><td class="num">${fv.jord.toFixed(1)}</td><td class="num">${fv.berg.toFixed(1)}</td><td class="num">${fv.bed.toFixed(1)}</td><td class="num">${fv.sur.toFixed(1)}</td><td class="num">${fv.rem.toFixed(1)}</td><td class="num">${fv.geo.toFixed(1)}</td><td class="num ${fv.bal<0?'bad':''}">${fv.bal.toFixed(1)}</td></tr>
+      <tr onclick="go('fb')" style="cursor:pointer"><td style="text-align:left;font-weight:700">🏗️ ${T('Fyllnad mot byggnad','Fill Against Building')}</td><td>${fb.l.toFixed(1)}</td><td class="num">${fb.exc.toFixed(1)}</td><td class="num">${fb.jord.toFixed(1)}</td><td class="num">${fb.berg.toFixed(1)}</td><td class="num">${fb.bed.toFixed(1)}</td><td class="num">${fb.sur.toFixed(1)}</td><td class="num">${fb.rem.toFixed(1)}</td><td class="num">${fb.geo.toFixed(1)}</td><td class="num ${fb.bal<0?'bad':''}">${fb.bal.toFixed(1)}</td></tr>
+      <tr onclick="go('tr')" style="cursor:pointer"><td style="text-align:left;font-weight:700">🔵 ${T('Trumma','Culvert')}</td><td>${tr.l.toFixed(1)}</td><td class="num">${tr.exc.toFixed(1)}</td><td class="num">${tr.jord.toFixed(1)}</td><td class="num">${tr.berg.toFixed(1)}</td><td class="num">${tr.bed.toFixed(1)}</td><td class="num">${tr.sur.toFixed(1)}</td><td class="num">${tr.rem.toFixed(1)}</td><td class="num">${tr.geo.toFixed(1)}</td><td class="num ${tr.bal<0?'bad':''}">${tr.bal.toFixed(1)}</td></tr>
       <tr onclick="go('va')" style="cursor:pointer"><td style="text-align:left;font-weight:700">💧 ${T('Vatten & Avlopp','Water & Sewer')}</td><td>${va.l.toFixed(1)}</td><td class="num">${va.exc.toFixed(1)}</td><td class="num">${va.jord.toFixed(1)}</td><td class="num">${va.berg.toFixed(1)}</td><td class="num">${va.bed.toFixed(1)}</td><td class="num">${va.sur.toFixed(1)}</td><td class="num">${va.remA.toFixed(1)}</td><td class="num">${va.geo.toFixed(1)}</td><td class="num ${va.bal<0?'bad':''}">${va.bal.toFixed(1)}</td></tr>
     </tbody>
     <tfoot><tr><td style="text-align:left">${T('TOTALT','TOTAL')}</td><td>${totL.toFixed(1)}</td><td>${totExc.toFixed(1)}</td><td>${totJord.toFixed(1)}</td><td>${totBerg.toFixed(1)}</td><td>${totBed.toFixed(1)}</td><td>${totSur.toFixed(1)}</td><td>${totRem.toFixed(1)}</td><td>${totGeo.toFixed(1)}</td><td class="${totBal<0?'bad':''}">${totBal.toFixed(1)}</td></tr></tfoot>
@@ -2984,10 +2985,10 @@ function xPDF(){
   .v{font-size:20px;font-weight:800;color:#4f46e5}.l{font-size:9px;color:#64748b;text-transform:uppercase}</style></head>
   <body><h1>⛏️ Calculus Pro — ${T('Kalkylrapport','Calculation Report')}</h1>
   <div class="sub">${proj.name} · ${proj.desc||''} · ${new Date().toLocaleDateString(S.lang==='sv'?'sv-SE':'en-GB')} · Calculus Pro</div>
-  <div class="m"><div class="v">${(el.exc+fv.exc+va.exc).toFixed(0)}</div><div class="l">Total schakt m³</div></div>
-  <div class="m"><div class="v">${(el.jord+fv.jord+va.jord).toFixed(0)}</div><div class="l">Jordschakt m³</div></div>
-  <table><tr><th>Typ</th><th>Längd</th><th>Schakt m³</th><th>Jord m³</th><th>Berg m³</th><th>Bädd m³</th><th>Kring m³</th></tr>
-  ${[['EL kanalisation',el],['Fjärrvärme',fv],['Vatten & Avlopp',va]].map(([n,t])=>`<tr><td>${n}</td><td>${t.l?.toFixed(1)||0}m</td><td>${t.exc.toFixed(1)}</td><td>${t.jord.toFixed(1)}</td><td>${t.berg.toFixed(1)}</td><td>${t.bed.toFixed(1)}</td><td>${t.sur.toFixed(1)}</td></tr>`).join('')}
+  <div class="m"><div class="v">${(el.exc+fv.exc+va.exc).toFixed(0)}</div><div class="l">${T('Total schakt m³','Total exc m³')}</div></div>
+  <div class="m"><div class="v">${(el.jord+fv.jord+va.jord).toFixed(0)}</div><div class="l">${T('Jordschakt m³','Soil exc m³')}</div></div>
+  <table><tr><th>${T('Typ','Type')}</th><th>${T('Längd','Length')}</th><th>${T('Schakt m³','Exc m³')}</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th></tr>
+  ${[[T('EL kanalisation','EL Canalisation'),el],[T('Fjärrvärme','District Heating'),fv],[T('Vatten & Avlopp','Water & Sewer'),va]].map(([n,t])=>`<tr><td>${n}</td><td>${t.l?.toFixed(1)||0}m</td><td>${t.exc.toFixed(1)}</td><td>${t.jord.toFixed(1)}</td><td>${t.berg.toFixed(1)}</td><td>${t.bed.toFixed(1)}</td><td>${t.sur.toFixed(1)}</td></tr>`).join('')}
   </table>
   <p style="color:#94a3b8;margin-top:20px;font-size:10px">${T('Tryck Ctrl+P för att spara som PDF','Press Ctrl+P to save as PDF')} · Calculus Pro</p>
   </body></html>`);
