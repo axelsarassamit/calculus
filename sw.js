@@ -3,7 +3,7 @@
    Cache-first for local assets, network-first for CDN
 ═══════════════════════════════════════════════════════════════ */
 
-const CACHE = 'ama-kalkyl-v1';
+const CACHE = 'calculus-pro-v3';
 
 const LOCAL_ASSETS = [
   '.',
@@ -47,12 +47,16 @@ self.addEventListener('fetch', event => {
   // Only handle http/https
   if (!['http:', 'https:'].includes(url.protocol)) return;
 
-  // Navigation requests → cache-first with network fallback
+  // Navigation requests → network-first, fall back to cache (ensures fresh HTML)
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      caches.match('index.html').then(cached =>
-        cached || fetch(event.request)
-      )
+      fetch(event.request)
+        .then(res => {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put('index.html', clone));
+          return res;
+        })
+        .catch(() => caches.match('index.html'))
     );
     return;
   }
@@ -72,14 +76,14 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Local assets → cache-first, update in background
+  // Local assets → network-first with cache fallback (always serve latest)
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      const network = fetch(event.request).then(res => {
-        caches.open(CACHE).then(c => c.put(event.request, res.clone()));
+    fetch(event.request)
+      .then(res => {
+        const clone = res.clone();
+        caches.open(CACHE).then(c => c.put(event.request, clone));
         return res;
-      });
-      return cached || network;
-    })
+      })
+      .catch(() => caches.match(event.request))
   );
 });
