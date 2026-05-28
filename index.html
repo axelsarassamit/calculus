@@ -580,6 +580,11 @@ function fmt(n,d=2){return typeof n==='number'?n.toFixed(d):String(n);}
 function fmtSEK(n){return n.toLocaleString('sv-SE',{maximumFractionDigits:0})+' kr';}
 function pct(a,b){return b>0?Math.min(100,Math.max(0,a/b*100)):0;}
 function fmtDate(s){try{return new Date(s).toLocaleDateString('sv-SE');}catch{return s;}}
+function tDesc(d){
+  if(d==='Förifyllt med exempeldata från beräkningsbladet')
+    return T('Förifyllt med exempeldata från beräkningsbladet','Pre-filled with example data from the spreadsheet');
+  return d||'';
+}
 function toast(m,t=2200){const e=document.getElementById('toast');e.textContent=m;e.style.display='block';e.style.animation='slideUp .3s ease';setTimeout(()=>e.style.display='none',t);}
 function pcBar(done,total,label){
   if(total<=0)return'';
@@ -1121,7 +1126,7 @@ function renderProjects(){
     return`<div class="proj-card color-${p.color%5}" onclick="openProject('${p.id}')">
       <div class="proj-types">${types.map(t=>`<span class="type-tag">${t}</span>`).join('')||`<span class="type-tag" style="opacity:.5">${T('Tom','Empty')}</span>`}</div>
       <h3>${p.name}</h3>
-      <div class="proj-desc">${p.desc||T('Ingen beskrivning','No description')}</div>
+      <div class="proj-desc">${tDesc(p.desc)||T('Ingen beskrivning','No description')}</div>
       ${totalExc>0?`<div style="font-size:13px;font-weight:700;color:var(--p);margin-bottom:6px">${totalExc.toFixed(0)} m³ ${T('total schakt','total exc.')}</div>`:''}
       <div class="proj-meta"><span>📅 ${fmtDate(p.created)}</span><span>✏️ ${fmtDate(p.modified)}</span></div>
       <div class="proj-actions">
@@ -1168,7 +1173,7 @@ function renderDashboard(){
   <div class="dash-header">
     <h2 style="background:linear-gradient(135deg,var(--p),var(--i));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${proj.name}</h2>
     <span class="proj-badge">📅 ${fmtDate(proj.created)}</span>
-    ${proj.desc?`<span class="proj-badge" style="background:var(--sa);color:var(--ts);border-color:var(--bd)">${proj.desc}</span>`:''}
+    ${proj.desc?`<span class="proj-badge" style="background:var(--sa);color:var(--ts);border-color:var(--bd)">${tDesc(proj.desc)}</span>`:''}
   </div>
 
   <div class="mg" style="grid-template-columns:repeat(auto-fill,minmax(140px,1fr))">
@@ -2985,7 +2990,7 @@ function xPDF(){
   tfoot td{font-weight:700;background:#f1f5f9}.m{display:inline-block;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;margin:4px;text-align:center;min-width:100px}
   .v{font-size:20px;font-weight:800;color:#4f46e5}.l{font-size:9px;color:#64748b;text-transform:uppercase}</style></head>
   <body><h1>⛏️ Calculus Pro — ${T('Kalkylrapport','Calculation Report')}</h1>
-  <div class="sub">${proj.name} · ${proj.desc||''} · ${new Date().toLocaleDateString(S.lang==='sv'?'sv-SE':'en-GB')} · Calculus Pro</div>
+  <div class="sub">${proj.name} · ${tDesc(proj.desc)} · ${new Date().toLocaleDateString(S.lang==='sv'?'sv-SE':'en-GB')} · Calculus Pro</div>
   <div class="m"><div class="v">${(el.exc+fv.exc+va.exc).toFixed(0)}</div><div class="l">${T('Total schakt m³','Total exc m³')}</div></div>
   <div class="m"><div class="v">${(el.jord+fv.jord+va.jord).toFixed(0)}</div><div class="l">${T('Jordschakt m³','Soil exc m³')}</div></div>
   <table><tr><th>${T('Typ','Type')}</th><th>${T('Längd','Length')}</th><th>${T('Schakt m³','Exc m³')}</th><th>${T('Jord m³','Soil m³')}</th><th>${T('Berg m³','Rock m³')}</th><th>${T('Bädd m³','Bed m³')}</th><th>${T('Kring m³','Surr m³')}</th></tr>
