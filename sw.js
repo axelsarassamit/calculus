@@ -3,7 +3,7 @@
    Cache-first for local assets, network-first for CDN
 ═══════════════════════════════════════════════════════════════ */
 
-const CACHE = 'calculus-pro-v3';
+const CACHE = 'calculus-pro-v4';
 
 const LOCAL_ASSETS = [
   '.',
